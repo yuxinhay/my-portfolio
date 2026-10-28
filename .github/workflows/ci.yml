@@ -35,6 +35,8 @@ jobs:
         run: npm run typecheck
       - name: Build
         run: npm run build
+      - name: Build Storybook
+        run: npm run build-storybook
 
   commitlint:
     name: Conventional PR title
