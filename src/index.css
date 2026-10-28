@@ -1,0 +1,30 @@
+/* Temporary base styles. Replaced by generated design tokens in the tokens milestone. */
+:root {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #ffffff;
+  outline: 3px solid #1a56db;
+}
+
+:focus-visible {
+  outline: 3px solid #1a56db;
+  outline-offset: 2px;
+}
