@@ -4,7 +4,10 @@ Portfolio site for a **UX designer + UI/frontend developer**. It shows projects,
 skills, and the codebase itself demonstrates the process: a token-driven design system,
 WCAG 2.0 AA accessibility, CI quality gates and an AI-assisted workflow.
 
-Live site: https://yuxinhay.github.io/my-portfolio/ (deployment coming in a later milestone)
+[![CI](https://github.com/yuxinhay/my-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/yuxinhay/my-portfolio/actions/workflows/ci.yml)
+[![Deploy](https://github.com/yuxinhay/my-portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/yuxinhay/my-portfolio/actions/workflows/deploy.yml)
+
+Live site: https://yuxinhay.github.io/my-portfolio/
 
 ## Stack
 

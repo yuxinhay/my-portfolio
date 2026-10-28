@@ -1,0 +1,27 @@
+name: Feature
+description: A new page, component or capability
+labels: [feature]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: User goal
+      description: Who is this for and what do they need? (e.g. "As a hiring manager, I want…")
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is in and out of scope.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Include accessibility and responsive criteria.
+      value: |
+        - [ ] Keyboard operable with visible focus
+        - [ ] Meets WCAG 2.0 AA contrast
+        - [ ] Works from 320px width
+    validations:
+      required: true
