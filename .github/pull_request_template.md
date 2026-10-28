@@ -1,4 +1,4 @@
-Closes #
+Plan step: <!-- e.g. 4 (see docs/plan.md); update its Status row in this PR -->
 
 ## Summary
 

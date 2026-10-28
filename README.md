@@ -33,12 +33,14 @@ npm run dev
 
 ## Workflow
 
-- Branch per issue (`feat/<issue>-<slug>`), PR into `main`, squash merge.
+- Work follows the steps in [docs/plan.md](docs/plan.md), which also tracks status.
+- Branch per step (`feat/<step>-<slug>`), PR into `main`, squash merge.
 - Conventional Commits, enforced by commitlint on `commit-msg`.
 - lint-staged runs oxlint + Prettier on `pre-commit`.
 
 ## Docs
 
+- [Plan and status](docs/plan.md)
 - [Architecture decisions](docs/adr/), incl. [design tokens](docs/adr/0002-tailwind-design-tokens.md)
 - [AI-assisted workflow](docs/ai-workflow.md)
 - [AI rules (CLAUDE.md)](CLAUDE.md)
