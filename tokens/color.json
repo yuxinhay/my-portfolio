@@ -1,0 +1,27 @@
+{
+  "color": {
+    "$type": "color",
+    "blush": { "$value": "#FFE5F1", "$description": "Light pink surface" },
+    "pink": {
+      "300": {
+        "$value": "#FF8AC2",
+        "$description": "Soft pink, text on ink and decorative shapes"
+      },
+      "500": { "$value": "#E84A7D", "$description": "Decorative only, never text" },
+      "600": {
+        "$value": "#CC0F4C",
+        "$description": "Hot pink surface. Darkened from #D4104F so blush accent text passes AA (4.74:1)"
+      },
+      "700": { "$value": "#B80D44", "$description": "Pink text on light surfaces" }
+    },
+    "cobalt": {
+      "400": { "$value": "#4A62FF", "$description": "Decorative only, never text" },
+      "500": { "$value": "#1F3BFF", "$description": "Cobalt surface" }
+    },
+    "ink": {
+      "800": { "$value": "#2A2A2A", "$description": "Decorative only, never text" },
+      "900": { "$value": "#111111", "$description": "Near-black surface and text" }
+    },
+    "white": { "$value": "#FFFFFF" }
+  }
+}

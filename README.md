@@ -11,7 +11,7 @@ Live site: https://yuxinhay.github.io/my-portfolio/
 
 ## Stack
 
-React 19 · TypeScript (strict) · Vite · Tailwind CSS v4 + design tokens (planned) · Storybook (planned)
+React 19 · TypeScript (strict) · Vite · Tailwind CSS v4 driven by design tokens (Style Dictionary) · Inter · Storybook (planned)
 
 ## Getting started
 
@@ -20,14 +20,16 @@ npm install
 npm run dev
 ```
 
-| Script              | What it does                                       |
-| ------------------- | -------------------------------------------------- |
-| `npm run dev`       | Start the dev server                               |
-| `npm run build`     | Typecheck and build to `dist/`                     |
-| `npm run preview`   | Preview the production build                       |
-| `npm run lint`      | oxlint, including `jsx-a11y` rules (warnings fail) |
-| `npm run typecheck` | TypeScript project check                           |
-| `npm run format`    | Prettier                                           |
+| Script                 | What it does                                                   |
+| ---------------------- | -------------------------------------------------------------- |
+| `npm run dev`          | Start the dev server                                           |
+| `npm run build`        | Typecheck and build to `dist/`                                 |
+| `npm run preview`      | Preview the production build                                   |
+| `npm run lint`         | oxlint, including `jsx-a11y` rules (warnings fail)             |
+| `npm run typecheck`    | TypeScript project check                                       |
+| `npm run format`       | Prettier                                                       |
+| `npm run tokens:build` | Generate `src/styles/tokens.css` from `tokens/*.json`          |
+| `npm run tokens:check` | WCAG AA contrast check of every scene + token-only usage check |
 
 ## Workflow
 
@@ -37,6 +39,6 @@ npm run dev
 
 ## Docs
 
-- [Architecture decisions](docs/adr/)
+- [Architecture decisions](docs/adr/), incl. [design tokens](docs/adr/0002-tailwind-design-tokens.md)
 - [AI-assisted workflow](docs/ai-workflow.md)
 - [AI rules (CLAUDE.md)](CLAUDE.md)

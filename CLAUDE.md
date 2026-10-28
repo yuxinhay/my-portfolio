@@ -16,13 +16,28 @@ part of the portfolio: process, quality and accessibility matter as much as the 
 
 - `npm run dev` / `npm run build` / `npm run preview`
 - `npm run lint` (oxlint, warnings fail) · `npm run typecheck` · `npm run format`
+- `npm run tokens:build` (regenerate `src/styles/tokens.css`)
+- `npm run tokens:check` (AA contrast of every scene, and token-only usage)
 
-All of lint, typecheck and build must pass before a change is considered done.
+All of lint, tokens:check, typecheck and build must pass before a change is considered done.
+
+## Design system
+
+- Source of truth: `tokens/*.json` (DTCG). `src/styles/tokens.css` is generated; never edit it.
+- Colour theme "Bubblegum Bold" (blush, hot pink, cobalt, ink). Typography: Inter only.
+- Sections are **scenes**: wrap them in `scene-blush | scene-pink | scene-cobalt | scene-ink` and
+  style children with role utilities: `bg-scene`, `text-scene-fg`, `text-scene-accent`,
+  `bg-scene-shape` (decorative only), `outline-scene-focus`. Never use primitive colours
+  (`text-pink-300`) directly in components.
+- Type utilities: `text-stat | text-display | text-h1 | text-h2 | text-h3 | text-body | text-small |
+text-eyebrow`, with `tracking-display | tracking-heading | tracking-eyebrow`, `font-black` for display.
+- See `docs/adr/0002-tailwind-design-tokens.md` for the reasoning.
 
 ## Code rules
 
 - **Styling uses design tokens only.** No hex values, px literals or Tailwind arbitrary values
-  (`text-[#123]`, `mt-[13px]`) in components. Add a token instead.
+  (`text-[#123]`, `mt-[13px]`) in components; `scripts/check-token-usage.ts` enforces this. Add a
+  token instead.
 - **Accessibility is a requirement (WCAG 2.0 AA)**, not polish:
   - Semantic HTML first; ARIA only when no native element fits.
   - Every interactive element is keyboard operable with a visible focus state.
