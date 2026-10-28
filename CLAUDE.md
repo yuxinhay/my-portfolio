@@ -48,9 +48,16 @@ text-eyebrow`, with `tracking-display | tracking-heading | tracking-eyebrow`, `f
 - Prefer small, typed, presentational components. Content lives in `src/content/` as typed data.
 - No `any`. Use `import type` for type-only imports.
 
+## Plan and progress
+
+- `docs/plan.md` is the roadmap and task tracker. Read it at the start of a task to find the
+  current step.
+- Every PR that completes or changes a step updates the Status table (and the Decisions table if a
+  decision changed) in the same PR.
+
 ## Git workflow
 
-- Never commit to `main` directly. Branch `feat/<issue>-<slug>`, `fix/…`, `docs/…`, `chore/…`.
+- Never commit to `main` directly. Branch `feat/<step>-<slug>`, `fix/…`, `docs/…`, `chore/…`.
 - Conventional Commits (enforced by commitlint): `feat(ui): add Button component`.
 - AI-assisted commits keep the `Co-Authored-By` trailer. PRs fill in the "AI assistance" section.
 - Record significant technical decisions as an ADR in `docs/adr/`.
