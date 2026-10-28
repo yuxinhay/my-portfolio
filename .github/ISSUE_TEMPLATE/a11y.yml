@@ -1,0 +1,23 @@
+name: Accessibility issue
+description: A barrier for keyboard, screen reader, low-vision or other users
+labels: [a11y]
+body:
+  - type: input
+    id: criterion
+    attributes:
+      label: WCAG success criterion
+      placeholder: e.g. 1.4.3 Contrast (Minimum)
+  - type: textarea
+    id: barrier
+    attributes:
+      label: Barrier
+      description: Who is affected and how.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: Page, browser, assistive technology (e.g. VoiceOver + Safari), steps.
+    validations:
+      required: true
