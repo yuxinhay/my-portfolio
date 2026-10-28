@@ -15,7 +15,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc -b --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prototype:themes": "vite --open /my-portfolio/prototypes/wrapped-themes.html"
   },
   "dependencies": {
     "react": "^19.3.1",

@@ -1,0 +1,503 @@
+<!doctype html>
+<!--
+  PROTOTYPE — throwaway. Lives on branch prototype/wrapped-themes only; never merge to main.
+  Question: which Spotify-Wrapped-style colour theme should the design tokens be built from?
+  Plan: four themes side by side, identical layout and content, so only the palette varies.
+  Each card computes and shows its own WCAG contrast ratio (text on background).
+  Run: npm run prototype:themes
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PROTOTYPE · Wrapped colour themes</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        background: #e9e9ee;
+        color: #111;
+      }
+      .proto-header {
+        padding: 16px 24px;
+        background: #111;
+        color: #fff;
+        font-size: 14px;
+      }
+      .proto-header strong {
+        color: #ffd84d;
+      }
+      .board {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(320px, 1fr));
+        gap: 24px;
+        padding: 24px;
+        overflow-x: auto;
+      }
+      .theme {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .theme > h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .theme > p {
+        margin: 0 0 4px;
+        font-size: 13px;
+        color: #444;
+      }
+      .swatches {
+        display: flex;
+        gap: 6px;
+      }
+      .swatches span {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1px solid rgb(0 0 0 / 0.15);
+      }
+
+      /* ---- Wrapped card ---- */
+      .card {
+        position: relative;
+        overflow: hidden;
+        min-height: 420px;
+        padding: 28px 24px;
+        border-radius: 20px;
+        background: var(--bg);
+        color: var(--fg);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        isolation: isolate;
+      }
+      .card .eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .card h3 {
+        margin: 8px 0 0;
+        font-size: 44px;
+        line-height: 0.95;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+      .card .big {
+        font-size: 120px;
+        line-height: 0.85;
+        font-weight: 900;
+        letter-spacing: -0.06em;
+      }
+      .card p {
+        margin: 12px 0 0;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+      .card ol,
+      .card ul {
+        margin: 16px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .card li {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        padding: 8px 0;
+        font-size: 20px;
+        font-weight: 700;
+        border-top: 2px solid currentColor;
+      }
+      .card li:last-child {
+        border-bottom: 2px solid currentColor;
+      }
+      .card li .rank {
+        font-size: 28px;
+        font-weight: 900;
+        min-width: 36px;
+      }
+      .card li .meta {
+        margin-left: auto;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .card .accent {
+        color: var(--accent);
+      }
+      .card .pill {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: var(--fg);
+        color: var(--bg);
+        font-weight: 800;
+        font-size: 15px;
+        text-decoration: none;
+        align-self: flex-start;
+      }
+      .card .pill:focus-visible {
+        outline: 3px solid var(--fg);
+        outline-offset: 3px;
+      }
+
+      /* decorative shapes — the "Wrapped" feel */
+      .shape {
+        position: absolute;
+        z-index: -1;
+        pointer-events: none;
+      }
+      .blob {
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: var(--shape);
+        top: -70px;
+        right: -80px;
+      }
+      .ring {
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        border: 28px solid var(--shape);
+        top: 20px;
+        left: -60px;
+      }
+      .stripes {
+        inset: 0 0 auto 0;
+        height: 160px;
+        background: repeating-linear-gradient(-35deg, var(--shape) 0 18px, transparent 18px 40px);
+      }
+      .squiggle {
+        top: 24px;
+        right: 24px;
+        width: 140px;
+        height: 140px;
+        background: var(--shape);
+        clip-path: polygon(
+          50% 0,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 91%,
+          50% 70%,
+          21% 91%,
+          32% 57%,
+          2% 35%,
+          39% 35%
+        );
+      }
+
+      /* timeline (career path) */
+      .timeline li {
+        border: 0;
+        padding: 6px 0 6px 22px;
+        position: relative;
+        font-size: 17px;
+      }
+      .timeline li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 13px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .timeline li::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 25px;
+        bottom: -8px;
+        width: 2px;
+        background: currentColor;
+      }
+      .timeline li:last-child::after {
+        display: none;
+      }
+      .timeline li:last-child {
+        border: 0;
+      }
+      .timeline .year {
+        font-weight: 900;
+        min-width: 48px;
+      }
+
+      .contrast {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 1;
+        font:
+          700 11px/1 ui-monospace,
+          monospace;
+        padding: 5px 8px;
+        border-radius: 6px;
+        background: #fff;
+        color: #111;
+      }
+      .contrast.fail {
+        background: #b00020;
+        color: #fff;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .card {
+          animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+        .card:nth-of-type(2) {
+          animation-delay: 0.08s;
+        }
+        .card:nth-of-type(3) {
+          animation-delay: 0.16s;
+        }
+        .card:nth-of-type(4) {
+          animation-delay: 0.24s;
+        }
+        @keyframes rise {
+          from {
+            opacity: 0;
+            transform: translateY(24px) scale(0.98);
+          }
+        }
+      }
+
+      /* ---- Themes: each scene = bg / fg / accent / decorative shape ---- */
+      .t-a .s1 {
+        --bg: #14102b;
+        --fg: #fff7fb;
+        --accent: #c6ff3d;
+        --shape: #ff3d8b;
+      }
+      .t-a .s2 {
+        --bg: #ff3d8b;
+        --fg: #14102b;
+        --accent: #14102b;
+        --shape: #ff7ab0;
+      }
+      .t-a .s3 {
+        --bg: #c6ff3d;
+        --fg: #14102b;
+        --accent: #14102b;
+        --shape: #a6e01f;
+      }
+      .t-a .s4 {
+        --bg: #5ce1ff;
+        --fg: #14102b;
+        --accent: #14102b;
+        --shape: #9aeeff;
+      }
+
+      .t-b .s1 {
+        --bg: #ff6b1a;
+        --fg: #1a0f2e;
+        --accent: #1a0f2e;
+        --shape: #ff9a5c;
+      }
+      .t-b .s2 {
+        --bg: #3b1a8f;
+        --fg: #ffe9d6;
+        --accent: #ffb3d9;
+        --shape: #5530b8;
+      }
+      .t-b .s3 {
+        --bg: #ffb3d9;
+        --fg: #3b1a8f;
+        --accent: #3b1a8f;
+        --shape: #ff8cc6;
+      }
+      .t-b .s4 {
+        --bg: #ffe9d6;
+        --fg: #3b1a8f;
+        --accent: #3b1a8f;
+        --shape: #ffb98a;
+      }
+
+      .t-c .s1 {
+        --bg: #061a2e;
+        --fg: #f2fbff;
+        --accent: #2ef2c8;
+        --shape: #0e3556;
+      }
+      .t-c .s2 {
+        --bg: #2ef2c8;
+        --fg: #061a2e;
+        --accent: #061a2e;
+        --shape: #7af7dc;
+      }
+      .t-c .s3 {
+        --bg: #ff6f59;
+        --fg: #061a2e;
+        --accent: #061a2e;
+        --shape: #ff9a89;
+      }
+      .t-c .s4 {
+        --bg: #ffe14d;
+        --fg: #061a2e;
+        --accent: #061a2e;
+        --shape: #ffec8f;
+      }
+
+      .t-d .s1 {
+        --bg: #ffe5f1;
+        --fg: #111111;
+        --accent: #b80d44;
+        --shape: #ff8ac2;
+      }
+      .t-d .s2 {
+        --bg: #d4104f;
+        --fg: #ffffff;
+        --accent: #ffe5f1;
+        --shape: #e84a7d;
+      }
+      .t-d .s3 {
+        --bg: #1f3bff;
+        --fg: #ffffff;
+        --accent: #ffe5f1;
+        --shape: #4a62ff;
+      }
+      .t-d .s4 {
+        --bg: #111111;
+        --fg: #ff8ac2;
+        --accent: #ffe5f1;
+        --shape: #2a2a2a;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="proto-header">
+      <strong>PROTOTYPE</strong> · Which Wrapped-style palette should the design tokens use? Same
+      layout and placeholder content in every column; only colour changes. Badges show live WCAG
+      contrast (body text needs ≥ 4.5:1).
+    </header>
+
+    <main class="board" id="board"></main>
+
+    <template id="scenes">
+      <section class="card s1" aria-label="Intro">
+        <span class="shape blob" aria-hidden="true"></span>
+        <span class="eyebrow">Your Career Wrapped</span>
+        <h3>4 years of <span class="accent">designing</span> &amp; shipping.</h3>
+        <p>UX designer and UI developer. Here's what I've been up to.</p>
+        <a class="pill" href="#">Let's go →</a>
+      </section>
+
+      <section class="card s2" aria-label="Top skills">
+        <span class="shape ring" aria-hidden="true"></span>
+        <span class="eyebrow">Your top skills</span>
+        <ol>
+          <li><span class="rank">1</span>Interaction design<span class="meta">Expert</span></li>
+          <li><span class="rank">2</span>React + TypeScript<span class="meta">Advanced</span></li>
+          <li><span class="rank">3</span>Design systems<span class="meta">Advanced</span></li>
+          <li><span class="rank">4</span>Accessibility<span class="meta">Advanced</span></li>
+          <li><span class="rank">5</span>User research<span class="meta">Proficient</span></li>
+        </ol>
+      </section>
+
+      <section class="card s3" aria-label="Career path">
+        <span class="shape stripes" aria-hidden="true"></span>
+        <span class="eyebrow">Your career path</span>
+        <ul class="timeline">
+          <li><span class="year">2022</span>Graduated in Design</li>
+          <li><span class="year">2023</span>Junior UX Designer, Studio X</li>
+          <li><span class="year">2024</span>UI Developer, Product Co</li>
+          <li><span class="year">2026</span>UX + UI hybrid — you are here</li>
+        </ul>
+      </section>
+
+      <section class="card s4" aria-label="Projects shipped">
+        <span class="shape squiggle" aria-hidden="true"></span>
+        <span class="eyebrow">Projects shipped</span>
+        <span class="big">12</span>
+        <p>That's in the top <strong>5%</strong> of portfolios we've seen. (Placeholder stat.)</p>
+      </section>
+    </template>
+
+    <script>
+      const themes = [
+        {
+          cls: 't-a',
+          name: 'A · Electric Dusk',
+          note: 'Neon pink, lime, sky on deep violet. Highest energy.',
+        },
+        {
+          cls: 't-b',
+          name: 'B · Citrus Pop',
+          note: 'Orange, violet, pink, cream. Warm and poster-like.',
+        },
+        {
+          cls: 't-c',
+          name: 'C · Neon Ocean',
+          note: 'Mint, coral, yellow on deep navy. Cool and techy.',
+        },
+        {
+          cls: 't-d',
+          name: 'D · Bubblegum Bold',
+          note: 'Hot pink, cobalt, blush, black. Loud and brutalist.',
+        },
+      ]
+
+      const board = document.getElementById('board')
+      const tpl = document.getElementById('scenes')
+
+      for (const t of themes) {
+        const col = document.createElement('div')
+        col.className = `theme ${t.cls}`
+        col.innerHTML = `<h2>${t.name}</h2><p>${t.note}</p><div class="swatches" aria-hidden="true"></div>`
+        col.append(tpl.content.cloneNode(true))
+        board.append(col)
+        const swatches = col.querySelector('.swatches')
+        col.querySelectorAll('.card').forEach((card) => {
+          const s = document.createElement('span')
+          s.style.background = getComputedStyle(card).getPropertyValue('--bg')
+          swatches.append(s)
+        })
+      }
+
+      // Surface the state: contrast ratio of text on each scene background.
+      const lum = (rgb) => {
+        const [r, g, b] = rgb
+          .match(/\d+/g)
+          .slice(0, 3)
+          .map((n) => {
+            const v = n / 255
+            return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
+          })
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+      }
+      const ratio = (a, b) => {
+        const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x)
+        return (hi + 0.05) / (lo + 0.05)
+      }
+      document.querySelectorAll('.card').forEach((card) => {
+        const cs = getComputedStyle(card)
+        const r = ratio(cs.color, cs.backgroundColor)
+        const accent = card.querySelector('.accent')
+        const ra = accent ? ratio(getComputedStyle(accent).color, cs.backgroundColor) : null
+        const badge = document.createElement('span')
+        const worst = Math.min(r, ra ?? Infinity)
+        badge.className = 'contrast' + (worst < 4.5 ? ' fail' : '')
+        badge.setAttribute('aria-hidden', 'true')
+        badge.textContent =
+          `text ${r.toFixed(2)}:1` +
+          (ra ? ` · accent ${ra.toFixed(2)}:1` : '') +
+          (worst < 4.5 ? ' FAIL' : ' AA')
+        card.append(badge)
+      })
+    </script>
+  </body>
+</html>
