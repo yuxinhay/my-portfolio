@@ -1,0 +1,451 @@
+<!doctype html>
+<!--
+  PROTOTYPE — throwaway. Lives on branch prototype/wrapped-themes only; never merge to main.
+  Question: which typography pairing suits the chosen colour theme (D · Bubblegum Bold)?
+  Plan: four font pairings side by side on identical theme-D cards and content, so only type varies.
+  Fonts are self-hosted via @fontsource-variable (no third-party font requests).
+  Run: npm run prototype:type
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PROTOTYPE · Wrapped typography on theme D</title>
+    <script type="module">
+      import '@fontsource-variable/archivo/standard.css'
+      import '@fontsource-variable/bricolage-grotesque/standard.css'
+      import '@fontsource-variable/space-grotesk'
+      import '@fontsource-variable/inter'
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: 'Inter Variable', system-ui, sans-serif;
+        background: #e9e9ee;
+        color: #111;
+      }
+      .proto-header {
+        padding: 16px 24px;
+        background: #111;
+        color: #fff;
+        font-size: 14px;
+      }
+      .proto-header strong {
+        color: #ff8ac2;
+      }
+      .board {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(320px, 1fr));
+        gap: 24px;
+        padding: 24px;
+        overflow-x: auto;
+      }
+      .col {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .col > h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .col > p {
+        margin: 0 0 4px;
+        font-size: 13px;
+        color: #444;
+      }
+
+      /* ---- Per-pairing type tokens ---- */
+      .f-archivo {
+        --display: 'Archivo Variable', sans-serif;
+        --display-weight: 900;
+        --display-stretch: 70%;
+        --display-tracking: -0.02em;
+        --display-case: uppercase;
+      }
+      .f-bricolage {
+        --display: 'Bricolage Grotesque Variable', sans-serif;
+        --display-weight: 800;
+        --display-stretch: 85%;
+        --display-tracking: -0.035em;
+        --display-case: none;
+      }
+      .f-space {
+        --display: 'Space Grotesk Variable', sans-serif;
+        --display-weight: 700;
+        --display-stretch: 100%;
+        --display-tracking: -0.04em;
+        --display-case: none;
+      }
+      .f-inter {
+        --display: 'Inter Variable', sans-serif;
+        --display-weight: 900;
+        --display-stretch: 100%;
+        --display-tracking: -0.05em;
+        --display-case: none;
+      }
+      .display {
+        font-family: var(--display);
+        font-weight: var(--display-weight);
+        font-stretch: var(--display-stretch);
+        letter-spacing: var(--display-tracking);
+        text-transform: var(--display-case);
+      }
+
+      /* ---- Theme D · Bubblegum Bold scenes ---- */
+      .s1 {
+        --bg: #ffe5f1;
+        --fg: #111111;
+        --accent: #b80d44;
+        --shape: #ff8ac2;
+      }
+      .s2 {
+        --bg: #d4104f;
+        --fg: #ffffff;
+        --accent: #ffe5f1;
+        --shape: #e84a7d;
+      }
+      .s3 {
+        --bg: #1f3bff;
+        --fg: #ffffff;
+        --accent: #ffe5f1;
+        --shape: #4a62ff;
+      }
+      .s4 {
+        --bg: #111111;
+        --fg: #ff8ac2;
+        --accent: #ffe5f1;
+        --shape: #2a2a2a;
+      }
+
+      .card {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        min-height: 400px;
+        padding: 28px 24px;
+        border-radius: 20px;
+        background: var(--bg);
+        color: var(--fg);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .card.specimen {
+        min-height: 0;
+        justify-content: flex-start;
+      }
+      .card .eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .card h3 {
+        margin: 8px 0 0;
+        font-size: 46px;
+        line-height: 0.95;
+      }
+      .card .big {
+        font-size: 132px;
+        line-height: 0.82;
+      }
+      .card p {
+        margin: 12px 0 0;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .card ol,
+      .card ul {
+        margin: 16px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .card li {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        padding: 8px 0;
+        font-size: 20px;
+        font-weight: 600;
+        border-top: 2px solid currentColor;
+      }
+      .card li:last-child {
+        border-bottom: 2px solid currentColor;
+      }
+      .card li .rank {
+        font-size: 30px;
+        min-width: 36px;
+      }
+      .card li .meta {
+        margin-left: auto;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .card .accent {
+        color: var(--accent);
+      }
+      .card .pill {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: var(--fg);
+        color: var(--bg);
+        font-weight: 700;
+        font-size: 15px;
+        text-decoration: none;
+        align-self: flex-start;
+      }
+
+      .specimen .aa {
+        font-size: 88px;
+        line-height: 0.9;
+      }
+      .specimen .weights {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+        margin-top: 10px;
+        font-size: 22px;
+      }
+      .specimen .body-sample {
+        font-size: 15px;
+      }
+      .specimen .meta-line {
+        margin-top: 10px;
+        font:
+          600 11px/1.4 ui-monospace,
+          monospace;
+        opacity: 0.85;
+      }
+
+      .shape {
+        position: absolute;
+        z-index: -1;
+        pointer-events: none;
+      }
+      .blob {
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: var(--shape);
+        top: -70px;
+        right: -80px;
+      }
+      .ring {
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        border: 28px solid var(--shape);
+        top: 20px;
+        left: -60px;
+      }
+      .stripes {
+        inset: 0 0 auto 0;
+        height: 150px;
+        background: repeating-linear-gradient(-35deg, var(--shape) 0 18px, transparent 18px 40px);
+      }
+      .star {
+        top: 24px;
+        right: 24px;
+        width: 140px;
+        height: 140px;
+        background: var(--shape);
+        clip-path: polygon(
+          50% 0,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 91%,
+          50% 70%,
+          21% 91%,
+          32% 57%,
+          2% 35%,
+          39% 35%
+        );
+      }
+
+      .timeline li {
+        border: 0;
+        padding: 6px 0 6px 22px;
+        position: relative;
+        font-size: 17px;
+      }
+      .timeline li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 13px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .timeline li::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 25px;
+        bottom: -8px;
+        width: 2px;
+        background: currentColor;
+      }
+      .timeline li:last-child::after {
+        display: none;
+      }
+      .timeline li:last-child {
+        border: 0;
+      }
+      .timeline .year {
+        font-size: 22px;
+        min-width: 56px;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .card {
+          animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+        @keyframes rise {
+          from {
+            opacity: 0;
+            transform: translateY(24px) scale(0.98);
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="proto-header">
+      <strong>PROTOTYPE</strong> · Typography for theme D · Bubblegum Bold. Same cards and content
+      in every column; only the display font changes. Body text is Inter in all four.
+    </header>
+
+    <main class="board" id="board"></main>
+
+    <template id="cards">
+      <section class="card s1 specimen" aria-label="Type specimen">
+        <span class="eyebrow">Specimen</span>
+        <span class="display aa">Aa Gg 12</span>
+        <div class="weights display-weights"></div>
+        <p class="body-sample">
+          Body · Inter 400. I design and build accessible interfaces, from research to React
+          components.
+        </p>
+        <span class="meta-line"></span>
+      </section>
+
+      <section class="card s1" aria-label="Intro">
+        <span class="shape blob" aria-hidden="true"></span>
+        <span class="eyebrow">Your Career Wrapped</span>
+        <h3 class="display">4 years of <span class="accent">designing</span> &amp; shipping.</h3>
+        <p>UX designer and UI developer. Here's what I've been up to.</p>
+        <a class="pill" href="#">Let's go →</a>
+      </section>
+
+      <section class="card s2" aria-label="Top skills">
+        <span class="shape ring" aria-hidden="true"></span>
+        <span class="eyebrow">Your top skills</span>
+        <ol>
+          <li>
+            <span class="display rank">1</span>Interaction design<span class="meta">Expert</span>
+          </li>
+          <li>
+            <span class="display rank">2</span>React + TypeScript<span class="meta">Advanced</span>
+          </li>
+          <li>
+            <span class="display rank">3</span>Design systems<span class="meta">Advanced</span>
+          </li>
+          <li>
+            <span class="display rank">4</span>Accessibility<span class="meta">Advanced</span>
+          </li>
+          <li>
+            <span class="display rank">5</span>User research<span class="meta">Proficient</span>
+          </li>
+        </ol>
+      </section>
+
+      <section class="card s3" aria-label="Career path">
+        <span class="shape stripes" aria-hidden="true"></span>
+        <span class="eyebrow">Your career path</span>
+        <ul class="timeline">
+          <li><span class="display year">2022</span>Graduated in Design</li>
+          <li><span class="display year">2023</span>Junior UX Designer, Studio X</li>
+          <li><span class="display year">2024</span>UI Developer, Product Co</li>
+          <li><span class="display year">2026</span>UX + UI hybrid — you are here</li>
+        </ul>
+      </section>
+
+      <section class="card s4" aria-label="Projects shipped">
+        <span class="shape star" aria-hidden="true"></span>
+        <span class="eyebrow">Projects shipped</span>
+        <span class="display big">12</span>
+        <p>That's in the top <strong>5%</strong> of portfolios we've seen. (Placeholder stat.)</p>
+      </section>
+    </template>
+
+    <script>
+      const pairings = [
+        {
+          cls: 'f-archivo',
+          name: 'Archivo + Inter',
+          note: 'Condensed, uppercase, weight 900. Loud and brutalist.',
+          weights: [500, 700, 900],
+        },
+        {
+          cls: 'f-bricolage',
+          name: 'Bricolage Grotesque + Inter',
+          note: 'Quirky grotesque, weight 800. Playful, design-led.',
+          weights: [400, 600, 800],
+        },
+        {
+          cls: 'f-space',
+          name: 'Space Grotesk + Inter',
+          note: 'Geometric, weight 700. Techy, nods to the dev side.',
+          weights: [400, 500, 700],
+        },
+        {
+          cls: 'f-inter',
+          name: 'Inter only',
+          note: 'One family, weight 900 headlines. Cleanest, least personality.',
+          weights: [400, 700, 900],
+        },
+      ]
+
+      const board = document.getElementById('board')
+      const tpl = document.getElementById('cards')
+
+      for (const p of pairings) {
+        const col = document.createElement('div')
+        col.className = `col ${p.cls}`
+        col.innerHTML = `<h2>${p.name}</h2><p>${p.note}</p>`
+        col.append(tpl.content.cloneNode(true))
+        board.append(col)
+
+        const w = col.querySelector('.display-weights')
+        for (const weight of p.weights) {
+          const s = document.createElement('span')
+          s.className = 'display'
+          s.style.fontWeight = weight
+          s.textContent = `${weight} Wrapped`
+          w.append(s)
+        }
+      }
+
+      // Surface the state: the font actually rendering (catches a failed font load).
+      document.fonts.ready.then(() => {
+        for (const col of document.querySelectorAll('.col')) {
+          const cs = getComputedStyle(col.querySelector('.aa'))
+          const family = cs.fontFamily.split(',')[0].replaceAll("'", '').replaceAll('"', '')
+          const loaded = document.fonts.check(`${cs.fontWeight} 16px "${family}"`)
+          col.querySelector('.meta-line').textContent =
+            `${family} · wght ${cs.fontWeight} · wdth ${cs.fontStretch} · tracking ${cs.letterSpacing}` +
+            (loaded ? ' · loaded ✓' : ' · NOT LOADED (fallback shown)')
+        }
+      })
+    </script>
+  </body>
+</html>
