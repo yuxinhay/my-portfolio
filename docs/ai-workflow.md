@@ -26,3 +26,7 @@ rejected and why).
 
 - 2026-10-28: Planned the harness with AI. I chose Tailwind + tokens, Storybook, GitHub Pages,
   and kept Figma out of scope.
+- 2026-10-28: AI built side-by-side prototypes of four Wrapped-style colour themes and four type
+  pairings (branch `prototype/wrapped-themes`). I chose theme D (Bubblegum Bold) and Inter only.
+- 2026-10-28: The AI-written contrast gate failed its first run (blush accent on hot pink, 4.45:1).
+  We darkened `pink.600` slightly instead of dropping the accent; recorded in ADR 0002.

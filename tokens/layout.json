@@ -1,0 +1,35 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "$description": "Base unit for Tailwind's spacing scale: p-1 = 0.25rem, p-4 = 1rem, ...",
+    "base": { "$value": "0.25rem" }
+  },
+  "radius": {
+    "$type": "dimension",
+    "sm": { "$value": "0.5rem" },
+    "card": { "$value": "1.25rem" },
+    "pill": { "$value": "999px" }
+  },
+  "border": {
+    "$type": "dimension",
+    "rule": { "$value": "2px", "$description": "Divider lines in lists and timelines" },
+    "focus": { "$value": "3px", "$description": "Focus ring width" }
+  },
+  "breakpoint": {
+    "$type": "dimension",
+    "sm": { "$value": "40rem" },
+    "md": { "$value": "48rem" },
+    "lg": { "$value": "64rem" },
+    "xl": { "$value": "80rem" }
+  },
+  "duration": {
+    "$type": "duration",
+    "fast": { "$value": "150ms" },
+    "base": { "$value": "300ms" },
+    "slow": { "$value": "600ms" }
+  },
+  "easing": {
+    "$type": "cubicBezier",
+    "out": { "$value": [0.2, 0.8, 0.2, 1] }
+  }
+}

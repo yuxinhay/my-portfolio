@@ -1,0 +1,34 @@
+{
+  "scene": {
+    "$type": "color",
+    "$description": "A scene is one Wrapped-style section: a surface with the text, accent, focus and shape colours that are allowed on it. Every text role is contrast-checked against bg in CI.",
+    "blush": {
+      "bg": { "$value": "{color.blush}" },
+      "fg": { "$value": "{color.ink.900}" },
+      "accent": { "$value": "{color.pink.700}" },
+      "focus": { "$value": "{color.ink.900}" },
+      "shape": { "$value": "{color.pink.300}" }
+    },
+    "pink": {
+      "bg": { "$value": "{color.pink.600}" },
+      "fg": { "$value": "{color.white}" },
+      "accent": { "$value": "{color.blush}" },
+      "focus": { "$value": "{color.white}" },
+      "shape": { "$value": "{color.pink.500}" }
+    },
+    "cobalt": {
+      "bg": { "$value": "{color.cobalt.500}" },
+      "fg": { "$value": "{color.white}" },
+      "accent": { "$value": "{color.blush}" },
+      "focus": { "$value": "{color.white}" },
+      "shape": { "$value": "{color.cobalt.400}" }
+    },
+    "ink": {
+      "bg": { "$value": "{color.ink.900}" },
+      "fg": { "$value": "{color.pink.300}" },
+      "accent": { "$value": "{color.blush}" },
+      "focus": { "$value": "{color.pink.300}" },
+      "shape": { "$value": "{color.ink.800}" }
+    }
+  }
+}

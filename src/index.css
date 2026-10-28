@@ -1,30 +1,33 @@
-/* Temporary base styles. Replaced by generated design tokens in the tokens milestone. */
-:root {
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
-  color: #1a1a1a;
-  background: #ffffff;
-}
+@import 'tailwindcss';
+@import './styles/tokens.css';
 
-body {
-  margin: 0;
-  padding: 1rem;
-}
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-size: 100%;
+    line-height: var(--leading-normal);
+    -webkit-font-smoothing: antialiased;
+    text-size-adjust: 100%;
+  }
 
-.skip-link {
-  position: absolute;
-  left: -9999px;
-}
+  body {
+    margin: 0;
+  }
 
-.skip-link:focus {
-  left: 1rem;
-  top: 1rem;
-  padding: 0.5rem 1rem;
-  background: #ffffff;
-  outline: 3px solid #1a56db;
-}
+  /* Focus ring follows the current scene, so it always meets 3:1 against its surface. */
+  :focus-visible {
+    outline: var(--border-focus) solid var(--scene-focus, currentColor);
+    outline-offset: var(--border-focus);
+  }
 
-:focus-visible {
-  outline: 3px solid #1a56db;
-  outline-offset: 2px;
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

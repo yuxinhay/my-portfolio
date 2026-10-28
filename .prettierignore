@@ -3,3 +3,4 @@ node_modules
 package-lock.json
 storybook-static
 coverage
+src/styles/tokens.css
