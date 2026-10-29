@@ -93,26 +93,115 @@ dialog::backdrop {
   overflow: hidden;
 }
 
-/* At a glance carousel: cards sit in a row and the row slides to the current one. On wide screens
-   a card is 80% wide, so the next one peeks in at the edge. */
-.glance-track {
-  --glance-card: 100%;
-  --glance-gap: calc(var(--spacing) * 4);
-  display: flex;
-  gap: var(--glance-gap);
-  height: 100%;
-  translate: calc(var(--glance-index, 0) * -1 * (var(--glance-card) + var(--glance-gap))) 0;
+/* At a glance (ADR 0008): narrow portrait story cards, about 9:16. The current card is centred
+   at a fixed narrow width (a phone: the screen less small margins) and is as tall as 9:16 asks,
+   or as tall as the screen allows. The previous and next cards sit beside it, smaller and faded;
+   on a narrow screen they peek out from behind it. Cards further away wait out of sight. */
+.glance-frame {
+  --glance-width: min(calc(var(--spacing) * 96), 100cqw - calc(var(--spacing) * 8));
+  container-type: inline-size;
+}
 
-  & > * {
-    flex: 0 0 var(--glance-card);
-    min-width: 0;
+.glance-stage {
+  /* Room above and below the cards for the entrance overshoot and the focus ring, which the
+     edge fade's mask would otherwise cut off; the negative margin keeps it out of the layout. */
+  --glance-bleed: calc(var(--spacing) * 4);
+  display: grid;
+  grid-template: minmax(0, 1fr) / var(--glance-width);
+  justify-content: center;
+  /* 9:16 when the screen is tall enough; otherwise it shrinks, down to a floor (then the card
+     scrolls). */
+  flex: 0 1 auto;
+  height: calc(var(--glance-width) * 16 / 9 + 2 * var(--glance-bleed));
+  min-height: calc(var(--spacing) * 60 + 2 * var(--glance-bleed));
+  margin-block: calc(-1 * var(--glance-bleed));
+  padding-block: var(--glance-bleed);
+  overflow-x: clip;
+
+  /* Wide screens: neighbours fade out towards the edges of the screen. */
+  @variant lg {
+    mask-image: linear-gradient(to right, transparent, black 25%, black 75%, transparent);
+  }
+}
+
+.glance-controls {
+  width: var(--glance-width);
+}
+
+.glance-card {
+  /* Beside the current card with a gap, or, where the screen is too narrow for that, as far out
+     as fits with its edge just inside the screen. */
+  --glance-step: min(92.5% + calc(var(--spacing) * 4), 50cqw - 42.5% - var(--spacing));
+  grid-area: 1 / 1;
+  translate: calc(var(--glance-offset, 0) * var(--glance-step)) 0;
+
+  &[data-position='current'] {
+    z-index: 1;
   }
 
-  @variant md {
-    --glance-card: 80%;
+  &[data-position='near'] {
+    scale: 0.85;
+    opacity: 0.5;
+    pointer-events: none;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    transition: translate var(--duration-slow) var(--ease-out);
+  &[data-position='far'] {
+    scale: 0.7;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* The entrance pop: the current card grows from 60% with a slight overshoot. */
+@theme {
+  --animate-glance-pop: glance-pop var(--duration-slow) var(--ease-overshoot) backwards;
+
+  @keyframes glance-pop {
+    from {
+      opacity: 0;
+      scale: 0.6;
+    }
+  }
+}
+
+@keyframes glance-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes glance-backdrop-in {
+  from {
+    background-color: transparent;
+    backdrop-filter: blur(0);
+  }
+}
+
+/* Sliding moves, scales and fades the cards together. Opening: the backdrop fades and blurs in,
+   then the current card pops out, then its neighbours fade in. `data-opening` is dropped at the
+   first move, so later cards slide in rather than pop. Under reduced motion none of this runs:
+   the overlay and its cards appear and swap at once. */
+@media (prefers-reduced-motion: no-preference) {
+  .glance-card {
+    transition:
+      translate var(--duration-slow) var(--ease-out),
+      scale var(--duration-slow) var(--ease-out),
+      opacity var(--duration-slow) var(--ease-out);
+  }
+
+  .glance-dialog::backdrop {
+    animation: glance-backdrop-in var(--duration-base) var(--ease-out);
+  }
+
+  .glance-dialog[data-opening] .glance-card {
+    &[data-position='current'] {
+      animation: var(--animate-glance-pop);
+      animation-delay: var(--duration-fast);
+    }
+
+    &[data-position='near'] {
+      animation: glance-fade-in var(--duration-base) var(--ease-out) backwards;
+      animation-delay: calc(var(--duration-fast) + var(--duration-base));
+    }
   }
 }

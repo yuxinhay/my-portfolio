@@ -67,15 +67,16 @@ describe('StatValue', () => {
     expect(container.querySelector('[aria-hidden]')).toBeNull()
   })
 
-  it('counts each time `active` turns true and rests at 0 otherwise', () => {
+  it('counts from 0 each time `active` turns true and rests at the final value otherwise', () => {
     useFakeFrames()
     const { container, rerender } = render(<StatValue value="38" active={false} />)
-    expect(animated(container)).toBe('0')
+    expect(animated(container)).toBe('38')
     rerender(<StatValue value="38" active />)
+    expect(animated(container)).toBe('0')
     act(() => vi.advanceTimersByTime(COUNT_DURATION + 50))
     expect(animated(container)).toBe('38')
     rerender(<StatValue value="38" active={false} />)
-    expect(animated(container)).toBe('0')
+    expect(animated(container)).toBe('38')
     rerender(<StatValue value="38" active />)
     expect(animated(container)).toBe('0')
   })

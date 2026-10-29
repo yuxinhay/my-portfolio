@@ -10,8 +10,8 @@ function card(id: string): GlanceCardContent {
 }
 
 /**
- * The content of each At a glance card, outside the dialog, in the scene it uses there. `active`
- * starts the count-up of its numbers.
+ * The content of each At a glance card, outside the dialog, in the scene it uses there and at its
+ * size there: a narrow portrait story card, 9:16. `active` starts the count-up of its numbers.
  */
 const meta = {
   title: 'Glance/GlanceCard',
@@ -19,8 +19,12 @@ const meta = {
   parameters: { layout: 'fullscreen' },
   args: { card: card('hello'), active: true },
   render: (args) => (
-    <div className={`scene-${args.card.scene} p-6 sm:p-10`}>
-      <GlanceCard {...args} />
+    <div className="glance-frame grid justify-center py-6">
+      <div
+        className={`scene-${args.card.scene} flex aspect-9/16 w-(--glance-width) flex-col rounded-card bg-scene p-4 sm:p-6`}
+      >
+        <GlanceCard {...args} />
+      </div>
     </div>
   ),
 } satisfies Meta<typeof GlanceCard>

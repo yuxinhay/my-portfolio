@@ -11,8 +11,9 @@ export interface StatValueProps {
   value: string
   /**
    * Starts the count from outside, e.g. when an overlay card becomes the current one: it counts
-   * from 0 every time `active` turns true and rests at 0 otherwise. Without it, the number counts
-   * once, when it is half on screen.
+   * from 0 every time `active` turns true and rests at the final value otherwise (a card beside
+   * the current one shows its real numbers). Without it, the number counts once, when it is half
+   * on screen.
    */
   active?: boolean
   className?: string
@@ -52,6 +53,7 @@ function CountUp({
   const ref = useRef<HTMLSpanElement>(null)
   const seen = useInViewOnce(ref, active === undefined)
   const count = useCount(stat.number, active ?? seen)
+  const shown = active === false ? stat.number : count
   // Screen readers get the final value only. The animated copy is hidden from them, and an
   // invisible copy of the final value holds the width, so nothing shifts while digits change.
   return (
@@ -61,7 +63,7 @@ function CountUp({
         {value}
       </span>
       <span aria-hidden="true" className="col-start-1 row-start-1">
-        {formatStat(stat, count)}
+        {formatStat(stat, shown)}
       </span>
     </span>
   )

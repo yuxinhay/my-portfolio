@@ -50,6 +50,35 @@ describe('GlanceOverlay', () => {
     expect(currentCard()).toHaveAttribute('tabindex', '0')
   })
 
+  it('shows the previous and next cards beside the current one, hidden and not focusable', async () => {
+    const user = userEvent.setup()
+    const { container } = renderOverlay()
+    const positions = () =>
+      [...container.querySelectorAll<HTMLElement>('[role="group"]')].map(
+        (card) => card.dataset['position'],
+      )
+    // The first card has no previous one.
+    expect(positions()).toEqual(['current', 'near', 'far', 'far', 'far', 'far'])
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(positions()).toEqual(['near', 'current', 'near', 'far', 'far', 'far'])
+    for (const card of container.querySelectorAll('[data-position="near"]')) {
+      expect(card).toHaveAttribute('inert')
+      expect(card).toHaveAttribute('aria-hidden', 'true')
+      expect(card).not.toHaveAttribute('tabindex')
+    }
+    await user.click(dot(COUNT))
+    // The last card has no next one.
+    expect(positions()).toEqual(['far', 'far', 'far', 'far', 'near', 'current'])
+  })
+
+  it('plays its entrance until the first move', async () => {
+    const user = userEvent.setup()
+    renderOverlay()
+    expect(dialog()).toHaveAttribute('data-opening')
+    await user.keyboard('{ArrowRight}')
+    expect(dialog()).not.toHaveAttribute('data-opening')
+  })
+
   it('moves with Next and Back, and announces the new card', async () => {
     const user = userEvent.setup()
     renderOverlay()
@@ -90,7 +119,7 @@ describe('GlanceOverlay', () => {
 
   it('changes card on a horizontal swipe, not on a vertical one', () => {
     renderOverlay()
-    const area = currentCard().parentElement?.parentElement
+    const area = currentCard().parentElement
     if (!area) throw new Error('No swipe area')
     const swipe = (dx: number, dy: number) => {
       fireEvent.pointerDown(area, { pointerType: 'touch', clientX: 200, clientY: 200 })
