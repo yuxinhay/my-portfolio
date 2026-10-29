@@ -72,14 +72,25 @@ describe('case studies', () => {
     }
   })
 
-  it('declares the real pixel size of every image and video poster', () => {
+  it('declares the real pixel size of every image, device frame and video poster', () => {
+    const sizeOf = (file: string) => ({ file, ...webpSize(bytesOf(file)) })
     for (const item of media) {
-      const file = item.kind === 'image' ? item.src : item.poster
-      expect({ file, ...webpSize(bytesOf(file)) }).toEqual({
-        file,
-        width: item.width,
-        height: item.height,
-      })
+      const box = item.kind === 'image' ? item.src : (item.frame?.src ?? item.poster)
+      expect(sizeOf(box)).toEqual({ file: box, width: item.width, height: item.height })
+      if (item.kind === 'video' && item.frame) {
+        // The video is cropped to the screen, so its poster is the screen's size.
+        const { width, height } = item.frame.screen
+        expect(sizeOf(item.poster)).toEqual({ file: item.poster, width, height })
+      }
+    }
+  })
+
+  it('places each device screen inside its frame', () => {
+    for (const item of media) {
+      if (item.kind !== 'video' || !item.frame) continue
+      const { x, y, width, height } = item.frame.screen
+      expect(x + width).toBeLessThanOrEqual(item.width)
+      expect(y + height).toBeLessThanOrEqual(item.height)
     }
   })
 

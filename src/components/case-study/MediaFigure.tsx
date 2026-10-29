@@ -1,5 +1,12 @@
 import { useId, useRef } from 'react'
-import type { ImageMedia, Media, MediaLayout, VideoMedia } from '../../content/caseStudies'
+import type { CSSProperties } from 'react'
+import type {
+  DeviceFrame,
+  ImageMedia,
+  Media,
+  MediaLayout,
+  VideoMedia,
+} from '../../content/caseStudies'
 import { Link } from '../ui/Link'
 import { Tag } from '../ui/Tag'
 import { Text } from '../ui/Text'
@@ -34,25 +41,84 @@ function Image({ media }: { media: ImageMedia }) {
  * scrolls into view and starts playing (or the visitor presses play); under reduced motion it
  * waits for the visitor. The text description is the alternative for video-only content.
  */
-function Video({ media, descriptionId }: { media: VideoMedia; descriptionId: string }) {
+function Video({
+  media,
+  descriptionId,
+  className = MEDIA,
+  style,
+}: {
+  media: VideoMedia
+  descriptionId: string
+  className?: string
+  style?: CSSProperties
+}) {
   const ref = useRef<HTMLVideoElement>(null)
   usePlayInView(ref)
   return (
     <video
       ref={ref}
+      style={style}
       controls
       muted
       playsInline
       preload="none"
       poster={media.poster}
-      width={media.width}
-      height={media.height}
+      width={media.frame?.screen.width ?? media.width}
+      height={media.frame?.screen.height ?? media.height}
       aria-describedby={descriptionId}
-      className={MEDIA}
+      className={className}
     >
       <source src={media.src} type="video/mp4" />
       <Link href={media.src}>Download the video</Link>
     </video>
+  )
+}
+
+// FOCUS_RING, applied when anything inside (the video or its controls) has focus. Written out in
+// full because Tailwind only generates class names it can see in the source.
+const FOCUS_WITHIN_RING =
+  'focus-within:outline-(length:--border-focus) focus-within:outline-offset-(length:--border-focus) focus-within:outline-scene-focus focus-within:outline-solid'
+
+const percent = (part: number, whole: number) => `${(part / whole) * 100}%`
+
+/**
+ * A video shown in the screen of its device frame. The frame image sets the size; the video is
+ * placed over the screen hole by percentages of the frame, so the two scale together. The video's
+ * own focus ring would land on the black bezel, so the whole device shows the ring instead.
+ */
+function FramedVideo({
+  media,
+  frame,
+  descriptionId,
+}: {
+  media: VideoMedia
+  frame: DeviceFrame
+  descriptionId: string
+}) {
+  const { x, y, width, height } = frame.screen
+  return (
+    <div className={cx('relative max-w-full rounded-card', FOCUS_WITHIN_RING)}>
+      <img
+        src={frame.src}
+        alt=""
+        width={media.width}
+        height={media.height}
+        loading="lazy"
+        decoding="async"
+        className="block h-auto max-w-full"
+      />
+      <Video
+        media={media}
+        descriptionId={descriptionId}
+        className="absolute block focus-visible:outline-hidden"
+        style={{
+          left: percent(x, media.width),
+          top: percent(y, media.height),
+          width: percent(width, media.width),
+          height: percent(height, media.height),
+        }}
+      />
+    </div>
   )
 }
 
@@ -69,6 +135,8 @@ export function MediaFigure({ media }: MediaFigureProps) {
       <div className={cx('max-w-full', media.background && SURFACE[media.background])}>
         {media.kind === 'image' ? (
           <Image media={media} />
+        ) : media.frame ? (
+          <FramedVideo media={media} frame={media.frame} descriptionId={descriptionId} />
         ) : (
           <Video media={media} descriptionId={descriptionId} />
         )}

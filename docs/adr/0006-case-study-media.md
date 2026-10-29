@@ -14,10 +14,13 @@ total, and could carry device and creation metadata. The site is public on GitHu
 
 - **Images: WebP**, at most 1600px wide (never enlarged), quality 80, alpha kept so transparent
   drawings stay transparent. Converted with sharp, which drops EXIF, XMP and ICC data.
-- **Device frames kept**: phone and laptop frames show which screen size a design is for. The
-  screen recordings have opaque black corners around the phone (MP4 has no transparency), so
-  videos sit on the ink scene, where those corners blend into the near-black surface.
-- **Videos: H.264 MP4** (`libx264 -crf 28 -preset slow`, original resolution, `yuv420p`), audio
+- **Device frames kept, cut along the device edge**: phone and laptop frames show which screen size
+  a design is for. Screenshots keep their transparent background. MP4 has no transparency, so each
+  recording is cropped to its screen and shown inside a transparent frame image cut from the same
+  recording (the black corners flood-filled away, the screen punched out), positioned by
+  percentages so both scale together. The device, not the video, shows the focus ring, because a
+  ring on the video would sit on the black bezel.
+- **Videos: H.264 MP4** (`libx264 -crf 28 -preset slow`, cropped to the screen, `yuv420p`), audio
   removed (`-an`; the recordings have no meaningful sound), `-map_metadata -1 -map_chapters -1`,
   `-movflags +faststart`. A WebP poster from a frame at 0.5s.
 - **Imported through Vite** (`import src from '…/x.webp'`), so the `/my-portfolio/` base and

@@ -13,6 +13,7 @@ import tablesInsightSketch from '../assets/case-studies/adaptive-tables/tables-i
 import tablesLayoutAVsB from '../assets/case-studies/adaptive-tables/tables-layout-a-vs-b.webp'
 import tablesProblemDesktop from '../assets/case-studies/adaptive-tables/tables-problem-desktop.webp'
 import tablesProblemMobile from '../assets/case-studies/adaptive-tables/tables-problem-mobile.webp'
+import tablesPrototypeFrame from '../assets/case-studies/adaptive-tables/tables-prototype-frame.webp'
 import tablesPrototypePoster from '../assets/case-studies/adaptive-tables/tables-prototype-poster.webp'
 import tablesPrototype from '../assets/case-studies/adaptive-tables/tables-prototype.mp4'
 import tablesSectioning from '../assets/case-studies/adaptive-tables/tables-sectioning.webp'
@@ -22,10 +23,13 @@ import videoCallPaperMockups from '../assets/case-studies/in-app-video-call/vide
 import videoCallPrioritisationMatrix from '../assets/case-studies/in-app-video-call/video-call-prioritisation-matrix.webp'
 import videoCallProblemStatement from '../assets/case-studies/in-app-video-call/video-call-problem-statement.webp'
 import videoCallProductVision from '../assets/case-studies/in-app-video-call/video-call-product-vision.webp'
+import videoCallCallNowFrame from '../assets/case-studies/in-app-video-call/video-call-prototype-call-now-frame.webp'
 import videoCallCallNowPoster from '../assets/case-studies/in-app-video-call/video-call-prototype-call-now-poster.webp'
 import videoCallCallNow from '../assets/case-studies/in-app-video-call/video-call-prototype-call-now.mp4'
+import videoCallQueueFrame from '../assets/case-studies/in-app-video-call/video-call-prototype-queue-frame.webp'
 import videoCallQueuePoster from '../assets/case-studies/in-app-video-call/video-call-prototype-queue-poster.webp'
 import videoCallQueue from '../assets/case-studies/in-app-video-call/video-call-prototype-queue.mp4'
+import videoCallRescheduleFrame from '../assets/case-studies/in-app-video-call/video-call-prototype-reschedule-frame.webp'
 import videoCallReschedulePoster from '../assets/case-studies/in-app-video-call/video-call-prototype-reschedule-poster.webp'
 import videoCallReschedule from '../assets/case-studies/in-app-video-call/video-call-prototype-reschedule.mp4'
 import type { Stat } from './achievements'
@@ -62,14 +66,33 @@ export interface VideoMedia extends MediaBase {
   poster: string
   /** What happens in the video, in text: the alternative for video-only content (WCAG 1.2.1). */
   description: string
-  /** A visible label above the video, e.g. "Prototype". */
+  /** A visible label above the video, e.g. "Prototype video". */
   label?: string
+  /**
+   * The device the recording was made in. The video file is cropped to the screen and shown in
+   * the screen of this transparent frame image, so only the device's own edge shows (MP4 has no
+   * transparency). With a frame, `width` and `height` are the frame's size.
+   */
+  frame?: DeviceFrame
+}
+
+export interface DeviceFrame {
+  /** Transparent WebP of the device, with a transparent hole where the screen is. */
+  src: string
+  /** Where the screen sits in the frame, in the frame's pixels; the video file is this size. */
+  screen: { x: number; y: number; width: number; height: number }
 }
 
 export type Media = ImageMedia | VideoMedia
 
-/** A paragraph, or a bulleted list. */
-export type Block = string | { list: readonly string[] }
+/** A term and what it means, rendered in a description list. */
+export interface Definition {
+  term: string
+  detail: string
+}
+
+/** A paragraph, a bulleted list, or a description list of terms. */
+export type Block = string | { list: readonly string[] } | { definitions: readonly Definition[] }
 
 /**
  * How a group of media is laid out: `stack` one per row (default), `pair` two side by side from
@@ -130,13 +153,28 @@ export const caseStudies: readonly CaseStudy[] = [
       heading: 'The problem',
       body: [
         "Scams targeting members' CPF savings were rising, especially against members aged 55 and above, who can withdraw a lump sum from their Retirement Account.",
-        'The Preferred Bank Account was one of a set of anti-scam measures:',
+        'Our Product Owners started a project to protect CPF accounts against these threats: Singpass face verification, plus three features in CPF account settings.',
         {
-          list: [
-            'Singpass face verification',
-            'Verified contact details',
-            'Withdrawal limits',
-            'Preferred bank account',
+          definitions: [
+            {
+              term: 'Bank account',
+              detail:
+                'The bank account set here is used for CPF payments (withdrawals and deposits).',
+            },
+            {
+              term: 'Daily withdrawal limit',
+              detail:
+                'The maximum amount a member can withdraw online per day for immediate retirement needs.',
+            },
+            {
+              term: 'Contact details',
+              detail: 'Used for transaction notifications and general communications.',
+            },
+            {
+              term: 'Singpass Face Verification',
+              detail:
+                'Verifies the member’s identity, and is triggered for higher-risk logins and transactions.',
+            },
           ],
         },
         'The anti-scam measures received local media recognition.',
@@ -204,7 +242,7 @@ export const caseStudies: readonly CaseStudy[] = [
         {
           title: 'High-fidelity: the bank account card',
           body: [
-            'In account settings, the bank account card shows an alert during the cooling period and a "Pending activation" status, with "Update" disabled until the change is complete.',
+            'So that members know an updated bank account has a cooling period, I added an alert message to the bank account card. I also show a "Pending" status, to avoid confusion about which bank account details are shown after an update.',
           ],
           mediaLayout: 'pair',
           media: [
@@ -230,7 +268,7 @@ export const caseStudies: readonly CaseStudy[] = [
         {
           title: 'High-fidelity: a step-by-step update',
           body: [
-            'Updating the bank account is split into steps (select an account, then review, with Singpass Face Verification) to avoid information overload.',
+            'I aimed for the design to be intuitive and easy to follow. It shows the member’s current account first, then the next step: choosing a new bank account. My main goal was to avoid overloading members with information, so the update is split into steps they can take one at a time (select an account, then review, with Singpass Face Verification).',
           ],
           mediaLayout: 'pair',
           media: [
@@ -400,7 +438,21 @@ export const caseStudies: readonly CaseStudy[] = [
         {
           title: 'The adaptive table',
           body: [
-            'I sectioned the table into categories laid out vertically, and compared two groupings. Layout A groups values by row header, for example "Loan amount" with the HDB and bank values together. Layout B groups them by loan type. I chose Layout A because it is better for comparison.',
+            'Phones have a taller, narrower display, so I sectioned the table into categories and reconfigured the data into a vertical format. I compared two groupings.',
+            {
+              definitions: [
+                {
+                  term: 'Layout A (chosen)',
+                  detail:
+                    'Row header × column header × sub-column header, for example "Loan amount" with the HDB and bank loan values together. It is easier to compare two subjects (an HDB loan against a bank loan), and sections based on category are easier to scan.',
+                },
+                {
+                  term: 'Layout B',
+                  detail:
+                    'Column header × row header × sub-column header, grouped by loan type. It shows each category’s breakdown instead of a comparison, which may not be the comparison users are looking for.',
+                },
+              ],
+            },
           ],
           media: [
             {
@@ -438,7 +490,7 @@ export const caseStudies: readonly CaseStudy[] = [
           poster: tablesPrototypePoster,
           width: 436,
           height: 890,
-          background: 'dark',
+          frame: { src: tablesPrototypeFrame, screen: { x: 36, y: 114, width: 368, height: 660 } },
           label: 'Prototype video',
           caption: 'Prototype of the adaptive table on a phone.',
           description:
@@ -537,10 +589,8 @@ export const caseStudies: readonly CaseStudy[] = [
           ],
         },
         {
-          title: 'Paper mock-ups, user stories and a prototype',
-          body: [
-            'I sketched paper mock-ups, wrote 4 user stories and built a high-fidelity prototype.',
-          ],
+          title: 'Paper mock-ups',
+          body: ['I turned the vision into low-fidelity paper mock-ups of the video call journey.'],
           media: [
             {
               kind: 'image',
@@ -549,6 +599,20 @@ export const caseStudies: readonly CaseStudy[] = [
               height: 588,
               alt: 'Eight hand-drawn phone screens in sequence: home, appointment form, online options, enquiry date and time, camera permission, waiting, video call with a staff member, and a permission request.',
               caption: 'Paper mock-ups of the video call journey.',
+            },
+          ],
+        },
+        {
+          title: 'User stories',
+          body: [
+            'I wrote 4 user stories, then turned the paper mock-ups into a high-fidelity working prototype.',
+            {
+              list: [
+                'As a CPF member, I want to do face to face consultation with CPF in the comfort of my house so I can rest at home.',
+                'As a CPF member, I want to know and see who I am speaking to about my CPF so that I know it is legitimate.',
+                'As a CPF member who wants to get personalised information from CPF, I want to speak to an officer without going to Service Centre (SC).',
+                'As a PO, I want to gather feedback from CPF members using the call, so that I can improve on the features.',
+              ],
             },
           ],
         },
@@ -568,7 +632,7 @@ export const caseStudies: readonly CaseStudy[] = [
           poster: videoCallCallNowPoster,
           width: 440,
           height: 888,
-          background: 'dark',
+          frame: { src: videoCallCallNowFrame, screen: { x: 38, y: 110, width: 368, height: 660 } },
           label: 'Prototype video',
           caption: 'Prototype: starting a video call.',
           description:
@@ -580,7 +644,7 @@ export const caseStudies: readonly CaseStudy[] = [
           poster: videoCallQueuePoster,
           width: 444,
           height: 892,
-          background: 'dark',
+          frame: { src: videoCallQueueFrame, screen: { x: 39, y: 114, width: 368, height: 660 } },
           label: 'Prototype video',
           caption: 'Prototype: waiting in the queue.',
           description:
@@ -592,7 +656,10 @@ export const caseStudies: readonly CaseStudy[] = [
           poster: videoCallReschedulePoster,
           width: 438,
           height: 896,
-          background: 'dark',
+          frame: {
+            src: videoCallRescheduleFrame,
+            screen: { x: 36, y: 117, width: 368, height: 660 },
+          },
           label: 'Prototype video',
           caption: 'Prototype: rescheduling an appointment.',
           description:

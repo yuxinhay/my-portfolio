@@ -60,6 +60,19 @@ describe('MediaFigure', () => {
     )
   })
 
+  it('shows a framed video in its device screen, with the ring on the device', () => {
+    const video = firstVideo()
+    if (!video.frame) throw new Error('Expected a framed video')
+    const { container } = render(<MediaFigure media={video} />)
+    const frame = container.querySelector('img')
+    expect(frame).toHaveAttribute('src', video.frame.src)
+    expect(frame).toHaveAttribute('alt', '')
+    const element = container.querySelector('video')
+    expect(element).toHaveAttribute('width', String(video.frame.screen.width))
+    expect(element?.style.left).toBe(`${(video.frame.screen.x / video.width) * 100}%`)
+    expect(element?.parentElement).toHaveClass('focus-within:outline-solid')
+  })
+
   it('renders nothing for an empty group', () => {
     const { container } = render(<MediaGroup media={[]} />)
     expect(container).toBeEmptyDOMElement()

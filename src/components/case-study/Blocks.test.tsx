@@ -12,6 +12,14 @@ describe('Blocks', () => {
     expect(screen.getAllByRole('listitem').map((item) => item.textContent)).toEqual(['A', 'B'])
   })
 
+  it('renders definitions as a description list', () => {
+    const { container } = render(
+      <Blocks blocks={[{ definitions: [{ term: 'A', detail: 'Alpha' }] }]} />,
+    )
+    expect(container.querySelector('dt')).toHaveTextContent('A')
+    expect(container.querySelector('dd')).toHaveTextContent('Alpha')
+  })
+
   it('renders nothing for no blocks', () => {
     const { container } = render(<Blocks blocks={[]} />)
     expect(container).toBeEmptyDOMElement()
