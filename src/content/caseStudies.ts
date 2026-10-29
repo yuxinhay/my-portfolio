@@ -96,9 +96,11 @@ export type Block = string | { list: readonly string[] } | { definitions: readon
 
 /**
  * How a group of media is laid out: `stack` one per row (default), `pair` two side by side from
- * `md` up (e.g. low and high fidelity), `grid` up to three per row, for phone-sized screens.
+ * `md` up (e.g. low and high fidelity), `grid` up to three per row, for phone-sized screens,
+ * `desktop-mobile` a desktop screen across three quarters and a phone screen in the last quarter,
+ * so both show at about the same height.
  */
-export type MediaLayout = 'stack' | 'pair' | 'grid'
+export type MediaLayout = 'stack' | 'pair' | 'grid' | 'desktop-mobile'
 
 export interface CaseStudySection {
   heading: string
@@ -121,6 +123,8 @@ export interface ProcessStep {
   insights?: Insights
   media?: readonly Media[]
   mediaLayout?: MediaLayout
+  /** Text that explains the last media item, shown right below it, e.g. a comparison. */
+  afterMedia?: readonly Block[]
 }
 
 export interface CaseStudy {
@@ -331,7 +335,7 @@ export const caseStudies: readonly CaseStudy[] = [
         'During usability testing of another enhancement, users struggled to compare data in tables on mobile, scrolling horizontally again and again. One example is a housing-loan "Computation breakdown" that compares an HDB loan with a bank loan.',
         'How can we make tables on mobile screens more readable and user-friendly?',
       ],
-      mediaLayout: 'pair',
+      mediaLayout: 'desktop-mobile',
       media: [
         {
           kind: 'image',
@@ -439,20 +443,6 @@ export const caseStudies: readonly CaseStudy[] = [
           title: 'The adaptive table',
           body: [
             'Phones have a taller, narrower display, so I sectioned the table into categories and reconfigured the data into a vertical format. I compared two groupings.',
-            {
-              definitions: [
-                {
-                  term: 'Layout A (chosen)',
-                  detail:
-                    'Row header × column header × sub-column header, for example "Loan amount" with the HDB and bank loan values together. It is easier to compare two subjects (an HDB loan against a bank loan), and sections based on category are easier to scan.',
-                },
-                {
-                  term: 'Layout B',
-                  detail:
-                    'Column header × row header × sub-column header, grouped by loan type. It shows each category’s breakdown instead of a comparison, which may not be the comparison users are looking for.',
-                },
-              ],
-            },
           ],
           media: [
             {
@@ -473,6 +463,22 @@ export const caseStudies: readonly CaseStudy[] = [
               height: 772,
               alt: 'Layout A and Layout B side by side. Layout A groups cards by row header, such as Loan amount; Layout B groups them by loan type and is marked with a thumbs-down.',
               caption: 'Layout A (chosen) against Layout B, marked with a thumbs-down.',
+            },
+          ],
+          afterMedia: [
+            {
+              definitions: [
+                {
+                  term: 'Layout A (chosen)',
+                  detail:
+                    'Row header × column header × sub-column header, for example "Loan amount" with the HDB and bank loan values together. It is easier to compare two subjects (an HDB loan against a bank loan), and sections based on category are easier to scan.',
+                },
+                {
+                  term: 'Layout B',
+                  detail:
+                    'Column header × row header × sub-column header, grouped by loan type. It shows each category’s breakdown instead of a comparison, which may not be the comparison users are looking for.',
+                },
+              ],
             },
           ],
         },

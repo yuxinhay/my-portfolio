@@ -9,11 +9,14 @@ export interface ProcessStepsProps {
   steps: readonly ProcessStep[]
 }
 
-/** The process as an ordered list: each step has an h3, its text, any insights and its media. */
+/**
+ * The process as an ordered list: each step has an h3, its text, any insights, its media and any
+ * text that explains the media.
+ */
 export function ProcessSteps({ steps }: ProcessStepsProps) {
   return (
     <ol className="grid gap-16">
-      {steps.map(({ title, body, insights, media, mediaLayout }, index) => (
+      {steps.map(({ title, body, insights, media, mediaLayout, afterMedia }, index) => (
         <li key={title} className="grid gap-6 border-t-(length:--border-rule) border-scene-fg pt-6">
           <div className="grid gap-2">
             <Text variant="eyebrow" className="text-scene-accent">
@@ -26,6 +29,7 @@ export function ProcessSteps({ steps }: ProcessStepsProps) {
           <Blocks blocks={body} />
           {insights && <InsightList insights={insights} />}
           <MediaGroup media={media} layout={mediaLayout} />
+          {afterMedia && <Blocks blocks={afterMedia} />}
         </li>
       ))}
     </ol>

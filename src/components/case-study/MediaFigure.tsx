@@ -164,6 +164,7 @@ export function MediaFigure({ media }: MediaFigureProps) {
 const LAYOUT: Record<MediaLayout, string> = {
   stack: 'grid gap-10',
   pair: 'grid gap-10 md:grid-cols-2',
+  'desktop-mobile': 'grid gap-10 md:grid-cols-4 md:*:first:col-span-3',
   grid: 'grid gap-10 sm:grid-cols-2 lg:grid-cols-3',
 }
 

@@ -73,6 +73,20 @@ describe('MediaFigure', () => {
     expect(element?.parentElement).toHaveClass('focus-within:outline-solid')
   })
 
+  it('gives the desktop screen three of four columns beside the phone screen', () => {
+    const { container } = render(
+      <MediaGroup
+        media={[
+          imageWhere((m) => m.background === undefined),
+          imageWhere((m) => m.background === 'dark'),
+        ]}
+        layout="desktop-mobile"
+      />,
+    )
+    expect(container.firstElementChild).toHaveClass('md:grid-cols-4', 'md:*:first:col-span-3')
+    expect(screen.getAllByRole('figure')).toHaveLength(2)
+  })
+
   it('renders nothing for an empty group', () => {
     const { container } = render(<MediaGroup media={[]} />)
     expect(container).toBeEmptyDOMElement()

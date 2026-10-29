@@ -8,16 +8,32 @@ export interface InsightListProps {
   level?: 3 | 4
 }
 
+/** A decorative dashed rule that grows to fill the space beside the heading. */
+function DashedRule() {
+  return (
+    <span
+      aria-hidden="true"
+      className="grow border-t-(length:--border-rule) border-dashed border-scene-fg"
+    />
+  )
+}
+
 /**
- * Research or feedback quotes as a numbered list. The "#1" badges repeat the list numbering for
- * sighted readers, so they are hidden from screen readers, which announce the list position.
+ * Research or feedback quotes as a numbered list. The heading sits between dashed rules, as in the
+ * Figma release pages, and uses the eyebrow style so it reads as a label, not as another quote.
+ * The "#1" badges repeat the list numbering for sighted readers, so they are hidden from screen
+ * readers, which announce the list position.
  */
 export function InsightList({ insights, level = 4 }: InsightListProps) {
   return (
-    <div className="grid gap-4">
-      <Heading level={level} size="h3">
-        {insights.heading}
-      </Heading>
+    <div className="grid gap-6">
+      <div className="flex items-center gap-4">
+        <DashedRule />
+        <Heading level={level} size="eyebrow" className="text-center text-scene-accent">
+          {insights.heading}
+        </Heading>
+        <DashedRule />
+      </div>
       <ol className="grid gap-4">
         {insights.quotes.map((quote, index) => (
           <li key={quote} className="flex items-start gap-4">

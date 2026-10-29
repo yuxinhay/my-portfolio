@@ -55,3 +55,12 @@ export const GridLayout: Story = {
     return <MediaGroup media={solution?.media} layout="grid" />
   },
 }
+
+/** A desktop screen across three quarters beside a phone screen, at about the same height. */
+export const DesktopMobileLayout: Story = {
+  args: { media: firstVideo() },
+  render: () => {
+    const { problem } = studyFor('adaptive-tables').study
+    return <MediaGroup media={problem.media} layout="desktop-mobile" />
+  },
+}

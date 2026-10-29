@@ -23,6 +23,14 @@ describe('ProcessSteps', () => {
     expect(screen.getAllByRole('img')).toHaveLength(images.length)
   })
 
+  it('places text that explains the media right after the media', () => {
+    const { steps } = studyFor('adaptive-tables').study.process
+    render(<ProcessSteps steps={steps} />)
+    const comparison = screen.getByText('Layout A (chosen)')
+    const layouts = screen.getByRole('img', { name: /^Layout A and Layout B side by side/ })
+    expect(layouts.compareDocumentPosition(comparison)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+  })
+
   it('has no axe violations', async () => {
     const { container } = render(
       <ProcessSteps steps={studyFor('preferred-bank-account').study.process.steps} />,
