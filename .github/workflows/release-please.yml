@@ -1,0 +1,25 @@
+name: Release Please
+
+# Keeps a release PR open that bumps the version in package.json and writes CHANGELOG.md from the
+# Conventional Commits merged to main. Merging that PR tags the release (see ADR 0007).
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Release PR
+    runs-on: ubuntu-latest
+    steps:
+      # RELEASE_PLEASE_TOKEN (a fine-grained PAT) lets the release PR trigger CI, which main requires.
+      # Without it, the default token needs "Allow GitHub Actions to create and approve pull
+      # requests" enabled, and CI does not run on the release PR on its own.
+      - uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

@@ -30,47 +30,50 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management                                                                                              | Done     | [#7](https://github.com/yuxinhay/my-portfolio/pull/7)   |
 | 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements                                                                                          | Done     | [#9](https://github.com/yuxinhay/my-portfolio/pull/9)   |
 | 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                                                                                                          | Done     | [#10](https://github.com/yuxinhay/my-portfolio/pull/10) |
-| 9   | Playwright + axe e2e, Lighthouse CI budgets, release-please, README polish                                                                                                        | **Next** |                                                         |
-| 10  | Motion and visual polish: scroll reveals, count-up numbers, hover/press states, page transitions, motion tokens (all prefers-reduced-motion safe; owner reviews prototypes first) | To do    |                                                         |
+| 9   | Playwright + axe e2e, Lighthouse CI budgets, release-please, README polish                                                                                                        | Done     | [#11](https://github.com/yuxinhay/my-portfolio/pull/11) |
+| 10  | Motion and visual polish: scroll reveals, count-up numbers, hover/press states, page transitions, motion tokens (all prefers-reduced-motion safe; owner reviews prototypes first) | **Next** |                                                         |
 
 ## Decisions so far
 
-| Area          | Decision                                                                                                                                                                                                               | Record                                                      |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Stack         | Vite + React 19 + TypeScript (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), npm, Node ≥ 24                                                                                                        | [ADR 0001](adr/0001-vite-react-typescript.md)               |
-| Linting       | **oxlint** instead of ESLint: Vite default, built-in `jsx-a11y` rules                                                                                                                                                  | [ADR 0001](adr/0001-vite-react-typescript.md)               |
-| Styling       | Tailwind CSS v4 generated from DTCG tokens via Style Dictionary; Tailwind defaults reset                                                                                                                               | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
-| Colour        | Theme D **"Bubblegum Bold"**: blush, hot pink, cobalt, ink. `pink.600` darkened to `#CC0F4C` to pass AA                                                                                                                | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
-| Colour        | Ink scene text is **blush**, not `pink.300` (owner's choice, step 8 review); `pink.300` stays the ink focus ring                                                                                                       | This plan                                                   |
-| Colour        | Scenes gain a **`surface`** role for borderless panels (white on blush); CI checks every text role on it (step 8 review)                                                                                               | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
-| Typography    | **Inter only**, self-hosted; weight 900 + tight tracking for display                                                                                                                                                   | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
-| Theming       | Wrapped-style **scenes** (`scene-blush/pink/cobalt/ink`) replace a light/dark toggle                                                                                                                                   | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
-| Design source | Code only; **no Figma**. Theme and type chosen from prototypes on branch `prototype/wrapped-themes`                                                                                                                    | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
-| Hosting       | GitHub Pages via Actions at `https://yuxinhay.github.io/my-portfolio/`; repo is **public**                                                                                                                             | This plan                                                   |
-| Git workflow  | `main` protected: PR + both CI checks required, linear history, **squash merge only**, branches auto-deleted                                                                                                           | This plan                                                   |
-| Storybook     | Storybook 10 (React + Vite); Foundations stories read `tokens/*.json`; built in CI, published at `/storybook/`                                                                                                         | [ADR 0003](adr/0003-storybook-foundations.md)               |
-| Testing       | Vitest + Testing Library + axe-core in jsdom; every story is axe-tested; contrast stays a token gate                                                                                                                   | [ADR 0004](adr/0004-vitest-testing-library-axe.md)          |
-| Typography    | Shared text recipes in `src/components/ui/styles.ts`; small text is `font-medium` (reviewed in a prototype)                                                                                                            | This plan                                                   |
-| Routing       | React Router 8 (data mode), real paths with `basename` from Vite `BASE_URL`; routes shared by app, tests, stories                                                                                                      | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
-| Deep links    | `404.html` is a build-time copy of `index.html`, so GitHub Pages boots the app on any path (no hash routing)                                                                                                           | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
-| Route a11y    | Focus moves to the page h1 (or a focusable `#hash` target) after navigation, not on first load; no live region                                                                                                         | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
-| Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                                                                                                                                | This plan                                                   |
-| Content       | Typed, readonly data in `src/content/`; rules types cannot express (order, unique slugs, banned terms) are tests                                                                                                       | This plan                                                   |
-| Skills        | Skills are listed in groups **without proficiency levels** (owner's choice)                                                                                                                                            | This plan                                                   |
-| Case studies  | Typed case-study content in `src/content/caseStudies.ts`, one per project; full-bleed scenes with an h2 per section                                                                                                    | This plan                                                   |
-| Media         | Images as **WebP** (max 1600px), videos as **H.264 MP4** without audio, all metadata stripped; imported through Vite                                                                                                   | [ADR 0006](adr/0006-case-study-media.md)                    |
-| Media a11y    | Alt text for every image, flow charts summarised in captions; prototype videos play muted when scrolled into view (owner's choice), pause off screen, never under reduced motion, keep controls and a text description | [ADR 0006](adr/0006-case-study-media.md)                    |
-| Process page  | `/how-i-built-this` reads plan steps, quality gates and ADRs from `docs/` at build time, so it cannot drift                                                                                                            | This plan                                                   |
-| Design page   | `/design-system` reads `tokens/*.json`; contrast ratios use the CI gate's maths (`src/design-system/`)                                                                                                                 | [ADR 0003](adr/0003-storybook-foundations.md)               |
+| Area          | Decision                                                                                                                                                                                                                               | Record                                                      |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Stack         | Vite + React 19 + TypeScript (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), npm, Node ≥ 24                                                                                                                        | [ADR 0001](adr/0001-vite-react-typescript.md)               |
+| Linting       | **oxlint** instead of ESLint: Vite default, built-in `jsx-a11y` rules                                                                                                                                                                  | [ADR 0001](adr/0001-vite-react-typescript.md)               |
+| Styling       | Tailwind CSS v4 generated from DTCG tokens via Style Dictionary; Tailwind defaults reset                                                                                                                                               | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Colour        | Theme D **"Bubblegum Bold"**: blush, hot pink, cobalt, ink. `pink.600` darkened to `#CC0F4C` to pass AA                                                                                                                                | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Colour        | Ink scene text is **blush**, not `pink.300` (owner's choice, step 8 review); `pink.300` stays the ink focus ring                                                                                                                       | This plan                                                   |
+| Colour        | Scenes gain a **`surface`** role for borderless panels (white on blush); CI checks every text role on it (step 8 review)                                                                                                               | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Typography    | **Inter only**, self-hosted; weight 900 + tight tracking for display                                                                                                                                                                   | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Theming       | Wrapped-style **scenes** (`scene-blush/pink/cobalt/ink`) replace a light/dark toggle                                                                                                                                                   | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Design source | Code only; **no Figma**. Theme and type chosen from prototypes on branch `prototype/wrapped-themes`                                                                                                                                    | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Hosting       | GitHub Pages via Actions at `https://yuxinhay.github.io/my-portfolio/`; repo is **public**                                                                                                                                             | This plan                                                   |
+| Git workflow  | `main` protected: PR + both CI checks required, linear history, **squash merge only**, branches auto-deleted                                                                                                                           | This plan                                                   |
+| Storybook     | Storybook 10 (React + Vite); Foundations stories read `tokens/*.json`; built in CI, published at `/storybook/`                                                                                                                         | [ADR 0003](adr/0003-storybook-foundations.md)               |
+| Testing       | Vitest + Testing Library + axe-core in jsdom; every story is axe-tested; contrast stays a token gate                                                                                                                                   | [ADR 0004](adr/0004-vitest-testing-library-axe.md)          |
+| Typography    | Shared text recipes in `src/components/ui/styles.ts`; small text is `font-medium` (reviewed in a prototype)                                                                                                                            | This plan                                                   |
+| Routing       | React Router 8 (data mode), real paths with `basename` from Vite `BASE_URL`; routes shared by app, tests, stories                                                                                                                      | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
+| Deep links    | `404.html` is a build-time copy of `index.html`, so GitHub Pages boots the app on any path (no hash routing)                                                                                                                           | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
+| Route a11y    | Focus moves to the page h1 (or a focusable `#hash` target) after navigation, not on first load; no live region                                                                                                                         | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
+| Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                                                                                                                                                | This plan                                                   |
+| Content       | Typed, readonly data in `src/content/`; rules types cannot express (order, unique slugs, banned terms) are tests                                                                                                                       | This plan                                                   |
+| Skills        | Skills are listed in groups **without proficiency levels** (owner's choice)                                                                                                                                                            | This plan                                                   |
+| Case studies  | Typed case-study content in `src/content/caseStudies.ts`, one per project; full-bleed scenes with an h2 per section                                                                                                                    | This plan                                                   |
+| Media         | Images as **WebP** (max 1600px), videos as **H.264 MP4** without audio, all metadata stripped; imported through Vite                                                                                                                   | [ADR 0006](adr/0006-case-study-media.md)                    |
+| Media a11y    | Alt text for every image, flow charts summarised in captions; prototype videos play muted when scrolled into view (owner's choice), pause off screen, never under reduced motion, keep controls and a text description                 | [ADR 0006](adr/0006-case-study-media.md)                    |
+| Process page  | `/how-i-built-this` reads plan steps, quality gates and ADRs from `docs/` at build time, so it cannot drift                                                                                                                            | This plan                                                   |
+| Design page   | `/design-system` reads `tokens/*.json`; contrast ratios use the CI gate's maths (`src/design-system/`)                                                                                                                                 | [ADR 0003](adr/0003-storybook-foundations.md)               |
+| E2E           | Playwright + `@axe-core/playwright` on the production build under `/my-portfolio/`: every route at 1280px, 320px and emulated 200% zoom, plus keyboard, focus, deep-link and video behaviour; Chromium only in CI; no screenshot tests | [ADR 0007](adr/0007-e2e-lighthouse-and-releases.md)         |
+| Lighthouse    | LHCI on five pages, mobile and desktop: accessibility 100, performance ≥ 90, best practices and SEO ≥ 95 (set under measured scores), per-page size budgets; reports kept as CI artifacts                                              | [ADR 0007](adr/0007-e2e-lighthouse-and-releases.md)         |
+| Releases      | release-please (manifest, `release-type: node`, `bump-minor-pre-major`) keeps a release PR on `main`; first release `0.1.0`. Needs a `RELEASE_PLEASE_TOKEN` secret or the Actions PR setting (owner)                                   | [ADR 0007](adr/0007-e2e-lighthouse-and-releases.md)         |
 
 ## Repo layout (target)
 
 ```
 my-portfolio/
-├─ .github/            workflows (ci.yml, deploy.yml), PR + issue templates
+├─ .github/            workflows (ci.yml, deploy.yml, release-please.yml), PR + issue templates
 ├─ .claude/            settings.json (permissions, hooks), hooks/, skills/ (planned)
 ├─ CLAUDE.md           rules for AI assistants
-├─ docs/               plan.md (this), adr/, ai-workflow.md, accessibility.md (planned)
+├─ docs/               plan.md (this), adr/, ai-workflow.md, accessibility.md
 ├─ tokens/             DTCG JSON: color, scene, typography, layout        ← source of truth
 ├─ scripts/            build-tokens.ts, check-contrast.ts, contrast.ts, check-token-usage.ts
 ├─ prototypes/         only on branch prototype/wrapped-themes, never on main
@@ -86,7 +89,9 @@ my-portfolio/
 │  ├─ content/         typed data: site, intro, skills, career, projects, achievements, period
 │  ├─ pages/           Home, ProjectDetail (case study), DesignSystem, HowIBuiltThis
 │  └─ app/             routes, router, Layout (focus management)
-├─ e2e/                Playwright specs incl. axe scans per route
+├─ e2e/                Playwright specs incl. axe scans per route (playwright.config.ts)
+├─ lighthouserc.cjs    Lighthouse CI pages, presets, score and size budgets
+├─ release-please-config.json, .release-please-manifest.json   release PRs, CHANGELOG.md
 └─ .storybook/         main.ts, preview.ts (loads index.css, a11y addon)
 ```
 
@@ -103,8 +108,8 @@ my-portfolio/
 | Token-only styling           | CI, AI hook               | Live   |
 | Storybook a11y addon         | Storybook; built in CI    | Live   |
 | Unit tests + axe (Vitest)    | CI                        | Live   |
-| Playwright + axe, 320px/200% | CI                        | Step 9 |
-| Lighthouse CI (a11y = 100)   | CI                        | Step 9 |
+| Playwright + axe, 320px/200% | CI (E2E job)              | Live   |
+| Lighthouse CI (a11y = 100)   | CI (Lighthouse CI job)    | Live   |
 
 ## Accessibility (WCAG 2.0 AA) commitments
 
@@ -115,7 +120,8 @@ my-portfolio/
 - Images need `alt`; no colour-only meaning (skills are listed without proficiency levels; project
   status is a text label)
 - Reflow at 320px and 200% zoom without loss of content
-- Manual keyboard-only and VoiceOver checks per PR (PR template), logged in `docs/accessibility.md`
+- Manual keyboard-only and VoiceOver checks per PR (PR template), logged in
+  [`docs/accessibility.md`](accessibility.md), which also maps each commitment to its checks
 
 ## AI-assisted development
 

@@ -37,5 +37,12 @@
     "jsx-a11y/role-has-required-aria-props": "error",
     "jsx-a11y/tabindex-no-positive": "error"
   },
-  "ignorePatterns": ["dist", "storybook-static", "coverage"]
+  "ignorePatterns": [
+    "dist",
+    "storybook-static",
+    "coverage",
+    "playwright-report",
+    "test-results",
+    ".lighthouseci"
+  ]
 }

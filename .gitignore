@@ -23,3 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 storybook-static
+
+# Playwright and Lighthouse CI output
+playwright-report
+test-results
+.lighthouseci
