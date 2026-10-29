@@ -25,7 +25,7 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | 1   | Scaffold: Vite + React + TS, oxlint, Prettier, Husky, commitlint, `CLAUDE.md`, ADR 0001  | Done     | [#1](https://github.com/yuxinhay/my-portfolio/pull/1) |
 | 2   | CI + deploy to GitHub Pages; PR/issue templates; repo settings                           | Done     | [#2](https://github.com/yuxinhay/my-portfolio/pull/2) |
 | 3   | Design tokens → Tailwind, scenes, contrast + token-usage gates, ADR 0002                 | Done     | [#3](https://github.com/yuxinhay/my-portfolio/pull/3) |
-| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | Done     |                                                       |
+| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | Done     | [#5](https://github.com/yuxinhay/my-portfolio/pull/5) |
 | 5   | UI primitives with stories, unit tests and axe tests                                     | **Next** |                                                       |
 | 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management     | To do    |                                                       |
 | 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements | To do    |                                                       |
