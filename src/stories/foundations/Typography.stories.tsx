@@ -1,22 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type typography from '../../../tokens/typography.json'
+import { TEXT_RECIPES } from '../../components/ui/styles'
+import type { TextStep } from '../../components/ui/styles'
 import { FoundationPage, FoundationSection, TokenName } from './FoundationPage'
 import { formatValue, leaf, tokensIn } from './tokens'
-
-type TextStep = Exclude<keyof (typeof typography)['text'], `$${string}`>
-
-// Utility recipe per step, as used in the app. Class names must be literal for Tailwind to
-// generate them; typing the keys as TextStep makes a new text token fail typecheck until added.
-const RECIPES: Record<TextStep, string> = {
-  stat: 'text-stat leading-tight font-black tracking-display',
-  display: 'text-display leading-tight font-black tracking-display',
-  h1: 'text-h1 leading-snug font-black tracking-heading',
-  h2: 'text-h2 leading-snug font-black tracking-heading',
-  h3: 'text-h3 leading-snug font-bold tracking-heading',
-  body: 'text-body leading-normal font-regular',
-  small: 'text-small leading-normal font-regular',
-  eyebrow: 'text-eyebrow font-bold tracking-eyebrow uppercase',
-}
 
 const SAMPLES: Record<TextStep, string> = {
   stat: '12',
@@ -30,7 +16,7 @@ const SAMPLES: Record<TextStep, string> = {
 }
 
 function isTextStep(step: string): step is TextStep {
-  return step in RECIPES
+  return step in TEXT_RECIPES
 }
 
 function TypeScaleList() {
@@ -45,10 +31,10 @@ function TypeScaleList() {
             className="grid gap-2 border-b-(length:--border-rule) border-scene-fg pb-6"
           >
             <p className="text-small">
-              <TokenName>{RECIPES[step]}</TokenName> · {formatValue(token)}
+              <TokenName>{TEXT_RECIPES[step]}</TokenName> · {formatValue(token)}
               {token.description && ` · ${token.description}`}
             </p>
-            <p className={`${RECIPES[step]} break-words`}>{SAMPLES[step]}</p>
+            <p className={`${TEXT_RECIPES[step]} break-words`}>{SAMPLES[step]}</p>
           </li>
         )
       })}

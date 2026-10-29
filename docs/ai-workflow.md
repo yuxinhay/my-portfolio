@@ -35,3 +35,8 @@ rejected and why).
   built stories caught three issues before review (duplicate landmark names, a non-focusable scroll
   area and 320px overflow on the colour table), fixed by restructuring rather than suppressing.
   AI proposed the per-step type recipes from existing usage; they are flagged for my review.
+- 2026-10-29: I reviewed the h1, h3, body and small type recipes side by side in an HTML prototype
+  and chose `font-medium` for small text; the other recipes stayed as proposed.
+- 2026-10-29: AI built the eight UI primitives (step 5) with stories, Vitest unit tests and axe
+  tests, and moved the type recipes into one module shared by the components and the Typography
+  story. The visual choices it made with existing tokens are listed in the PR for my review.

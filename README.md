@@ -11,7 +11,7 @@ Live site: https://yuxinhay.github.io/my-portfolio/ · Storybook: https://yuxinh
 
 ## Stack
 
-React 19 · TypeScript (strict) · Vite · Tailwind CSS v4 driven by design tokens (Style Dictionary) · Inter · Storybook with the a11y addon
+React 19 · TypeScript (strict) · Vite · Tailwind CSS v4 driven by design tokens (Style Dictionary) · Inter · Storybook with the a11y addon · Vitest + Testing Library + axe-core
 
 ## Getting started
 
@@ -30,6 +30,7 @@ npm run dev
 | `npm run format`          | Prettier                                                       |
 | `npm run tokens:build`    | Generate `src/styles/tokens.css` from `tokens/*.json`          |
 | `npm run tokens:check`    | WCAG AA contrast check of every scene + token-only usage check |
+| `npm run test`            | Unit and axe tests (Vitest, Testing Library, axe-core)         |
 | `npm run storybook`       | Storybook dev server (Foundations stories, a11y panel)         |
 | `npm run build-storybook` | Build Storybook to `storybook-static/`                         |
 
@@ -43,7 +44,7 @@ npm run dev
 ## Docs
 
 - [Plan and status](docs/plan.md)
-- [Architecture decisions](docs/adr/), incl. [design tokens](docs/adr/0002-tailwind-design-tokens.md)
-  and [Storybook](docs/adr/0003-storybook-foundations.md)
+- [Architecture decisions](docs/adr/), incl. [design tokens](docs/adr/0002-tailwind-design-tokens.md),
+  [Storybook](docs/adr/0003-storybook-foundations.md) and [testing](docs/adr/0004-vitest-testing-library-axe.md)
 - [AI-assisted workflow](docs/ai-workflow.md)
 - [AI rules (CLAUDE.md)](CLAUDE.md)
