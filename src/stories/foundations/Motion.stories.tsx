@@ -7,7 +7,7 @@ import { Button } from '../../components/ui/Button'
 import { TEXT_RECIPES, cx } from '../../components/ui/styles'
 import { formatValue, leaf, tokensIn } from '../../design-system/tokens'
 
-const easing = tokensIn('easing')[0]
+const easing = tokensIn('easing').find((token) => leaf(token) === 'out')
 const scrim = tokensIn('color', 'scrim')[0]
 
 function MotionDemo() {
@@ -72,6 +72,27 @@ function CountDemo() {
   )
 }
 
+/** Replays the At a glance entrance: a card pops out with `--ease-overshoot`. */
+function PopDemo() {
+  const [run, setRun] = useState(0)
+  return (
+    <div className="grid justify-items-start gap-4">
+      <p className="max-w-prose text-body">
+        The At a glance card grows from 60% to full size over <TokenName>--duration-slow</TokenName>
+        , slightly past it and back. Under reduced motion it simply appears.
+      </p>
+      <div
+        key={run}
+        aria-hidden="true"
+        className="scene-pink size-24 rounded-card bg-scene motion-safe:animate-glance-pop"
+      />
+      <Button variant="secondary" onClick={() => setRun((value) => value + 1)}>
+        Pop again
+      </Button>
+    </div>
+  )
+}
+
 /** The blur and scrim behind a modal dialog, over a sample of the page. */
 function BackdropDemo() {
   return (
@@ -117,6 +138,9 @@ export const Motion: StoryObj<typeof meta> = {
       </FoundationSection>
       <FoundationSection title="Duration">
         <MotionDemo />
+      </FoundationSection>
+      <FoundationSection title="Pop">
+        <PopDemo />
       </FoundationSection>
       <FoundationSection title="Count-up">
         <CountDemo />
