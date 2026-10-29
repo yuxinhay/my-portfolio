@@ -54,7 +54,16 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
 - **Lift** (`LIFT`, `CARD_LIFT`, `LINK_LIFT` in `src/components/ui/styles.ts`). Buttons and project
   cards rise `0.375rem` with a hard offset shadow in the scene's text colour (`shadow-lift`, built
   from `--spacing` and `--scene-fg`, so it shows on every scene and needs no new colour); nav and
-  pager links rise slightly without a shadow. Press scales to 0.98. `:focus-visible` (for cards:
+  pager links rise slightly without a shadow. After the owner's second review (primary hover read
+  as the button growing, because the shadow was the colour of its fill), an element filled in the
+  text colour adds `lift-hollow`: its slab is the scene background inside a rule-width edge in the
+  text colour, so the fill always meets the scene's text contrast against the slab and the edge
+  meets it against the page. Outlined elements keep the solid slab. Pairs (fill · slab, slab edge ·
+  page): primary on blush ink · blush 15.9:1, on pink white · pink.600 5.6:1, on cobalt white ·
+  cobalt.500 6.7:1, on ink blush · ink 15.9:1 (hover fills use the accent, ≥ 4.5:1 against the
+  same slab); secondary buttons and project cards: transparent fill · solid fg slab, the same
+  ratios; ghost: 10% fg fill · solid fg slab; the overlay's Next on the scrim: blush · ink 15.9:1,
+  edge 6.6:1 against the lightest scrimmed page. Press scales to 0.98. `:focus-visible` (for cards:
   the card's link) gets the same state as hover, and the focus ring stays. Under reduced motion the
   shadow and colour still change, without movement. Inline text links do not lift.
 - **Crossfade with the View Transitions API.** `withViewTransitions` wraps `router.navigate`, so
@@ -72,9 +81,19 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
   - Six **narrow portrait story cards**, shaped like Wrapped stories (owner review): about 9:16,
     the same width on every screen (24rem, or the screen less 1rem margins on a phone) and 16/9 of
     that tall, or as tall as the screen allows below that (down to 15rem, where the card
-    scrolls). The controls bar below has the card's width. Each card is laid out for that format:
-    eyebrow, giant tight type, a short closing line at the bottom; card 1 puts the portrait upper
-    right with the name overlapping its lower left corner, as in the owner's mockup.
+    scrolls). Each card is laid out for that format: eyebrow, giant tight type, a short closing
+    line at the bottom.
+  - **Card 1 follows the owner's mockup** (second review), in proportions of the card's width
+    (container units): the portrait bleeds off the right edge from about a third across, from 24%
+    down; the two-line roles sit just left of it; the giant name (`27.5cqw`, `font-black`, tight
+    tracking), flush with the card's left edge, starts on the portrait's bottom edge; the summary
+    closes the card. The name and roles use a new scene role, `display` (blush: `pink.600`,
+    4.74:1, the mockup's hot pink); no chip sits behind any text. The mockup lets the name and
+    roles run over the photo; measured in headless screenshots (glyph pixels against the photo
+    pixels under them), the accent fell to 1.0:1 over the portrait's dark hair and dress and to
+    about 2.9:1 over the grey wall, and no crop of the 800×900 portrait moves that corner onto a
+    light background. The owner chose to keep the geometry without the overlap; an e2e check
+    asserts that hiding the text leaves the portrait's pixels unchanged.
   - The previous and next cards sit beside the current one, scaled to 0.85 and at half opacity
     (from `lg`, a mask also fades them towards the screen edges); on a phone they peek out from
     behind it. The first card has no previous one, the last no next. Changing cards moves, scales
@@ -83,15 +102,32 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
   - **Entrance**: the backdrop fades and blurs in (`duration.base`), then the current card pops out
     from 60% with a slight overshoot (`duration.slow`, new token `easing.overshoot`), then its
     neighbours fade in. It plays on every opening, first visit and Replay, and stops at the first
-    move. Closing is instant: animating it out would mean delaying `close()` and the focus move
+    move. The automatic first-visit opening only (second review) waits `duration.celebrate`
+    (500ms) longer before the pop, and one burst of confetti plays as the card appears: 56 small
+    pieces in pink, cobalt, blush and white, from behind the card's edges, falling and fading out
+    over `duration.confetti` (1800ms), no loop, each piece flipping under 1.5 times a second. It is
+    a self-written canvas module (about 0.8 KB gzipped, loaded on demand, so a replay or a repeat
+    visit never fetches it) rather than a library; the canvas is `aria-hidden`, ignores the
+    pointer, sits behind the controls and is removed when the burst ends. The controls work from
+    the start. A replay gets neither the pause nor the confetti; reduced motion gets neither. Closing is instant: animating it out would mean delaying `close()` and the focus move
     that follows.
   - Only the current card is perceivable (neighbours are `inert` and `aria-hidden`, so not
     focusable or clickable); it is a group with `aria-roledescription="slide"` and the name
     "Card 2 of 6", and a polite live region repeats that name when the card changes. The current
     card is a tab stop, because it scrolls when its content is taller than a zoomed screen.
-  - Controls: Skip; dots as buttons ("Go to card 3 of 6", the current one `aria-current` and wider,
-    so it does not rely on colour); Back except on card 1; Next, which reads "Explore my work" on
-    the last card and closes the intro. Left and Right arrows move between cards, Escape skips, and
+  - Controls (second review: no ink bar). Skip floats above the card's top right, right-aligned
+    with its edge, as a quiet `ghost` button: a 10% fill and 60% border in the light text colour,
+    text at full strength (5.2:1 against what is behind it, border 3.8:1 against the scrim). Below
+    the card one row as wide as it, straight on the scrim in the ink scene's light roles: Back at
+    the left edge, dots as buttons in the middle ("Go to card 3 of 6", the current one
+    `aria-current` and wider, so it does not rely on colour), Next at the right edge, which reads
+    "Explore my work" on the last card and closes the intro. Back and Next have the same padding
+    and height; on card 1 Back keeps its place but is invisible, disabled and `aria-hidden`, so
+    the row stays symmetric. Text, dots and button edges are blush on the scrim, 6.6:1 against
+    the lightest page behind it; the focus ring (`pink.300`) 3.6:1. On a phone the buttons take
+    the small text step and less padding, so "Explore my work" fits beside Back (on two lines at
+    320px, with Back stretched to the same height). Tab order: Skip, the card, Back, the dots,
+    Next. Left and Right arrows move between cards, Escape skips, and
     a horizontal touch or pen swipe of 48px or more moves one card. Nothing advances by itself.
     Focus starts on Next; if Back disappears while focused, focus moves to Next.
   - It opens by itself only when a visit starts on the home page (React Router's first location,
@@ -114,7 +150,11 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
   (`e2e/fixtures.ts`); `glance.spec.ts` tests a first visit: axe and overflow on every card at
   1280px, 320px and 200% zoom, a portrait card whose content fits without scrolling (except at
   200% zoom), the neighbours' size, opacity and inertness, the entrance animation, the keyboard
-  flow, Escape, replay, reduced motion and the other routes. `motion.spec.ts` checks reveals with
+  flow, Escape, replay, reduced motion and the other routes; after the second review also, on
+  every card and viewport, Back and Next at the card's edges (±1px) with the same height and no
+  bar behind them, Skip above the card's top right, no text drawn over card 1's portrait, card 2's
+  "Manager" under "Product", the 650ms first-visit pop delay, and confetti present then removed on
+  a first visit but absent on a replay and under reduced motion. `motion.spec.ts` checks reveals with
   and without IntersectionObserver, crossfades with focus on the h1, and count-up values in the
   accessibility tree.
 - **Lighthouse audits the first visit**, with the intro open over the home page: it is what a new
@@ -137,10 +177,15 @@ Every ADR 0007 threshold and size budget holds, so none changed. CLS was 0.033 a
 ## Consequences
 
 - No new runtime dependency. The app's JavaScript transfer grows from 129 KB to 137 KB (motion
-  code, the overlay and its cards); the portrait adds 47 KB, loaded only when the intro opens.
+  code, the overlay and its cards); the portrait adds 47 KB, loaded only when the intro opens. The
+  second review adds 1.5 KB gzipped to the main bundle and a separate 0.8 KB confetti chunk,
+  fetched only on a first visit with motion allowed.
 - New tokens: `duration.count` (1000ms), `duration.stagger` (60ms), `blur.overlay` (0.5rem),
   `color.scrim` (ink.900 at 70%) and, after the owner's review of the cards, `easing.overshoot`
-  (`cubic-bezier(0.34, 1.4, 0.64, 1)`, from the prototype). `--blur-*` joins the Tailwind
+  (`cubic-bezier(0.34, 1.4, 0.64, 1)`, from the prototype). After the second review:
+  `duration.celebrate` (500ms), `duration.confetti` (1800ms) and the scene role `display`
+  (blush: `pink.600`; the other scenes repeat their accent), checked by the contrast gate like
+  every text role. `--blur-*` joins the Tailwind
   namespaces reset in `scripts/build-tokens.ts`.
 - Content below the fold is hidden until it scrolls in, so anything that reads the page without
   scrolling (Lighthouse, a screenshot) sees those sections at opacity 0; axe skips them, and the
