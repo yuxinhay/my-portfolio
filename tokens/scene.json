@@ -25,7 +25,7 @@
     },
     "ink": {
       "bg": { "$value": "{color.ink.900}" },
-      "fg": { "$value": "{color.pink.300}" },
+      "fg": { "$value": "{color.blush}" },
       "accent": { "$value": "{color.blush}" },
       "focus": { "$value": "{color.pink.300}" },
       "shape": { "$value": "{color.ink.800}" }

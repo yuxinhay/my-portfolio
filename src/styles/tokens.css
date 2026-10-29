@@ -98,7 +98,7 @@
 
 .scene-ink {
   --scene-bg: var(--color-ink-900);
-  --scene-fg: var(--color-pink-300);
+  --scene-fg: var(--color-blush);
   --scene-accent: var(--color-blush);
   --scene-focus: var(--color-pink-300);
   --scene-shape: var(--color-ink-800);
