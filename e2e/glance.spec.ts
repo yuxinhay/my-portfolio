@@ -26,10 +26,29 @@ async function expectNoAxeViolations(page: Page, context: string) {
   expect(summary, `axe WCAG 2.0 A/AA violations, ${context}`).toEqual([])
 }
 
+/** Position, scale and opacity of every card, and whether it can be reached at all. */
+function cardStates(page: Page) {
+  return dialog(page)
+    .locator('[role="group"]')
+    .evaluateAll((cards) =>
+      cards.map((card) => {
+        const style = getComputedStyle(card)
+        return {
+          position: card.getAttribute('data-position'),
+          hidden: card.hasAttribute('inert') && card.getAttribute('aria-hidden') === 'true',
+          focusable:
+            card.querySelector('a, button, [tabindex]') !== null || card.hasAttribute('tabindex'),
+          scale: style.scale,
+          opacity: Number(style.opacity),
+        }
+      }),
+    )
+}
+
 // Runs in every project: desktop (1280px), mobile (320px) and 200% zoom.
-test('every card: no axe violations, no horizontal overflow, controls on screen', async ({
+test('every card: no axe violations, no overflow, neighbours beside it, controls on screen', async ({
   page,
-}) => {
+}, testInfo) => {
   const errors = watchForErrors(page)
   await page.goto('./')
   await expect(dialog(page)).toBeVisible()
@@ -42,6 +61,38 @@ test('every card: no axe violations, no horizontal overflow, controls on screen'
       return scrollWidth - clientWidth
     })
     expect(overflow, `no horizontal page overflow on card ${card}`).toBeLessThanOrEqual(0)
+
+    // The previous and next cards sit beside it, smaller and faded, out of reach.
+    const states = await cardStates(page)
+    const near = states.filter(({ position }) => position === 'near')
+    expect(near, `neighbours of card ${card}`).toHaveLength(card === 1 || card === COUNT ? 1 : 2)
+    for (const neighbour of near) {
+      expect(neighbour).toMatchObject({ hidden: true, focusable: false, scale: '0.85' })
+      expect(neighbour.opacity).toBeGreaterThan(0)
+      expect(neighbour.opacity).toBeLessThan(1)
+    }
+
+    // A narrow portrait card, controls the same width below it. Its content fits without
+    // scrolling, except at 200% zoom, where the screen is shorter than any card (it scrolls).
+    const box = await currentCard(page).evaluate((element) => {
+      const { width, height, bottom } = element.getBoundingClientRect()
+      const controls = element.closest('dialog')?.querySelector('.glance-controls')
+      const below = controls?.getBoundingClientRect()
+      return {
+        width,
+        height,
+        unclipped: element.scrollHeight <= element.clientHeight,
+        controlsWidth: below?.width,
+        controlsBelow: below !== undefined && below.top >= bottom,
+      }
+    })
+    expect(box.controlsWidth).toBeCloseTo(box.width, 0)
+    expect(box.controlsBelow).toBe(true)
+    if (testInfo.project.name !== 'zoom-200') {
+      expect(box.height, `card ${card} is portrait`).toBeGreaterThan(box.width)
+      expect(box.unclipped, `card ${card} content fits without scrolling`).toBe(true)
+    }
+
     const next = page.getByRole('button', { name: card < COUNT ? 'Next' : 'Explore my work' })
     await expect(next).toBeInViewport()
     await expect(page.getByRole('button', { name: 'Skip' })).toBeInViewport()
@@ -145,16 +196,56 @@ test.describe('behaviour', () => {
     await expect(currentCard(page)).toHaveAttribute('aria-label', `Card 1 of ${COUNT}`)
   })
 
+  test('pops out on opening: the backdrop fades in, then the card, then its neighbours', async ({
+    page,
+  }) => {
+    await page.goto('./')
+    await expect(dialog(page)).toBeVisible()
+    const entrance = await page.evaluate(() =>
+      document.getAnimations().flatMap((animation) => {
+        if (!(animation instanceof CSSAnimation)) return []
+        const effect = animation.effect as KeyframeEffect | null
+        const target = effect?.target
+        return [
+          {
+            name: animation.animationName,
+            on: effect?.pseudoElement ?? target?.getAttribute('data-position') ?? '',
+            delay: Number(effect?.getTiming().delay ?? 0),
+          },
+        ]
+      }),
+    )
+    expect(entrance).toEqual(
+      expect.arrayContaining([
+        { name: 'glance-backdrop-in', on: '::backdrop', delay: 0 },
+        expect.objectContaining({ name: 'glance-pop', on: 'current' }),
+        expect.objectContaining({ name: 'glance-fade-in', on: 'near' }),
+      ]),
+    )
+    const delay = (name: string) => entrance.find((entry) => entry.name === name)?.delay ?? 0
+    expect(delay('glance-pop')).toBeGreaterThan(0)
+    expect(delay('glance-fade-in')).toBeGreaterThan(delay('glance-pop'))
+    await settleMotion(page)
+    await expect(currentCard(page)).toHaveCSS('scale', 'none')
+    await expect(currentCard(page)).toHaveCSS('opacity', '1')
+  })
+
   test('slides between cards and counts numbers up', async ({ page }) => {
     await page.goto('./')
     await page.getByRole('button', { name: `Go to card 3 of ${COUNT}` }).click()
     const sliding = await page.evaluate(() =>
-      document.getAnimations().some((animation) => {
-        const target = (animation.effect as KeyframeEffect | null)?.target
-        return target instanceof Element && target.classList.contains('glance-track')
-      }),
+      document
+        .getAnimations()
+        .filter((animation) => {
+          const target = (animation.effect as KeyframeEffect | null)?.target
+          return target instanceof Element && target.classList.contains('glance-card')
+        })
+        .map((animation) => (animation as CSSTransition).transitionProperty),
     )
-    expect(sliding, 'the card row is sliding').toBe(true)
+    // Cards move, scale and fade together.
+    expect(new Set(sliding), 'the cards are sliding').toEqual(
+      new Set(['translate', 'scale', 'opacity']),
+    )
     // The animated copy starts below the final value and lands on it.
     const number = currentCard(page).locator('.sr-only + [aria-hidden] + [aria-hidden]').first()
     await expect(number).toHaveText('40+')
@@ -177,8 +268,19 @@ test.describe('behaviour', () => {
   test.describe('with reduced motion', () => {
     test.use({ reducedMotion: 'reduce' })
 
-    test('cards swap without movement and numbers show their final value', async ({ page }) => {
+    test('opens and swaps cards without movement; numbers show their final value', async ({
+      page,
+    }) => {
       await page.goto('./')
+      await expect(dialog(page)).toBeVisible()
+      // No pop and no backdrop fade.
+      const opening = await page.evaluate(
+        () =>
+          document
+            .getAnimations()
+            .filter((animation) => Number(animation.effect?.getTiming().duration ?? 0) > 1).length,
+      )
+      expect(opening).toBe(0)
       await page.getByRole('button', { name: 'Next' }).click()
       await page.getByRole('button', { name: 'Next' }).click()
       await expect(currentCard(page)).toHaveAttribute('aria-label', `Card 3 of ${COUNT}`)
@@ -190,10 +292,15 @@ test.describe('behaviour', () => {
             .filter((animation) => Number(animation.effect?.getTiming().duration ?? 0) > 1).length,
       )
       expect(running).toBe(0)
-      const slide = await dialog(page)
-        .locator('.glance-track')
-        .evaluate((track) => Number.parseFloat(getComputedStyle(track).transitionDuration))
+      const slide = await currentCard(page).evaluate((card) =>
+        Number.parseFloat(getComputedStyle(card).transitionDuration),
+      )
       expect(slide).toBeLessThan(0.001)
+      // The neighbours are still shown beside it, smaller and faded, just without movement.
+      await settleMotion(page)
+      const near = (await cardStates(page)).filter(({ position }) => position === 'near')
+      expect(near).toHaveLength(2)
+      for (const neighbour of near) expect(neighbour.scale).toBe('0.85')
       // No animated copies, just the values.
       await expect(currentCard(page).locator('.sr-only')).toHaveCount(0)
       await expect(currentCard(page).getByText('40+', { exact: true })).toBeVisible()
