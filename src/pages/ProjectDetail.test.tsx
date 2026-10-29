@@ -16,7 +16,8 @@ describe('ProjectDetail', () => {
       const { container } = renderApp(`/projects/${slug}`)
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(project.title)
       expect(document.title).toBe(pageTitle(project.title))
-      for (const section of [study.problem, study.process, study.outcome]) {
+      for (const section of [study.problem, study.process, study.solution, study.outcome]) {
+        if (!section) continue
         expect(screen.getByRole('region', { name: section.heading })).toBeInTheDocument()
       }
       for (const img of screen.queryAllByRole('img')) {

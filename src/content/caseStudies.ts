@@ -18,9 +18,6 @@ import tablesPrototype from '../assets/case-studies/adaptive-tables/tables-proto
 import tablesSectioning from '../assets/case-studies/adaptive-tables/tables-sectioning.webp'
 import tablesSketches from '../assets/case-studies/adaptive-tables/tables-sketches.webp'
 import tablesWhiteboard from '../assets/case-studies/adaptive-tables/tables-whiteboard.webp'
-import videoCallHifiAppointmentForm from '../assets/case-studies/in-app-video-call/video-call-hifi-appointment-form.webp'
-import videoCallHifiLogin from '../assets/case-studies/in-app-video-call/video-call-hifi-login.webp'
-import videoCallHifiUpcoming from '../assets/case-studies/in-app-video-call/video-call-hifi-upcoming.webp'
 import videoCallPaperMockups from '../assets/case-studies/in-app-video-call/video-call-paper-mockups.webp'
 import videoCallPrioritisationMatrix from '../assets/case-studies/in-app-video-call/video-call-prioritisation-matrix.webp'
 import videoCallProblemStatement from '../assets/case-studies/in-app-video-call/video-call-problem-statement.webp'
@@ -65,6 +62,8 @@ export interface VideoMedia extends MediaBase {
   poster: string
   /** What happens in the video, in text: the alternative for video-only content (WCAG 1.2.1). */
   description: string
+  /** A visible label above the video, e.g. "Prototype". */
+  label?: string
 }
 
 export type Media = ImageMedia | VideoMedia
@@ -105,7 +104,7 @@ export interface CaseStudy {
   problem: CaseStudySection
   process: CaseStudySection & { steps: readonly ProcessStep[] }
   solution?: CaseStudySection
-  outcome: CaseStudySection & { stats?: readonly Stat[] }
+  outcome?: CaseStudySection & { stats?: readonly Stat[] }
   lessons?: CaseStudySection
 }
 
@@ -250,26 +249,27 @@ export const caseStudies: readonly CaseStudy[] = [
           body: [
             'Every withdrawal form shows the preferred bank account in a "Confirm bank account" step: a miniature version of the settings card, so members see the same thing everywhere.',
           ],
+          mediaLayout: 'pair',
           media: [
+            {
+              kind: 'image',
+              src: pbaHifiBankAccountCard,
+              width: 934,
+              height: 558,
+              alt: 'High-fidelity bank account card in account settings, showing the bank account with "Pending activation".',
+              caption: 'The bank account card in account settings.',
+            },
             {
               kind: 'image',
               src: pbaHifiWithdrawalConfirm,
               width: 947,
               height: 458,
               alt: 'High-fidelity "Confirm bank account" step of a withdrawal form, showing the bank account card with "Pending activation".',
-              caption: 'The "Confirm bank account" step reuses the settings card.',
+              caption: 'Its miniature in the "Confirm bank account" step of a withdrawal form.',
             },
           ],
         },
       ],
-    },
-    solution: {
-      heading: 'Rollout',
-      body: ['The feature touches many withdrawal forms, so it was rolled out in two phases.'],
-    },
-    outcome: {
-      heading: 'Outcome',
-      body: ['Shipped to all CPF members. No metrics were set for this work.'],
     },
   },
   {
@@ -284,20 +284,21 @@ export const caseStudies: readonly CaseStudy[] = [
         'During usability testing of another enhancement, users struggled to compare data in tables on mobile, scrolling horizontally again and again. One example is a housing-loan "Computation breakdown" that compares an HDB loan with a bank loan.',
         'How can we make tables on mobile screens more readable and user-friendly?',
       ],
+      mediaLayout: 'pair',
       media: [
         {
           kind: 'image',
           src: tablesProblemDesktop,
-          width: 1544,
-          height: 1048,
-          alt: 'A "Computation breakdown" page on a laptop: tables compare an HDB loan with a bank loan side by side.',
+          width: 1476,
+          height: 926,
+          alt: 'A "Computation breakdown" page on desktop: tables compare an HDB loan with a bank loan side by side.',
           caption: 'On desktop, the two loans sit side by side.',
         },
         {
           kind: 'image',
           src: tablesProblemMobile,
-          width: 508,
-          height: 1048,
+          width: 438,
+          height: 782,
           alt: 'The same page on a phone: the table is cut off after the first value column, with a horizontal scroll bar.',
           caption: 'On mobile, the comparison is hidden behind horizontal scrolling.',
         },
@@ -417,8 +418,9 @@ export const caseStudies: readonly CaseStudy[] = [
           kind: 'video',
           src: tablesPrototype,
           poster: tablesPrototypePoster,
-          width: 436,
-          height: 890,
+          width: 368,
+          height: 660,
+          label: 'Prototype',
           caption: 'Prototype of the adaptive table on a phone.',
           description:
             'The "Computation breakdown" page scrolls vertically on a phone. Each row header, such as Loan amount, Interest rate and Downpayment, is a section with the HDB loan and bank loan values stacked inside it, so no horizontal scrolling is needed.',
@@ -540,35 +542,12 @@ export const caseStudies: readonly CaseStudy[] = [
       mediaLayout: 'grid',
       media: [
         {
-          kind: 'image',
-          src: videoCallHifiLogin,
-          width: 317,
-          height: 638,
-          alt: 'Phone screen: "Log in with Singpass", with a QR code to scan with the Singpass app.',
-          caption: 'Log in with Singpass.',
-        },
-        {
-          kind: 'image',
-          src: videoCallHifiAppointmentForm,
-          width: 317,
-          height: 637,
-          alt: 'Phone screen: video call appointment form, step 1 of 2, with a choice between "Video call with CPF staff now" and "Schedule video call later", and a type of enquiry.',
-          caption: 'Choose to call now or schedule a call.',
-        },
-        {
-          kind: 'image',
-          src: videoCallHifiUpcoming,
-          width: 317,
-          height: 650,
-          alt: 'Phone screen: "Make new video call appointment" and a list of upcoming appointments, each with a date, time, enquiry type and "Edit appointment" link.',
-          caption: 'Upcoming appointments, each one editable.',
-        },
-        {
           kind: 'video',
           src: videoCallCallNow,
           poster: videoCallCallNowPoster,
-          width: 440,
-          height: 888,
+          width: 368,
+          height: 660,
+          label: 'Prototype',
           caption: 'Prototype: starting a video call.',
           description:
             'The member logs in with Singpass, opens the app menu, chooses Video call, taps "Make new video call appointment" and reaches the start of the form, which explains that they will need to turn on their camera.',
@@ -577,8 +556,9 @@ export const caseStudies: readonly CaseStudy[] = [
           kind: 'video',
           src: videoCallQueue,
           poster: videoCallQueuePoster,
-          width: 444,
-          height: 892,
+          width: 368,
+          height: 660,
+          label: 'Prototype',
           caption: 'Prototype: waiting in the queue.',
           description:
             'The member chooses to call CPF staff now and allows the camera. A waiting screen shows their place in line moving from 4th to 2nd while they wait for an available staff member. After the call ends, a feedback screen appears.',
@@ -587,8 +567,9 @@ export const caseStudies: readonly CaseStudy[] = [
           kind: 'video',
           src: videoCallReschedule,
           poster: videoCallReschedulePoster,
-          width: 438,
-          height: 896,
+          width: 368,
+          height: 660,
+          label: 'Prototype',
           caption: 'Prototype: rescheduling an appointment.',
           description:
             'From the list of upcoming appointments, the member edits one, picks a new enquiry type, date and time, and taps Reschedule. They review the details, agree to the disclaimer and confirm, and an acknowledgement page shows the appointment was successful.',

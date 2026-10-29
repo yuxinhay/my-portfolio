@@ -25,7 +25,7 @@ export function CaseStudyMeta({ project, overview }: CaseStudyMetaProps) {
           </div>
         ))}
       </dl>
-      {overview.team && <Text className="max-w-prose">{overview.team}</Text>}
+      {overview.team && <Text>{overview.team}</Text>}
     </div>
   )
 }

@@ -177,7 +177,7 @@ export function HowIBuiltThis() {
             'Text and accent colours at least 4.5:1 in every scene, checked in CI.',
             'After a route change, focus moves to the new page’s heading.',
             'Meaningful alt text, text descriptions for videos, and no meaning carried by colour alone.',
-            'Layouts reflow at 320px and 200% zoom; motion respects reduced-motion settings and nothing auto-plays.',
+            'Layouts reflow at 320px and 200% zoom. Prototype videos play only while on screen, can be paused, and stay still with reduced motion.',
             'Each pull request includes a keyboard-only and screen reader checklist.',
           ]}
         />

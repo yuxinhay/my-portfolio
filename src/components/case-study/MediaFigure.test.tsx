@@ -35,7 +35,7 @@ describe('MediaFigure', () => {
     )
   })
 
-  it('renders a video with controls, no autoplay or loop, and a linked text description', () => {
+  it('renders a video with controls, no autoplay attribute or loop, and a linked text description', () => {
     const video = firstVideo()
     const { container } = render(<MediaFigure media={video} />)
     const element = container.querySelector('video')
@@ -49,6 +49,15 @@ describe('MediaFigure', () => {
     expect(element?.querySelector('source')).toHaveAttribute('src', video.src)
     const description = screen.getByText(video.description, { exact: false })
     expect(element).toHaveAttribute('aria-describedby', description.id)
+  })
+
+  it('shows the video label above the video', () => {
+    const video = firstVideo()
+    const { container } = render(<MediaFigure media={video} />)
+    const label = screen.getByText('Prototype')
+    expect(label.compareDocumentPosition(container.querySelector('video')!)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
   })
 
   it('renders nothing for an empty group', () => {

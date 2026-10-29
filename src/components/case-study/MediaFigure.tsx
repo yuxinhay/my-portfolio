@@ -1,8 +1,10 @@
-import { useId } from 'react'
+import { useId, useRef } from 'react'
 import type { ImageMedia, Media, MediaLayout, VideoMedia } from '../../content/caseStudies'
 import { Link } from '../ui/Link'
+import { Tag } from '../ui/Tag'
 import { Text } from '../ui/Text'
 import { cx } from '../ui/styles'
+import { usePlayInView } from './usePlayInView'
 
 // Light-stroke drawings sit on the ink scene so they stay visible on the blush page.
 const SURFACE: Record<NonNullable<Media['background']>, string> = {
@@ -28,12 +30,16 @@ function Image({ media }: { media: ImageMedia }) {
 }
 
 /**
- * A screen recording without sound: native controls, no autoplay or loop, and nothing loads until
- * the visitor presses play. The text description is the alternative for video-only content.
+ * A screen recording without sound, with native controls and no loop. Nothing loads until it
+ * scrolls into view and starts playing (or the visitor presses play); under reduced motion it
+ * waits for the visitor. The text description is the alternative for video-only content.
  */
 function Video({ media, descriptionId }: { media: VideoMedia; descriptionId: string }) {
+  const ref = useRef<HTMLVideoElement>(null)
+  usePlayInView(ref)
   return (
     <video
+      ref={ref}
       controls
       muted
       playsInline
@@ -59,6 +65,7 @@ export function MediaFigure({ media }: MediaFigureProps) {
   const descriptionId = useId()
   return (
     <figure className="grid content-start justify-items-start gap-3">
+      {media.kind === 'video' && media.label && <Tag variant="solid">{media.label}</Tag>}
       <div className={cx('max-w-full', media.background && SURFACE[media.background])}>
         {media.kind === 'image' ? (
           <Image media={media} />
@@ -66,7 +73,7 @@ export function MediaFigure({ media }: MediaFigureProps) {
           <Video media={media} descriptionId={descriptionId} />
         )}
       </div>
-      <figcaption className="grid max-w-prose gap-2">
+      <figcaption className="grid gap-2">
         <Text variant="small">
           {media.caption}
           {media.kind === 'image' && media.fullSize && (

@@ -58,3 +58,8 @@ rejected and why).
   violations, no 404s under `/my-portfolio/`, no autoplay and no overflow at 1280px and 320px. The
   process page reads `docs/plan.md` and the ADRs directly. Layout and wording choices are listed
   in the PR for my review.
+- 2026-10-29: I reviewed the step 8 pages and asked for changes in the same PR: case-study text
+  as wide as the media, ink-scene text in blush instead of pink, device frames cropped from
+  screenshots and videos, prototype videos labelled and playing when scrolled into view (still
+  paused under reduced motion), screenshots that repeated the videos removed, the PBA rollout and
+  outcome sections removed, and the settings card shown beside its withdrawal-form miniature.

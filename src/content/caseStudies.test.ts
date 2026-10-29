@@ -83,9 +83,18 @@ describe('case studies', () => {
     }
   })
 
-  it('uses each media file once', () => {
-    const sources = media.map((item) => item.src)
-    expect(new Set(sources).size).toBe(sources.length)
+  it('never repeats a media file within one group (a screenshot may appear in two steps)', () => {
+    for (const study of caseStudies) {
+      const { problem, process, solution, outcome, lessons } = study
+      for (const part of [problem, process, ...process.steps, solution, outcome, lessons]) {
+        const sources = (part?.media ?? []).map((item) => item.src)
+        expect(new Set(sources).size).toBe(sources.length)
+      }
+    }
+  })
+
+  it('labels every video as a prototype', () => {
+    for (const item of media) if (item.kind === 'video') expect(item.label).toBe('Prototype')
   })
 
   it('links each project to its neighbours in list order, without wrapping', () => {

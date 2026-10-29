@@ -33,7 +33,7 @@ export function CaseStudy({ project, study }: CaseStudyProps) {
         className="break-words hyphens-auto"
       >
         <Text variant="eyebrow">{project.role} case study</Text>
-        <p className={cx(TEXT_RECIPES.h3, 'max-w-prose hyphens-none')}>{project.summary}</p>
+        <p className={cx(TEXT_RECIPES.h3, 'hyphens-none')}>{project.summary}</p>
         <CaseStudyMeta project={project} overview={study.overview} />
       </WrappedSection>
 
@@ -55,23 +55,25 @@ export function CaseStudy({ project, study }: CaseStudyProps) {
         </WrappedSection>
       )}
 
-      <WrappedSection id="outcome" scene="cobalt" title={outcome.heading}>
-        <Blocks blocks={outcome.body} />
-        {outcome.stats && (
-          <ul className="grid gap-10 sm:grid-cols-2">
-            {outcome.stats.map(({ value, label }) => (
-              <li key={label}>
-                {/* One paragraph, so a screen reader reads "40+ use-case submissions assessed". */}
-                <p className="grid gap-2">
-                  <span className={cx(TEXT_RECIPES.display, 'text-scene-accent')}>{value}</span>{' '}
-                  <span className={TEXT_RECIPES.h3}>{label}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-        <MediaGroup media={outcome.media} layout={outcome.mediaLayout} />
-      </WrappedSection>
+      {outcome && (
+        <WrappedSection id="outcome" scene="cobalt" title={outcome.heading}>
+          <Blocks blocks={outcome.body} />
+          {outcome.stats && (
+            <ul className="grid gap-10 sm:grid-cols-2">
+              {outcome.stats.map(({ value, label }) => (
+                <li key={label}>
+                  {/* One paragraph, so a screen reader reads "40+ use-case submissions assessed". */}
+                  <p className="grid gap-2">
+                    <span className={cx(TEXT_RECIPES.display, 'text-scene-accent')}>{value}</span>{' '}
+                    <span className={TEXT_RECIPES.h3}>{label}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+          <MediaGroup media={outcome.media} layout={outcome.mediaLayout} />
+        </WrappedSection>
+      )}
 
       {lessons && (
         <WrappedSection id="lessons" scene="ink" title={lessons.heading}>
