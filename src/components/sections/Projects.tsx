@@ -5,6 +5,7 @@ import { Card } from '../ui/Card'
 import { Heading } from '../ui/Heading'
 import { Tag } from '../ui/Tag'
 import { Text } from '../ui/Text'
+import { CARD_LIFT, cx } from '../ui/styles'
 import { WrappedSection } from './WrappedSection'
 
 export interface ProjectsProps {
@@ -13,7 +14,8 @@ export interface ProjectsProps {
 
 /**
  * Project cards. The title is the card's only link, and it covers the whole card (a pseudo-element
- * stretched over it), so the card is one large target but one tab stop with a meaningful name.
+ * stretched over it), so the card is one large target but one tab stop with a meaningful name. Hovering the card or
+ * focusing its link lifts the card.
  */
 export function Projects({ projects = defaultProjects }: ProjectsProps) {
   return (
@@ -21,7 +23,11 @@ export function Projects({ projects = defaultProjects }: ProjectsProps) {
       <ul className="grid gap-6 md:grid-cols-2">
         {projects.map(({ slug, title, role, when, status, summary }) => (
           <li key={slug} className="grid">
-            <Card as="article" aria-labelledby={`project-${slug}`} className="relative">
+            <Card
+              as="article"
+              aria-labelledby={`project-${slug}`}
+              className={cx('relative', CARD_LIFT)}
+            >
               <Text variant="eyebrow" className="text-scene-accent">
                 {role} · {when}
               </Text>

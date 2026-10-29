@@ -53,3 +53,9 @@
     transition-delay: calc(var(--reveal-step, 0) * var(--duration-stagger));
   }
 }
+
+/* Lift: the hard offset shadow for hover, focus-visible and press states, in the scene's text
+   colour so it shows on every scene. Movement is added separately with motion-safe: utilities. */
+@utility shadow-lift {
+  box-shadow: 0 calc(var(--spacing) * 1.5) 0 0 var(--scene-fg);
+}

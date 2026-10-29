@@ -1,5 +1,5 @@
 import type { ComponentPropsWithRef } from 'react'
-import { COLOR_TRANSITION, FOCUS_RING, cx } from './styles'
+import { FOCUS_RING, LIFT, cx } from './styles'
 
 export type ButtonVariant = 'primary' | 'secondary'
 
@@ -14,7 +14,10 @@ const VARIANTS: Record<ButtonVariant, string> = {
   secondary: 'border-scene-fg text-scene-fg hover:border-scene-accent hover:text-scene-accent',
 }
 
-/** A native button styled for the current scene. Defaults to `type="button"`. */
+/**
+ * A native button styled for the current scene. Defaults to `type="button"`. Hover and keyboard
+ * focus lift it with a hard shadow; pressing it presses it down (`LIFT`).
+ */
 export function Button({ variant = 'primary', type = 'button', className, ...props }: ButtonProps) {
   return (
     <button
@@ -22,7 +25,7 @@ export function Button({ variant = 'primary', type = 'button', className, ...pro
       className={cx(
         'inline-flex cursor-pointer items-center justify-center gap-2 rounded-pill border-(length:--border-rule) px-6 py-3 text-body leading-normal font-bold',
         VARIANTS[variant],
-        COLOR_TRANSITION,
+        LIFT,
         FOCUS_RING,
         className,
       )}

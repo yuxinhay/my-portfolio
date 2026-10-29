@@ -2,7 +2,7 @@ import { adjacentProjects } from '../../content/projects'
 import { RouteLink } from '../layout/RouteLink'
 import { Text } from '../ui/Text'
 import { VisuallyHidden } from '../ui/VisuallyHidden'
-import { TEXT_RECIPES, cx } from '../ui/styles'
+import { LINK_LIFT, TEXT_RECIPES, cx } from '../ui/styles'
 
 export interface ProjectPagerProps {
   /** The current project. */
@@ -35,14 +35,16 @@ export function ProjectPager({ slug }: ProjectPagerProps) {
             <Text variant="eyebrow" aria-hidden="true">
               {label}
             </Text>
-            <RouteLink to={`/projects/${project.slug}`} className={TEXT_RECIPES.h3}>
+            <RouteLink to={`/projects/${project.slug}`} className={cx(TEXT_RECIPES.h3, LINK_LIFT)}>
               <VisuallyHidden>{label}:</VisuallyHidden> {project.title}
             </RouteLink>
           </li>
         ))}
       </ul>
       <Text>
-        <RouteLink to="/#projects">Back to all projects</RouteLink>
+        <RouteLink to="/#projects" className={LINK_LIFT}>
+          Back to all projects
+        </RouteLink>
       </Text>
     </nav>
   )
