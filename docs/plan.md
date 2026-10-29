@@ -25,28 +25,30 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | 1   | Scaffold: Vite + React + TS, oxlint, Prettier, Husky, commitlint, `CLAUDE.md`, ADR 0001  | Done     | [#1](https://github.com/yuxinhay/my-portfolio/pull/1) |
 | 2   | CI + deploy to GitHub Pages; PR/issue templates; repo settings                           | Done     | [#2](https://github.com/yuxinhay/my-portfolio/pull/2) |
 | 3   | Design tokens → Tailwind, scenes, contrast + token-usage gates, ADR 0002                 | Done     | [#3](https://github.com/yuxinhay/my-portfolio/pull/3) |
-| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | Done     |                                                       |
-| 5   | UI primitives with stories, unit tests and axe tests                                     | **Next** |                                                       |
-| 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management     | To do    |                                                       |
+| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | Done     | [#5](https://github.com/yuxinhay/my-portfolio/pull/5) |
+| 5   | UI primitives with stories, unit tests and axe tests                                     | Done     | [#6](https://github.com/yuxinhay/my-portfolio/pull/6) |
+| 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management     | **Next** |                                                       |
 | 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements | To do    |                                                       |
 | 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                 | To do    |                                                       |
 | 9   | Playwright + axe e2e, Lighthouse CI budgets, release-please, README polish               | To do    |                                                       |
 
 ## Decisions so far
 
-| Area          | Decision                                                                                                        | Record                                         |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| Stack         | Vite + React 19 + TypeScript (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), npm, Node ≥ 24 | [ADR 0001](adr/0001-vite-react-typescript.md)  |
-| Linting       | **oxlint** instead of ESLint: Vite default, built-in `jsx-a11y` rules                                           | [ADR 0001](adr/0001-vite-react-typescript.md)  |
-| Styling       | Tailwind CSS v4 generated from DTCG tokens via Style Dictionary; Tailwind defaults reset                        | [ADR 0002](adr/0002-tailwind-design-tokens.md) |
-| Colour        | Theme D **"Bubblegum Bold"**: blush, hot pink, cobalt, ink. `pink.600` darkened to `#CC0F4C` to pass AA         | [ADR 0002](adr/0002-tailwind-design-tokens.md) |
-| Typography    | **Inter only**, self-hosted; weight 900 + tight tracking for display                                            | [ADR 0002](adr/0002-tailwind-design-tokens.md) |
-| Theming       | Wrapped-style **scenes** (`scene-blush/pink/cobalt/ink`) replace a light/dark toggle                            | [ADR 0002](adr/0002-tailwind-design-tokens.md) |
-| Design source | Code only; **no Figma**. Theme and type chosen from prototypes on branch `prototype/wrapped-themes`             | [ADR 0002](adr/0002-tailwind-design-tokens.md) |
-| Hosting       | GitHub Pages via Actions at `https://yuxinhay.github.io/my-portfolio/`; repo is **public**                      | This plan                                      |
-| Git workflow  | `main` protected: PR + both CI checks required, linear history, **squash merge only**, branches auto-deleted    | This plan                                      |
-| Storybook     | Storybook 10 (React + Vite); Foundations stories read `tokens/*.json`; built in CI, published at `/storybook/`  | [ADR 0003](adr/0003-storybook-foundations.md)  |
-| Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                         | This plan                                      |
+| Area          | Decision                                                                                                        | Record                                             |
+| ------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Stack         | Vite + React 19 + TypeScript (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), npm, Node ≥ 24 | [ADR 0001](adr/0001-vite-react-typescript.md)      |
+| Linting       | **oxlint** instead of ESLint: Vite default, built-in `jsx-a11y` rules                                           | [ADR 0001](adr/0001-vite-react-typescript.md)      |
+| Styling       | Tailwind CSS v4 generated from DTCG tokens via Style Dictionary; Tailwind defaults reset                        | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
+| Colour        | Theme D **"Bubblegum Bold"**: blush, hot pink, cobalt, ink. `pink.600` darkened to `#CC0F4C` to pass AA         | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
+| Typography    | **Inter only**, self-hosted; weight 900 + tight tracking for display                                            | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
+| Theming       | Wrapped-style **scenes** (`scene-blush/pink/cobalt/ink`) replace a light/dark toggle                            | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
+| Design source | Code only; **no Figma**. Theme and type chosen from prototypes on branch `prototype/wrapped-themes`             | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
+| Hosting       | GitHub Pages via Actions at `https://yuxinhay.github.io/my-portfolio/`; repo is **public**                      | This plan                                          |
+| Git workflow  | `main` protected: PR + both CI checks required, linear history, **squash merge only**, branches auto-deleted    | This plan                                          |
+| Storybook     | Storybook 10 (React + Vite); Foundations stories read `tokens/*.json`; built in CI, published at `/storybook/`  | [ADR 0003](adr/0003-storybook-foundations.md)      |
+| Testing       | Vitest + Testing Library + axe-core in jsdom; every story is axe-tested; contrast stays a token gate            | [ADR 0004](adr/0004-vitest-testing-library-axe.md) |
+| Typography    | Shared text recipes in `src/components/ui/styles.ts`; small text is `font-medium` (reviewed in a prototype)     | This plan                                          |
+| Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                         | This plan                                          |
 
 ## Repo layout (target)
 
@@ -83,7 +85,7 @@ my-portfolio/
 | Scene contrast ≥ AA          | CI, AI hook               | Live   |
 | Token-only styling           | CI, AI hook               | Live   |
 | Storybook a11y addon         | Storybook; built in CI    | Live   |
-| Unit tests + axe (Vitest)    | CI                        | Step 5 |
+| Unit tests + axe (Vitest)    | CI                        | Live   |
 | Playwright + axe, 320px/200% | CI                        | Step 9 |
 | Lighthouse CI (a11y = 100)   | CI                        | Step 9 |
 

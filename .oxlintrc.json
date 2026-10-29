@@ -12,7 +12,9 @@
     "react/react-in-jsx-scope": "off",
     "import/no-unassigned-import": [
       "warn",
-      { "allow": ["**/*.css", "@fontsource*/**", "@fontsource*"] }
+      {
+        "allow": ["**/*.css", "@fontsource*/**", "@fontsource*", "@testing-library/jest-dom/vitest"]
+      }
     ],
     "typescript/no-explicit-any": "error",
     "typescript/consistent-type-imports": "error",
