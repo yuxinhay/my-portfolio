@@ -110,6 +110,13 @@ dialog::backdrop {
 .glance-frame {
   --glance-width: min(calc(var(--spacing) * 96), 100cqw - calc(var(--spacing) * 8));
   container-type: inline-size;
+  /* The frame lends its controls the ink scene's roles, but they sit straight on the scrim. */
+  background-color: transparent;
+
+  /* Above the confetti canvas, which is drawn behind the card. */
+  & > * {
+    position: relative;
+  }
 }
 
 .glance-stage {
@@ -134,8 +141,23 @@ dialog::backdrop {
   }
 }
 
+/* Skip above the card's top right, and the row of Back, dots and Next below it: both exactly
+   as wide as the card, so Skip, Back and Next line up with its edges. */
+.glance-bar,
 .glance-controls {
   width: var(--glance-width);
+  margin-inline: auto;
+}
+
+/* On a phone the row is narrow: Back and Next take less padding and the small text step, so
+   "Explore my work" still fits beside Back and the dots (on two lines at 320px, with Back
+   stretched to the same height). */
+@container (width < 30rem) {
+  .glance-control {
+    padding-inline: calc(var(--spacing) * 3);
+    font-size: var(--text-small);
+    text-wrap: balance;
+  }
 }
 
 .glance-card {
@@ -212,6 +234,19 @@ dialog::backdrop {
     &[data-position='near'] {
       animation: glance-fade-in var(--duration-base) var(--ease-out) backwards;
       animation-delay: calc(var(--duration-fast) + var(--duration-base));
+    }
+  }
+
+  /* The automatic first-visit opening waits a beat longer, so the card pops with the confetti. */
+  .glance-dialog[data-opening][data-celebrate] .glance-card {
+    &[data-position='current'] {
+      animation-delay: calc(var(--duration-fast) + var(--duration-celebrate));
+    }
+
+    &[data-position='near'] {
+      animation-delay: calc(
+        var(--duration-fast) + var(--duration-celebrate) + var(--duration-base)
+      );
     }
   }
 }

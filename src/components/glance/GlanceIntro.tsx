@@ -16,7 +16,8 @@ type Shown = 'none' | 'first-visit' | 'replay'
 /**
  * The "At a glance" intro for the home page, and the button that replays it. It opens by itself
  * only when the visit starts on the home page and the visitor has never closed it (remembered in
- * localStorage); arriving at home from another page does not open it. Closing it moves focus to
+ * localStorage); arriving at home from another page does not open it. Only that first opening
+ * celebrates with confetti; a replay does not. Closing it moves focus to
  * the page's h1, except a replay closed with Skip or Escape, which returns to the Replay button.
  */
 export function GlanceIntro({ glance = defaultGlance }: GlanceIntroProps) {
@@ -46,7 +47,9 @@ export function GlanceIntro({ glance = defaultGlance }: GlanceIntroProps) {
       >
         Replay intro
       </Button>
-      {shown !== 'none' && <GlanceOverlay glance={glance} onClose={handleClose} />}
+      {shown !== 'none' && (
+        <GlanceOverlay glance={glance} celebrate={shown === 'first-visit'} onClose={handleClose} />
+      )}
     </>
   )
 }

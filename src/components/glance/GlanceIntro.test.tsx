@@ -19,6 +19,8 @@ describe('GlanceIntro', () => {
     const user = userEvent.setup()
     const first = renderApp('/')
     expect(intro()).toBeInTheDocument()
+    // Only the automatic first opening celebrates.
+    expect(intro()).toHaveAttribute('data-celebrate')
     await user.click(screen.getByRole('button', { name: 'Skip' }))
     expect(intro()).toBeNull()
     expect(localStorage.getItem(GLANCE_SEEN_KEY)).not.toBeNull()
@@ -54,6 +56,8 @@ describe('GlanceIntro', () => {
     const replay = screen.getByRole('button', { name: 'Replay intro' })
     await user.click(replay)
     expect(intro()).toBeInTheDocument()
+    expect(intro()).not.toHaveAttribute('data-celebrate')
+    expect(intro()?.querySelector('canvas')).toBeNull()
     expect(screen.getByRole('button', { name: 'Next' })).toHaveFocus()
     await user.keyboard('{Escape}')
     expect(intro()).toBeNull()

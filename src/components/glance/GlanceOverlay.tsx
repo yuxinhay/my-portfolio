@@ -1,7 +1,8 @@
-import { useEffectEvent, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, PointerEvent } from 'react'
 import { glance as defaultGlance } from '../../content/glance'
 import type { Glance } from '../../content/glance'
+import { CELEBRATE_DELAY, CONFETTI_DURATION, prefersReducedMotion } from '../motion/motion'
 import { Button } from '../ui/Button'
 import { FOCUS_RING, cx } from '../ui/styles'
 import { GlanceCard } from './GlanceCard'
@@ -12,8 +13,75 @@ export interface GlanceOverlayProps {
   glance?: Glance
   /** The card to open on. */
   initialIndex?: number
+  /**
+   * The automatic first-visit opening: the card pops a beat later (`duration.celebrate`) with one
+   * burst of confetti. Ignored under reduced motion. Replays leave it off.
+   */
+  celebrate?: boolean
   /** Called once the dialog has closed: `explore` from the last card's button, `skip` otherwise. */
   onClose: (reason: GlanceCloseReason) => void
+}
+
+// Confetti colours: the palette's pink, cobalt, blush and white (colour tokens, read at runtime).
+const CONFETTI_COLORS = [
+  '--color-pink-300',
+  '--color-pink-600',
+  '--color-cobalt-500',
+  '--color-blush',
+  '--color-white',
+]
+
+/**
+ * One burst of confetti from behind the current card, on a canvas that exists only while it
+ * plays. The drawing code is loaded on demand.
+ */
+function Confetti({ onDone }: { onDone: () => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const done = useEffectEvent(onDone)
+
+  useEffect(() => {
+    let stop: (() => void) | undefined
+    let cancelled = false
+    const timer = window.setTimeout(() => {
+      void import('./confetti').then(({ burstConfetti }) => {
+        const canvas = canvasRef.current
+        const card = canvas
+          ?.closest('dialog')
+          ?.querySelector<HTMLElement>('[data-position="current"]')
+        if (cancelled || !canvas || !card) return
+        // The card is mid-pop (scaled about its centre), so take its centre from the screen and
+        // its size from the layout.
+        const box = card.getBoundingClientRect()
+        const { offsetWidth: width, offsetHeight: height } = card
+        const root = getComputedStyle(document.documentElement)
+        stop = burstConfetti(canvas, {
+          from: {
+            x: box.left + box.width / 2 - width / 2,
+            y: box.top + box.height / 2 - height / 2,
+            width,
+            height,
+          },
+          duration: CONFETTI_DURATION,
+          colors: CONFETTI_COLORS.map((name) => root.getPropertyValue(name).trim()),
+          onDone: done,
+        })
+      })
+    }, CELEBRATE_DELAY)
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+      stop?.()
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      data-confetti=""
+      className="pointer-events-none fixed inset-0 size-full"
+    />
+  )
 }
 
 /** A horizontal swipe longer than this (CSS pixels) changes the card. */
@@ -32,12 +100,15 @@ function position(offset: number): 'current' | 'near' | 'far' {
  * from assistive technology. On opening the current card pops out; cards slide, scale and fade
  * between positions; under reduced motion all of it is instant (CSS). Nothing advances by itself:
  * Next and Back, the dots, the Left and Right arrow keys and a swipe change the card. Each card is
- * a group announced as "Card 2 of 6"; a polite live region repeats that when the card changes. It
+ * a group announced as "Card 2 of 6"; a polite live region repeats that when the card changes. Skip
+ * floats above the card's top right; Back, the dots and Next sit in one row below it, straight on
+ * the dimmed page. On a first visit (`celebrate`) the card pops a beat later, with confetti. It
  * mounts open and calls `onClose` after it closes.
  */
 export function GlanceOverlay({
   glance = defaultGlance,
   initialIndex = 0,
+  celebrate = false,
   onClose,
 }: GlanceOverlayProps) {
   const { cards, label } = glance
@@ -46,6 +117,8 @@ export function GlanceOverlay({
   const [moved, setMoved] = useState(false)
   // Until the first move the dialog plays its entrance (CSS, only when motion is allowed).
   const [opening, setOpening] = useState(true)
+  // Decided once, on opening: the confetti and its pause never start halfway through.
+  const [confetti, setConfetti] = useState(() => celebrate && !prefersReducedMotion())
   const dialogRef = useRef<HTMLDialogElement>(null)
   const nextRef = useRef<HTMLButtonElement>(null)
   const backRef = useRef<HTMLButtonElement>(null)
@@ -119,9 +192,18 @@ export function GlanceOverlay({
       aria-label={label}
       onKeyDown={handleKeyDown}
       data-opening={opening || undefined}
+      data-celebrate={celebrate || undefined}
       className="glance-dialog m-0 h-dvh max-h-none w-full max-w-none overflow-hidden border-0 bg-transparent p-0"
     >
-      <div className="glance-frame flex h-full flex-col justify-center gap-2 py-2 sm:gap-4 sm:py-6">
+      {confetti && <Confetti onDone={() => setConfetti(false)} />}
+      {/* The controls sit on the dimmed page, so they take the ink scene's light-on-dark roles
+          (index.css drops its background). */}
+      <div className="glance-frame scene-ink flex h-full flex-col justify-center gap-2 py-2 sm:gap-3 sm:py-6">
+        <div className="glance-bar flex justify-end">
+          <Button variant="ghost" onClick={() => close('skip')}>
+            Skip
+          </Button>
+        </div>
         <div
           className="glance-stage touch-pan-y"
           onPointerDown={handlePointerDown}
@@ -160,12 +242,20 @@ export function GlanceOverlay({
           })}
         </div>
 
-        {/* Skip, the dots, then Back and Next: one row on wide screens, two on a phone. */}
-        <div className="glance-controls scene-ink mx-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-card p-3">
-          <Button variant="secondary" onClick={() => close('skip')}>
-            Skip
+        {/* Back, the dots and Next in one symmetric row. On card 1 Back keeps its place but is
+            hidden from everyone, so the dots stay centred. */}
+        <div className="glance-controls flex items-stretch justify-between gap-1 sm:gap-2">
+          <Button
+            ref={backRef}
+            variant="secondary"
+            disabled={index === 0}
+            aria-hidden={index === 0 || undefined}
+            onClick={() => go(index - 1)}
+            className={cx('glance-control', index === 0 && 'invisible')}
+          >
+            Back
           </Button>
-          <ul className="flex">
+          <ul className="flex items-center">
             {cards.map((card, cardIndex) => (
               <li key={card.id}>
                 <button
@@ -174,7 +264,7 @@ export function GlanceOverlay({
                   aria-current={cardIndex === index ? 'true' : undefined}
                   onClick={() => go(cardIndex)}
                   className={cx(
-                    'grid cursor-pointer place-items-center rounded-pill p-1.5',
+                    'grid cursor-pointer place-items-center rounded-pill px-1 py-2',
                     FOCUS_RING,
                   )}
                 >
@@ -182,24 +272,21 @@ export function GlanceOverlay({
                   <span
                     aria-hidden="true"
                     className={cx(
-                      'block h-3 rounded-pill border-(length:--border-rule) border-scene-fg',
-                      cardIndex === index ? 'w-8 bg-scene-fg' : 'w-3',
+                      'block h-2.5 rounded-pill border-(length:--border-rule) border-scene-fg',
+                      cardIndex === index ? 'w-5 bg-scene-fg' : 'w-2.5',
                     )}
                   />
                 </button>
               </li>
             ))}
           </ul>
-          <div className="ml-auto flex flex-wrap justify-end gap-3">
-            {index > 0 && (
-              <Button ref={backRef} variant="secondary" onClick={() => go(index - 1)}>
-                Back
-              </Button>
-            )}
-            <Button ref={nextRef} onClick={() => (last ? close('explore') : go(index + 1))}>
-              {last ? 'Explore my work' : 'Next'}
-            </Button>
-          </div>
+          <Button
+            ref={nextRef}
+            onClick={() => (last ? close('explore') : go(index + 1))}
+            className="glance-control"
+          >
+            {last ? 'Explore my work' : 'Next'}
+          </Button>
         </div>
 
         <p aria-live="polite" className="sr-only">

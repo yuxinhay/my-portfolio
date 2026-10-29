@@ -8,6 +8,13 @@ function milliseconds(value: string): number {
 /** How long a number counts up (`duration.count`). */
 export const COUNT_DURATION = milliseconds(layout.duration.count.$value)
 
+/** When the first-visit intro card pops, after the backdrop (`duration.fast` + `duration.celebrate`). */
+export const CELEBRATE_DELAY =
+  milliseconds(layout.duration.fast.$value) + milliseconds(layout.duration.celebrate.$value)
+
+/** How long the first-visit confetti lasts (`duration.confetti`). */
+export const CONFETTI_DURATION = milliseconds(layout.duration.confetti.$value)
+
 /** The media query for visitors who ask for less motion. */
 export const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
 

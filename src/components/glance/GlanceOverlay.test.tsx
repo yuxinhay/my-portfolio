@@ -42,6 +42,57 @@ describe('GlanceOverlay', () => {
     expect(screen.queryByRole('button', { name: 'Back' })).toBeNull()
   })
 
+  it("keeps Back's place on card 1, hidden from everyone, so the row stays symmetric", () => {
+    const { container } = renderOverlay()
+    const back = container.querySelector('.glance-controls button')
+    expect(back).toHaveTextContent('Back')
+    expect(back).toHaveClass('invisible')
+    expect(back).toBeDisabled()
+    expect(back).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('puts Skip first, then the card, then Back, the dots and Next', async () => {
+    const user = userEvent.setup()
+    renderOverlay(1)
+    const order = () =>
+      (document.activeElement as HTMLElement).getAttribute('aria-label') ??
+      (document.activeElement as HTMLElement).textContent
+    screen.getByRole('button', { name: 'Skip' }).focus()
+    const reached = [order()]
+    for (let i = 0; i < 4; i++) {
+      await user.tab()
+      reached.push(order())
+    }
+    expect(reached).toEqual([
+      'Skip',
+      `Card 2 of ${COUNT}`,
+      'Back',
+      `Go to card 1 of ${COUNT}`,
+      `Go to card 2 of ${COUNT}`,
+    ])
+  })
+
+  it('celebrates a first visit with confetti, a canvas hidden from assistive technology', () => {
+    const onClose = vi.fn()
+    const { container } = render(<GlanceOverlay onClose={onClose} celebrate />)
+    expect(dialog()).toHaveAttribute('data-celebrate')
+    const canvas = container.querySelector('canvas')
+    expect(canvas).toHaveAttribute('aria-hidden', 'true')
+    expect(canvas).toHaveClass('pointer-events-none')
+  })
+
+  it('has no confetti without `celebrate` (a replay) or under reduced motion', () => {
+    const onClose = vi.fn()
+    const replay = render(<GlanceOverlay onClose={onClose} />)
+    expect(replay.container.querySelector('canvas')).toBeNull()
+    expect(dialog()).not.toHaveAttribute('data-celebrate')
+    replay.unmount()
+
+    stubReducedMotion(true)
+    const reduced = render(<GlanceOverlay onClose={onClose} celebrate />)
+    expect(reduced.container.querySelector('canvas')).toBeNull()
+  })
+
   it('hides every card but the current one', () => {
     const { container } = renderOverlay()
     const hidden = container.querySelectorAll('[role="group"][inert]')
@@ -89,7 +140,7 @@ describe('GlanceOverlay', () => {
     expect(live).toHaveTextContent(`Card 2 of ${COUNT}`)
     await user.click(screen.getByRole('button', { name: 'Back' }))
     expect(currentCard()).toHaveAccessibleName(`Card 1 of ${COUNT}`)
-    // Back is gone on the first card, so focus moved to Next rather than being lost.
+    // Back is hidden on the first card, so focus moved to Next rather than being lost.
     expect(screen.queryByRole('button', { name: 'Back' })).toBeNull()
     expect(screen.getByRole('button', { name: 'Next' })).toHaveFocus()
   })

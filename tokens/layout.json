@@ -31,7 +31,15 @@
       "$value": "1000ms",
       "$description": "Count-up numbers: long enough to read as counting, short of the 1s ceiling"
     },
-    "stagger": { "$value": "60ms", "$description": "Delay between siblings in a scroll reveal" }
+    "stagger": { "$value": "60ms", "$description": "Delay between siblings in a scroll reveal" },
+    "celebrate": {
+      "$value": "500ms",
+      "$description": "First-visit intro only: the extra pause after the backdrop before the card pops, with confetti"
+    },
+    "confetti": {
+      "$value": "1800ms",
+      "$description": "First-visit confetti: one burst that falls and fades out, then is removed"
+    }
   },
   "easing": {
     "$type": "cubicBezier",
