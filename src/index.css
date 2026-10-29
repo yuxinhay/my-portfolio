@@ -54,10 +54,20 @@
   }
 }
 
-/* Lift: the hard offset shadow for hover, focus-visible and press states, in the scene's text
-   colour so it shows on every scene. Movement is added separately with motion-safe: utilities. */
+/* Lift: the hard offset shadow for hover, focus-visible and press states. It is a slab in the
+   scene's text colour, so its edge shows on every scene. Under an element filled in that same
+   colour (a primary button) a solid slab would read as the element growing, so `lift-hollow`
+   fills the slab with the scene background instead, inside a rule-width edge in the text colour:
+   the fill meets the scene's text contrast against the slab, and the edge against the page.
+   Movement is added separately with motion-safe: utilities. */
 @utility shadow-lift {
-  box-shadow: 0 calc(var(--spacing) * 1.5) 0 0 var(--scene-fg);
+  box-shadow:
+    0 calc(var(--spacing) * 1.5) 0 calc(-1 * var(--border-rule)) var(--lift-core, var(--scene-fg)),
+    0 calc(var(--spacing) * 1.5) 0 0 var(--scene-fg);
+}
+
+@utility lift-hollow {
+  --lift-core: var(--scene-bg);
 }
 
 /* Page transitions: the View Transitions API crossfades the whole page (src/app/viewTransitions.ts

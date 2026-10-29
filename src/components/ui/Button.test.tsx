@@ -39,6 +39,25 @@ describe('Button', () => {
     expect(button).toHaveClass('motion-reduce:transition-none')
   })
 
+  it('gives a primary button a hollow lift shadow, which contrasts with its fill', () => {
+    render(
+      <>
+        <Button>Save</Button>
+        <Button variant="secondary">Cancel</Button>
+      </>,
+    )
+    expect(screen.getByRole('button', { name: 'Save' })).toHaveClass(
+      'lift-hollow',
+      'hover:shadow-lift',
+    )
+    expect(screen.getByRole('button', { name: 'Cancel' })).not.toHaveClass('lift-hollow')
+  })
+
+  it("keeps a ghost button's text at full strength", () => {
+    render(<Button variant="ghost">Skip</Button>)
+    expect(screen.getByRole('button')).toHaveClass('text-scene-fg', 'bg-scene-fg/10')
+  })
+
   it('has no axe violations', async () => {
     const { container } = render(<Button>Save</Button>)
     await expectNoAxeViolations(container)

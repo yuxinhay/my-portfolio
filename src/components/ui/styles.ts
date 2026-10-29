@@ -29,7 +29,9 @@ export const FOCUS_RING =
 /**
  * Lift for buttons: on hover and keyboard focus the element rises with a hard offset shadow in the
  * scene's text colour (`shadow-lift`, index.css); pressing it scales it down and drops the shadow.
- * Under reduced motion the shadow still appears, without the movement.
+ * An element filled in the text colour adds `lift-hollow`, so its shadow is a slab of the scene
+ * background edged in the text colour, never the colour of the fill above it. Under reduced motion
+ * the shadow still appears, without the movement.
  */
 export const LIFT =
   'transition duration-(--duration-fast) ease-out hover:shadow-lift focus-visible:shadow-lift active:shadow-none motion-safe:hover:-translate-y-1.5 motion-safe:focus-visible:-translate-y-1.5 motion-safe:active:translate-y-0 motion-safe:active:scale-98 motion-reduce:transition-none'

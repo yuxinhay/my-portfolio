@@ -147,10 +147,16 @@ export const Motion: StoryObj<typeof meta> = {
       </FoundationSection>
       <FoundationSection title="Lift">
         <p className="max-w-prose text-body">
-          Hover or Tab to the button: it rises with a hard shadow in the scene’s text colour, and
-          presses down when clicked. Under reduced motion the shadow appears without the movement.
+          Hover or Tab to a button: it rises with a hard shadow in the scene’s text colour, and
+          presses down when clicked. Under a button filled in that colour the shadow is hollow (the
+          scene background, edged in the text colour), so it never reads as the button growing.
+          Under reduced motion the shadow appears without the movement.
         </p>
-        <Button className="w-fit">Lift me</Button>
+        <div className="flex flex-wrap gap-4">
+          <Button>Lift me</Button>
+          <Button variant="secondary">Lift me</Button>
+          <Button variant="ghost">Lift me</Button>
+        </div>
       </FoundationSection>
       <FoundationSection title="Backdrop">
         <ul className="grid gap-1 text-small">

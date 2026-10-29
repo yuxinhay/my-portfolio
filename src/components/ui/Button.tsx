@@ -1,17 +1,23 @@
 import type { ComponentPropsWithRef } from 'react'
 import { FOCUS_RING, LIFT, cx } from './styles'
 
-export type ButtonVariant = 'primary' | 'secondary'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost'
 
 export interface ButtonProps extends ComponentPropsWithRef<'button'> {
-  /** `primary` is filled in the scene's text colour; `secondary` is outlined. */
+  /**
+   * `primary` is filled in the scene's text colour; `secondary` is outlined; `ghost` is a quiet
+   * action (e.g. Skip): a translucent fill and border, with the text at full contrast.
+   */
   variant?: ButtonVariant
 }
 
-// Both variants keep a border, so the button stays visible in forced-colours mode.
+// Every variant keeps a border, so the button stays visible in forced-colours mode. The primary
+// fill is the lift shadow's colour, so its shadow is hollow (`lift-hollow`), not a solid slab.
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'border-scene-fg bg-scene-fg text-scene hover:border-scene-accent hover:bg-scene-accent',
+  primary:
+    'lift-hollow border-scene-fg bg-scene-fg text-scene hover:border-scene-accent hover:bg-scene-accent',
   secondary: 'border-scene-fg text-scene-fg hover:border-scene-accent hover:text-scene-accent',
+  ghost: 'border-scene-fg/40 bg-scene-fg/10 text-scene-fg hover:border-scene-fg',
 }
 
 /**
