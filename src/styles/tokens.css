@@ -70,6 +70,7 @@
   --color-scene: var(--scene-bg);
   --color-scene-fg: var(--scene-fg);
   --color-scene-accent: var(--scene-accent);
+  --color-scene-display: var(--scene-display);
   --color-scene-focus: var(--scene-focus);
   --color-scene-shape: var(--scene-shape);
   --color-scene-surface: var(--scene-surface);
@@ -79,6 +80,7 @@
   --scene-bg: var(--color-blush);
   --scene-fg: var(--color-ink-900);
   --scene-accent: var(--color-pink-700);
+  --scene-display: var(--color-pink-600);
   --scene-focus: var(--color-ink-900);
   --scene-shape: var(--color-pink-300);
   --scene-surface: var(--color-white);
@@ -90,6 +92,7 @@
   --scene-bg: var(--color-pink-600);
   --scene-fg: var(--color-white);
   --scene-accent: var(--color-blush);
+  --scene-display: var(--color-blush);
   --scene-focus: var(--color-white);
   --scene-shape: var(--color-pink-500);
   --scene-surface: var(--color-pink-700);
@@ -101,6 +104,7 @@
   --scene-bg: var(--color-cobalt-500);
   --scene-fg: var(--color-white);
   --scene-accent: var(--color-blush);
+  --scene-display: var(--color-blush);
   --scene-focus: var(--color-white);
   --scene-shape: var(--color-cobalt-400);
   --scene-surface: var(--color-ink-900);
@@ -112,6 +116,7 @@
   --scene-bg: var(--color-ink-900);
   --scene-fg: var(--color-blush);
   --scene-accent: var(--color-blush);
+  --scene-display: var(--color-blush);
   --scene-focus: var(--color-pink-300);
   --scene-shape: var(--color-ink-800);
   --scene-surface: var(--color-ink-800);
