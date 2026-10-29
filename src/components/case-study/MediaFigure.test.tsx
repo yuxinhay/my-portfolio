@@ -54,7 +54,7 @@ describe('MediaFigure', () => {
   it('shows the video label above the video', () => {
     const video = firstVideo()
     const { container } = render(<MediaFigure media={video} />)
-    const label = screen.getByText('Prototype')
+    const label = screen.getByText('Prototype video')
     expect(label.compareDocumentPosition(container.querySelector('video')!)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )

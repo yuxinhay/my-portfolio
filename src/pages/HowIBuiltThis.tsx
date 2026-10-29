@@ -29,7 +29,7 @@ function InlineText({ pieces, links = true }: { pieces: readonly Inline[]; links
 /** A bulleted list of short facts at a readable measure. */
 function FactList({ items }: { items: readonly ReactNode[] }) {
   return (
-    <ul className="grid max-w-prose list-disc gap-2 pl-5">
+    <ul className="grid list-disc gap-2 pl-5">
       {items.map((item, index) => (
         <li key={index}>
           <Text as="span">{item}</Text>
@@ -59,7 +59,7 @@ export function HowIBuiltThis() {
   return (
     <>
       <WrappedSection id="overview" scene="ink" level={1} title="How I built this">
-        <div className="grid max-w-prose gap-4">
+        <div className="grid gap-4">
           <p className={TEXT_RECIPES.h3}>
             This site is part of my portfolio, and so is the way it is built: a design system,
             accessibility checks that run on every change, a visible engineering process and a
@@ -76,7 +76,7 @@ export function HowIBuiltThis() {
       </WrappedSection>
 
       <WrappedSection id="plan" scene="cobalt" title="Plan, step by step">
-        <Text className="max-w-prose">
+        <Text>
           The work follows a written plan,{' '}
           <Link href={repoFileUrl('docs/plan.md')}>docs/plan.md</Link>, which is also the task
           tracker. Each step is one branch and one pull request, and the pull request updates the
@@ -108,7 +108,7 @@ export function HowIBuiltThis() {
       </WrappedSection>
 
       <WrappedSection id="decisions" scene="blush" title="Decisions">
-        <Text className="max-w-prose">
+        <Text>
           Significant technical decisions are recorded as architecture decision records (ADRs): the
           context, the options and the consequences.
         </Text>
@@ -129,13 +129,13 @@ export function HowIBuiltThis() {
       </WrappedSection>
 
       <WrappedSection id="quality" scene="ink" title="Quality gates">
-        <Text className="max-w-prose">
+        <Text>
           The same checks run whoever wrote the code. The main branch is protected: every change is
           a pull request that needs both CI checks to pass, history is linear and pull requests are
           squash-merged. Commit messages and pull request titles follow Conventional Commits,
           checked by commitlint.
         </Text>
-        <table className="w-full max-w-3xl border-collapse text-left">
+        <table className="w-full border-collapse text-left">
           <caption className="pb-2 text-left">
             <Text as="span">Gates from the plan, where they run and whether they are live.</Text>
           </caption>
@@ -167,9 +167,7 @@ export function HowIBuiltThis() {
       </WrappedSection>
 
       <WrappedSection id="accessibility" scene="pink" title="Accessibility">
-        <Text className="max-w-prose">
-          The target is WCAG 2.0 AA, treated as a requirement rather than polish.
-        </Text>
+        <Text>The target is WCAG 2.0 AA, treated as a requirement rather than polish.</Text>
         <FactList
           items={[
             'Semantic HTML first: landmarks, one h1 per page and a skip link.',
@@ -184,7 +182,7 @@ export function HowIBuiltThis() {
       </WrappedSection>
 
       <WrappedSection id="ai" scene="blush" title="How I use AI">
-        <Text className="max-w-prose">
+        <Text>
           I build the site with Claude Code as a pair programmer, with written rules, automated
           guardrails and my own review.
         </Text>

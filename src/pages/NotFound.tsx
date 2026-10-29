@@ -6,9 +6,7 @@ import { Text } from '../components/ui/Text'
 export function NotFound() {
   return (
     <Page title="Page not found">
-      <Text className="max-w-prose">
-        There is no page at this address. It may have moved, or the link may be mistyped.
-      </Text>
+      <Text>There is no page at this address. It may have moved, or the link may be mistyped.</Text>
       <Text>
         <RouteLink to="/">Go to the home page</RouteLink>
       </Text>

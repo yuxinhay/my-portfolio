@@ -84,9 +84,18 @@ export interface CaseStudySection {
   mediaLayout?: MediaLayout
 }
 
+/** Quotes from research or feedback sessions, shown as a numbered list. */
+export interface Insights {
+  /** e.g. "Insights from members" */
+  heading: string
+  /** The quotes as said, without quotation marks. */
+  quotes: readonly string[]
+}
+
 export interface ProcessStep {
   title: string
   body: readonly Block[]
+  insights?: Insights
   media?: readonly Media[]
   mediaLayout?: MediaLayout
 }
@@ -289,16 +298,16 @@ export const caseStudies: readonly CaseStudy[] = [
         {
           kind: 'image',
           src: tablesProblemDesktop,
-          width: 1476,
-          height: 926,
-          alt: 'A "Computation breakdown" page on desktop: tables compare an HDB loan with a bank loan side by side.',
+          width: 1544,
+          height: 1048,
+          alt: 'A "Computation breakdown" page on a laptop: tables compare an HDB loan with a bank loan side by side.',
           caption: 'On desktop, the two loans sit side by side.',
         },
         {
           kind: 'image',
           src: tablesProblemMobile,
-          width: 438,
-          height: 782,
+          width: 508,
+          height: 1048,
           alt: 'The same page on a phone: the table is cut off after the first value column, with a horizontal scroll bar.',
           caption: 'On mobile, the comparison is hidden behind horizontal scrolling.',
         },
@@ -329,8 +338,17 @@ export const caseStudies: readonly CaseStudy[] = [
           title: 'Committing too early: freeze the first column',
           body: [
             'I committed too early to freezing the first column, wrote draft guidelines (a spec and a decision tree) and tested them with colleagues.',
-            'Their feedback: too restrictive, it makes no sense on desktop, people wanted to choose which column to freeze, and they still could not see the full row.',
+            'The colleagues I tested it with had differing views on how readable and user-friendly the table was with one column frozen.',
           ],
+          insights: {
+            heading: 'Insights from colleagues',
+            quotes: [
+              'Hmm… I can see where you’re coming from but it makes the view more restrictive?',
+              'Then what about desktop screens? It doesn’t make sense to freeze right?',
+              'I think is more (user) friendly, can we choose which column to freeze?',
+              'The view is still very small, like I still can’t see the full row of the table which is important if I were to read the table.',
+            ],
+          },
           media: [
             {
               kind: 'image',
@@ -418,9 +436,10 @@ export const caseStudies: readonly CaseStudy[] = [
           kind: 'video',
           src: tablesPrototype,
           poster: tablesPrototypePoster,
-          width: 368,
-          height: 660,
-          label: 'Prototype',
+          width: 436,
+          height: 890,
+          background: 'dark',
+          label: 'Prototype video',
           caption: 'Prototype of the adaptive table on a phone.',
           description:
             'The "Computation breakdown" page scrolls vertically on a phone. Each row header, such as Loan amount, Interest rate and Downpayment, is a section with the HDB loan and bank loan values stacked inside it, so no horizontal scrolling is needed.',
@@ -470,17 +489,19 @@ export const caseStudies: readonly CaseStudy[] = [
         {
           title: 'Interviews: a twist',
           body: [
-            'In-person interviews at a service centre showed that members cared less about scams than about convenience:',
-            {
-              list: [
-                'Understanding their withdrawal amounts',
-                'Wanting 1-to-1 help',
-                'Long self-help lobby queues',
-                'Wanting step-by-step guidance online',
-                'Travelling about an hour to a service centre',
-              ],
-            },
+            'We interviewed members in person at a service centre, expecting to hear about scams and secure authentication. Instead, the members cared less about scams than about convenience.',
           ],
+          insights: {
+            heading: 'Insights from members',
+            quotes: [
+              'I want to understand how much I can withdraw so I know how much money to leave in my retirement account.',
+              'I think it’s safer to come for 1-1 consultation in case I click something wrongly.',
+              'Queue is so long in self-help lobby!',
+              'I still require help from CPF staff for the available options for my monies.',
+              'I prefer step-by-step instruction on how to withdraw funds online.',
+              'I travelled about an hour to reach the nearest service centre from my house.',
+            ],
+          },
         },
         {
           title: 'Prioritising ideas',
@@ -545,9 +566,10 @@ export const caseStudies: readonly CaseStudy[] = [
           kind: 'video',
           src: videoCallCallNow,
           poster: videoCallCallNowPoster,
-          width: 368,
-          height: 660,
-          label: 'Prototype',
+          width: 440,
+          height: 888,
+          background: 'dark',
+          label: 'Prototype video',
           caption: 'Prototype: starting a video call.',
           description:
             'The member logs in with Singpass, opens the app menu, chooses Video call, taps "Make new video call appointment" and reaches the start of the form, which explains that they will need to turn on their camera.',
@@ -556,9 +578,10 @@ export const caseStudies: readonly CaseStudy[] = [
           kind: 'video',
           src: videoCallQueue,
           poster: videoCallQueuePoster,
-          width: 368,
-          height: 660,
-          label: 'Prototype',
+          width: 444,
+          height: 892,
+          background: 'dark',
+          label: 'Prototype video',
           caption: 'Prototype: waiting in the queue.',
           description:
             'The member chooses to call CPF staff now and allows the camera. A waiting screen shows their place in line moving from 4th to 2nd while they wait for an available staff member. After the call ends, a feedback screen appears.',
@@ -567,9 +590,10 @@ export const caseStudies: readonly CaseStudy[] = [
           kind: 'video',
           src: videoCallReschedule,
           poster: videoCallReschedulePoster,
-          width: 368,
-          height: 660,
-          label: 'Prototype',
+          width: 438,
+          height: 896,
+          background: 'dark',
+          label: 'Prototype video',
           caption: 'Prototype: rescheduling an appointment.',
           description:
             'From the list of upcoming appointments, the member edits one, picks a new enquiry type, date and time, and taps Reschedule. They review the details, agree to the disclaimer and confirm, and an acknowledgement page shows the appointment was successful.',

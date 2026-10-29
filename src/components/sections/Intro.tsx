@@ -26,9 +26,9 @@ export function Intro({ name = site.name, intro = defaultIntro }: IntroProps) {
             </Fragment>
           ))}
         </p>
-        <p className={cx(TEXT_RECIPES.h2, 'max-w-3xl')}>{intro.tagline}</p>
+        <p className={TEXT_RECIPES.h2}>{intro.tagline}</p>
       </div>
-      <div className="grid max-w-prose gap-4">
+      <div className="grid gap-4">
         {intro.profile.map((paragraph) => (
           <Text key={paragraph}>{paragraph}</Text>
         ))}

@@ -125,7 +125,7 @@ export function DesignSystem() {
   return (
     <>
       <WrappedSection id="overview" scene="cobalt" level={1} title="Design system">
-        <div className="grid max-w-prose gap-4">
+        <div className="grid gap-4">
           <p className={TEXT_RECIPES.h3}>
             Every colour, size and space on this site comes from one set of design tokens.
           </p>
@@ -142,7 +142,7 @@ export function DesignSystem() {
       </WrappedSection>
 
       <WrappedSection id="scenes" scene="blush" title="Scenes">
-        <Text className="max-w-prose">
+        <Text>
           Each full-bleed section is a scene: a background with the text, accent, focus and
           decorative shape colours allowed on it. Components use role utilities such as{' '}
           <Code>text-scene-accent</Code>, never raw colours, so one component works in all four
@@ -156,7 +156,7 @@ export function DesignSystem() {
       </WrappedSection>
 
       <WrappedSection id="type" scene="ink" title="Type">
-        <Text className="max-w-prose">
+        <Text>
           Inter only, self-hosted. Weight 900 with tight tracking for display text. Sizes are fluid
           and rem-based, so they scale with the viewport and stay readable at 200% zoom.
         </Text>
@@ -165,7 +165,7 @@ export function DesignSystem() {
 
       <WrappedSection id="layout" scene="blush" title="Spacing and shape">
         {spacingBase && (
-          <Text className="max-w-prose">
+          <Text>
             One base unit drives the whole spacing scale: <Code>--spacing</Code> is{' '}
             {formatValue(spacingBase)}, and every spacing utility is a multiple of it, so{' '}
             <Code>p-4</Code> is 4 × {formatValue(spacingBase)}.
@@ -188,7 +188,7 @@ export function DesignSystem() {
       </WrappedSection>
 
       <WrappedSection id="components" scene="pink" title="Components">
-        <Text className="max-w-prose">
+        <Text>
           Small, typed, presentational primitives. Each one ships with a Storybook story, a unit
           test and an automated accessibility (axe) test.
         </Text>
@@ -219,7 +219,7 @@ export function DesignSystem() {
       </WrappedSection>
 
       <WrappedSection id="quality" scene="ink" title="Quality gates">
-        <ul className="grid max-w-prose list-disc gap-3 pl-5">
+        <ul className="grid list-disc gap-3 pl-5">
           <li>
             <Text as="span">
               <span className="font-bold">Contrast:</span> CI checks {checkedPairs.length} scene

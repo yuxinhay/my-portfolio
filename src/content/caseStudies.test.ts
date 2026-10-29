@@ -94,7 +94,7 @@ describe('case studies', () => {
   })
 
   it('labels every video as a prototype', () => {
-    for (const item of media) if (item.kind === 'video') expect(item.label).toBe('Prototype')
+    for (const item of media) if (item.kind === 'video') expect(item.label).toBe('Prototype video')
   })
 
   it('links each project to its neighbours in list order, without wrapping', () => {
