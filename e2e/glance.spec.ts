@@ -75,19 +75,99 @@ test('every card: no axe violations, no overflow, neighbours beside it, controls
     // A narrow portrait card, controls the same width below it. Its content fits without
     // scrolling, except at 200% zoom, where the screen is shorter than any card (it scrolls).
     const box = await currentCard(page).evaluate((element) => {
-      const { width, height, bottom } = element.getBoundingClientRect()
-      const controls = element.closest('dialog')?.querySelector('.glance-controls')
+      const { width, height, top, bottom, left, right } = element.getBoundingClientRect()
+      const overlay = element.closest('dialog')
+      const controls = overlay?.querySelector('.glance-controls')
       const below = controls?.getBoundingClientRect()
+      // Layout boxes, without the lift a focused or hovered button rises by.
+      const layoutBox = (button: HTMLElement | null | undefined) => {
+        if (!button) return undefined
+        const { x, width: w, height: h } = button.getBoundingClientRect()
+        return { left: x, right: x + w, height: h }
+      }
+      const buttons = controls?.querySelectorAll<HTMLElement>(':scope > button')
+      const skip = overlay?.querySelector('.glance-bar button')?.getBoundingClientRect()
       return {
         width,
         height,
         unclipped: element.scrollHeight <= element.clientHeight,
         controlsWidth: below?.width,
         controlsBelow: below !== undefined && below.top >= bottom,
+        controlsBackground: controls ? getComputedStyle(controls).backgroundColor : undefined,
+        back: layoutBox(buttons?.[0]),
+        next: layoutBox(buttons?.[1]),
+        card: { left, right, top },
+        skip: skip && { right: skip.right, bottom: skip.bottom },
       }
     })
     expect(box.controlsWidth).toBeCloseTo(box.width, 0)
     expect(box.controlsBelow).toBe(true)
+    // One row straight on the scrim, no bar behind it: Back (kept, hidden, on card 1) at the
+    // card's left edge, Next at its right edge, the same height.
+    expect(box.controlsBackground).toBe('rgba(0, 0, 0, 0)')
+    expect(box.back && box.next, 'Back and Next in the controls row').toBeTruthy()
+    if (box.back && box.next) {
+      expect(Math.abs(box.back.left - box.card.left), 'Back at the card edge').toBeLessThanOrEqual(
+        1,
+      )
+      expect(
+        Math.abs(box.card.right - box.next.right),
+        'Next at the card edge',
+      ).toBeLessThanOrEqual(1)
+      expect(box.back.height).toBeCloseTo(box.next.height, 0)
+    }
+    // Skip floats above the card's top right corner.
+    expect(box.skip?.bottom ?? Infinity).toBeLessThanOrEqual(box.card.top)
+    expect(Math.abs((box.skip?.right ?? 0) - box.card.right)).toBeLessThanOrEqual(1)
+
+    // Card 1: the portrait bleeds off the card's right edge, the roles end before it, and no text
+    // crosses it (its dark hair and dress would break the text's contrast; axe cannot check text
+    // over images). Hiding the text must leave the portrait's pixels unchanged.
+    if (card === 1) {
+      const photo = currentCard(page).locator('.glance-hello-photo')
+      const layout = await currentCard(page).evaluate((element) => {
+        const rect = (selector: string) => element.querySelector(selector)?.getBoundingClientRect()
+        return {
+          card: element.getBoundingClientRect().right,
+          photo: rect('.glance-hello-photo'),
+          roles: rect('.glance-hello-roles'),
+        }
+      })
+      expect(Math.abs((layout.photo?.right ?? 0) - layout.card)).toBeLessThanOrEqual(1)
+      expect(layout.roles?.right ?? Infinity).toBeLessThanOrEqual(layout.photo?.left ?? 0)
+      const text = currentCard(page).locator('.glance-hello-name, .glance-hello-roles')
+      const withText = await photo.screenshot()
+      await text.evaluateAll((elements) => elements.forEach((e) => e.classList.add('invisible')))
+      const withoutText = await photo.screenshot()
+      await text.evaluateAll((elements) => elements.forEach((e) => e.classList.remove('invisible')))
+      expect(withText.equals(withoutText), 'no text drawn over the portrait').toBe(true)
+    }
+
+    // Card 2: when "Product Manager" wraps, "Manager" starts under "Product", never under
+    // "Designer".
+    if (card === 2) {
+      const words = await currentCard(page).evaluate((element) => {
+        const destination = [...element.querySelectorAll('p > span')].find(
+          (span) => span.textContent === 'Product Manager',
+        )
+        const text = destination?.firstChild
+        if (!text) return undefined
+        const range = document.createRange()
+        const rect = (start: number, end: number) => {
+          range.setStart(text, start)
+          range.setEnd(text, end)
+          const { left, top } = range.getBoundingClientRect()
+          return { left, top }
+        }
+        const designer = destination.previousElementSibling?.getBoundingClientRect()
+        return { product: rect(0, 7), manager: rect(8, 15), designerLeft: designer?.left ?? 0 }
+      })
+      expect(words, 'the career path').toBeDefined()
+      if (words && words.manager.top > words.product.top) {
+        expect(Math.abs(words.manager.left - words.product.left)).toBeLessThanOrEqual(1)
+      }
+      expect(words?.manager.left ?? 0).toBeGreaterThan(words?.designerLeft ?? 0)
+    }
     if (testInfo.project.name !== 'zoom-200') {
       expect(box.height, `card ${card} is portrait`).toBeGreaterThan(box.width)
       expect(box.unclipped, `card ${card} content fits without scrolling`).toBe(true)
@@ -196,6 +276,32 @@ test.describe('behaviour', () => {
     await expect(currentCard(page)).toHaveAttribute('aria-label', `Card 1 of ${COUNT}`)
   })
 
+  test('celebrates the first visit with one burst of confetti, then removes it', async ({
+    page,
+  }) => {
+    await page.goto('./')
+    const confetti = dialog(page).locator('canvas[data-confetti]')
+    await expect(confetti).toHaveCount(1)
+    await expect(confetti).toHaveAttribute('aria-hidden', 'true')
+    await expect(confetti).toHaveCSS('pointer-events', 'none')
+    // Next works while it plays.
+    await expect(page.getByRole('button', { name: 'Next' })).toBeEnabled()
+    // Gone after duration.celebrate + duration.confetti (and a margin).
+    await expect(confetti).toHaveCount(0, { timeout: 5000 })
+
+    // A replay pops the card as usual: no confetti, no extra pause.
+    await page.keyboard.press('Escape')
+    await page.getByRole('button', { name: 'Replay intro' }).click()
+    await expect(dialog(page)).toBeVisible()
+    await expect(dialog(page)).not.toHaveAttribute('data-celebrate')
+    const popDelay = await currentCard(page).evaluate(
+      (card) => getComputedStyle(card).animationDelay,
+    )
+    expect(popDelay).toBe('0.15s')
+    await page.waitForTimeout(1000)
+    await expect(confetti).toHaveCount(0)
+  })
+
   test('pops out on opening: the backdrop fades in, then the card, then its neighbours', async ({
     page,
   }) => {
@@ -215,15 +321,21 @@ test.describe('behaviour', () => {
         ]
       }),
     )
+    // The backdrop's fade (duration.base) may be over before this runs, so read its style.
+    const backdrop = await dialog(page).evaluate((element) => {
+      const style = getComputedStyle(element, '::backdrop')
+      return { name: style.animationName, delay: style.animationDelay }
+    })
+    expect(backdrop).toEqual({ name: 'glance-backdrop-in', delay: '0s' })
     expect(entrance).toEqual(
       expect.arrayContaining([
-        { name: 'glance-backdrop-in', on: '::backdrop', delay: 0 },
         expect.objectContaining({ name: 'glance-pop', on: 'current' }),
         expect.objectContaining({ name: 'glance-fade-in', on: 'near' }),
       ]),
     )
     const delay = (name: string) => entrance.find((entry) => entry.name === name)?.delay ?? 0
-    expect(delay('glance-pop')).toBeGreaterThan(0)
+    // The first visit waits duration.fast + duration.celebrate (150 + 500ms) before the pop.
+    expect(delay('glance-pop')).toBe(650)
     expect(delay('glance-fade-in')).toBeGreaterThan(delay('glance-pop'))
     await settleMotion(page)
     await expect(currentCard(page)).toHaveCSS('scale', 'none')
@@ -281,6 +393,8 @@ test.describe('behaviour', () => {
             .filter((animation) => Number(animation.effect?.getTiming().duration ?? 0) > 1).length,
       )
       expect(opening).toBe(0)
+      // No confetti either.
+      await expect(dialog(page).locator('canvas')).toHaveCount(0)
       await page.getByRole('button', { name: 'Next' }).click()
       await page.getByRole('button', { name: 'Next' }).click()
       await expect(currentCard(page)).toHaveAttribute('aria-label', `Card 3 of ${COUNT}`)
