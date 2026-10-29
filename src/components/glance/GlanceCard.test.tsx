@@ -18,14 +18,18 @@ describe('GlanceCard', () => {
   it('opens with the name as a heading, the roles and the portrait', () => {
     if (hello?.kind !== 'hello') throw new Error('Card 1 is not the hello card')
     renderCard(0)
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Yuxin Hay')
+    const name = screen.getByRole('heading', { level: 2 })
+    expect(name).toHaveTextContent('Yuxin Hay')
+    // The name and roles use the scene's display role, not a primitive colour.
+    expect(name).toHaveClass('text-scene-display')
     expect(screen.getByRole('img', { name: 'Portrait of Yuxin Hay, smiling' })).toHaveAttribute(
       'decoding',
       'async',
     )
-    expect(screen.getByText('UX Designer').closest('p')).toHaveTextContent(
-      'UX Designer | , Product Manager',
-    )
+    // One role per line; the bar is hidden from screen readers, which hear a comma.
+    expect(
+      screen.getByText('UX Designer', { selector: 'p > span' }).closest('p'),
+    ).toHaveTextContent('UX Designer |, Product Manager')
     expect(screen.getByText(hello.summary)).toBeInTheDocument()
   })
 

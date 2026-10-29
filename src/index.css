@@ -184,6 +184,56 @@ dialog::backdrop {
   }
 }
 
+/* Card 1, after the owner's mockup (proportions of the card's width, cqw): the portrait bleeds
+   off the right edge from about a third across, the roles end just before it, and the giant name
+   starts on the portrait's bottom edge, its cap line touching it (no text crosses the photo, so
+   it keeps its contrast). On a card shorter than 9:16 the portrait gives up height first; on a
+   narrow card the roles take the room they need and the portrait narrows. */
+.glance-hello {
+  container-type: inline-size;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.glance-hello-top {
+  display: flex;
+  flex: 0 1 72cqw;
+  align-items: flex-end;
+  gap: 2cqw;
+  min-height: 36cqw;
+  margin-top: 24cqw;
+}
+
+.glance-hello-roles {
+  flex: none;
+  margin-left: 4cqw;
+}
+
+.glance-hello-photo {
+  flex: 1;
+  align-self: stretch;
+  min-width: 0;
+  max-width: 67cqw;
+  height: 100%;
+  margin-left: auto;
+  object-position: 50% 15%;
+}
+
+.glance-hello-name {
+  font-size: 27.5cqw;
+  /* The name starts at the card's very edge; its tallest glyph (the dot of the i) just touches
+     the portrait's bottom edge. */
+  margin-top: -0.02em;
+  margin-left: -0.04em;
+}
+
+.glance-hello-summary {
+  margin: auto 10cqw 14cqw 11cqw;
+  padding-top: calc(var(--spacing) * 3);
+}
+
 /* The entrance pop: the current card grows from 60% with a slight overshoot. */
 @theme {
   --animate-glance-pop: glance-pop var(--duration-slow) var(--ease-overshoot) backwards;

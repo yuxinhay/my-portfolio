@@ -232,7 +232,9 @@ export function GlanceOverlay({
                 tabIndex={active ? 0 : undefined}
                 className={cx(
                   `scene-${card.scene}`,
-                  'glance-card flex flex-col overflow-y-auto rounded-card bg-scene p-4 sm:p-6',
+                  'glance-card flex flex-col overflow-y-auto rounded-card bg-scene',
+                  // Card 1's portrait bleeds to the card's edge, so that card sets its own spacing.
+                  card.kind !== 'hello' && 'p-4 sm:p-6',
                   FOCUS_RING,
                 )}
               >

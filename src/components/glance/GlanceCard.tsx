@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import type {
   GlanceCard as GlanceCardContent,
@@ -27,17 +26,6 @@ function Arrow() {
   )
 }
 
-/** Parts joined by a decorative bar; screen readers hear a comma instead, as in the home intro. */
-function Joined({ parts }: { parts: readonly string[] }) {
-  return parts.map((part, index) => (
-    <Fragment key={part}>
-      {index > 0 && <span aria-hidden="true"> | </span>}
-      {index > 0 && <span className="sr-only">, </span>}
-      <span className="inline-block">{part}</span>
-    </Fragment>
-  ))
-}
-
 // Each card is a narrow portrait story card (about 9:16), the same width on every screen, so the
 // type steps do not change at breakpoints. The root fills the card's height, so a closing line can
 // sit at the bottom, as in Wrapped.
@@ -51,39 +39,48 @@ function Title({ children, size = 'h2' }: { children: ReactNode; size?: 'h2' | '
 const CARD_NUMBER = cx(TEXT_RECIPES.display, 'text-scene-accent')
 
 /**
- * The portrait sits upper right and the giant name overlaps its lower left corner. The name is set
- * on the scene colour, so it keeps its contrast where it crosses the photo.
+ * Card 1, after the owner's mockup: the roles sit just left of the portrait, which bleeds off the
+ * right edge; the giant name, flush with the card's left edge, starts right where the portrait
+ * ends. The name and roles are in the scene's display colour. No text crosses the photo: the
+ * portrait's dark hair and dress fill that corner, so text over it could not keep its contrast
+ * (owner decision, ADR 0008). Sizes follow the card's width (index.css, `.glance-hello`).
  */
 function HelloCard({ card }: { card: GlanceHelloCard }) {
-  const { portrait } = card
+  const { portrait, eyebrow } = card
   return (
-    <div className={CARD_ROOT}>
-      <Text variant="eyebrow" className="text-scene-accent">
-        <Joined parts={card.eyebrow} />
-      </Text>
-      <div className="grid grid-cols-6">
+    <div className="glance-hello">
+      <div className="glance-hello-top">
+        {/* One role per line; screen readers hear a comma instead of the bar. */}
+        <p className="glance-hello-roles text-small leading-tight font-bold text-scene-display">
+          {eyebrow.map((part, index) => (
+            <span key={part} className="block">
+              {part}
+              {index < eyebrow.length - 1 && (
+                <>
+                  <span aria-hidden="true"> |</span>
+                  <span className="sr-only">, </span>
+                </>
+              )}
+            </span>
+          ))}
+        </p>
         <img
           src={portrait.src}
           alt={portrait.alt}
           width={portrait.width}
           height={portrait.height}
           decoding="async"
-          className="col-start-3 col-end-7 row-start-1 h-auto w-full rounded-card"
+          className="glance-hello-photo object-cover"
         />
-        <h2
-          className={cx(
-            TEXT_RECIPES.display,
-            'relative col-start-1 col-end-7 row-start-2 -mt-20 grid justify-items-start',
-          )}
-        >
-          {card.name.split(' ').map((word) => (
-            <span key={word} className="bg-scene pr-2">
-              {word}{' '}
-            </span>
-          ))}
-        </h2>
       </div>
-      <p className={cx(TEXT_RECIPES.h3, 'mt-auto')}>{card.summary}</p>
+      <h2 className="glance-hello-name leading-tight font-black tracking-display text-scene-display">
+        {card.name.split(' ').map((word) => (
+          <span key={word} className="block">
+            {word}{' '}
+          </span>
+        ))}
+      </h2>
+      <p className="glance-hello-summary text-body leading-snug font-medium">{card.summary}</p>
     </div>
   )
 }

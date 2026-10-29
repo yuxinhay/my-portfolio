@@ -17,6 +17,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+/** Card 1, after the owner's mockup: portrait bleeding off the right edge, the name over it. */
 export const Card1Hello: Story = {}
 export const Card2Career: Story = { args: { initialIndex: 1 } }
 export const Card3AiProduct: Story = { args: { initialIndex: 2 } }
