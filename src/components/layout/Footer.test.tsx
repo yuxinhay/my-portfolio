@@ -27,6 +27,10 @@ describe('Footer', () => {
     )
     expect(within(contact).getByRole('link', { name: 'LinkedIn' })).toBeInTheDocument()
     expect(within(contact).getByRole('link', { name: 'Telegram' })).toBeInTheDocument()
+    expect(within(contact).getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+      'href',
+      'https://github.com/yuxinhay',
+    )
   })
 
   it('renders no dead links while contact links are placeholders', () => {

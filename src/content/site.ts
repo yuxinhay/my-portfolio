@@ -30,7 +30,7 @@ export const site: Site = {
     { label: 'Email', href: 'mailto:hay_yuxin@hotmail.com' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/yuxin-hay' },
     { label: 'Telegram', href: 'https://t.me/Yuuxin' },
-    { label: 'GitHub', href: null }, // PLACEHOLDER: user to provide
+    { label: 'GitHub', href: 'https://github.com/yuxinhay' },
   ],
 }
 
