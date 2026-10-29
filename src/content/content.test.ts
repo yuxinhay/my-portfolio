@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { certifications, featuredStats, moreStats } from './achievements'
 import { career } from './career'
+import { caseStudies } from './caseStudies'
 import { intro } from './intro'
 import { formatIsoDate } from './period'
+import { adrs, planSteps, qualityGates } from './process'
 import { findProject, projects } from './projects'
 import { site } from './site'
 import { skillGroups, topSkills } from './skills'
@@ -53,6 +55,10 @@ describe('content', () => {
       intro,
       career,
       projects,
+      caseStudies,
+      planSteps,
+      qualityGates,
+      adrs,
       skillGroups,
       featuredStats,
       moreStats,
