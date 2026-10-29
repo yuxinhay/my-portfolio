@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { site } from '../../content/site'
 import { expectNoAxeViolations } from '../../test/axe'
 import { renderWithRouter } from '../../test/router'
 import { describeStoriesAxe } from '../../test/stories'
@@ -18,7 +19,7 @@ function setup(path = '/') {
 describe('Header', () => {
   it('links the site name to the home page', () => {
     renderWithRouter(<Header />, '/design-system')
-    expect(screen.getByRole('link', { name: 'Your Name' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: site.name })).toHaveAttribute('href', '/')
   })
 
   it('has a native menu toggle that controls the navigation, collapsed by default', () => {
