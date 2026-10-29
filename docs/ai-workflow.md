@@ -40,3 +40,9 @@ rejected and why).
 - 2026-10-29: AI built the eight UI primitives (step 5) with stories, Vitest unit tests and axe
   tests, and moved the type recipes into one module shared by the components and the Typography
   story. The visual choices it made with existing tokens are listed in the PR for my review.
+- 2026-10-29: AI built the routed layout shell (step 6): header, mobile menu, footer, page stubs
+  and focus management on navigation, and chose the GitHub Pages deep-link strategy (ADR 0005). A
+  headless Chrome run against a Pages-like server caught a focus bug unit tests missed (native
+  `#hash` navigations share a router key) and a header that shrink-wrapped instead of spanning the
+  page. Personal details are placeholders until I provide them; visual choices are listed in the PR
+  for my review.
