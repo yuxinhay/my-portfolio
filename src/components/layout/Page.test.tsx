@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { pageTitle } from '../../content/site'
 import { expectNoAxeViolations } from '../../test/axe'
 import { describeStoriesAxe } from '../../test/stories'
 import { Page } from './Page'
@@ -16,9 +17,9 @@ describe('Page', () => {
 
   it('sets the document title to "<Page> · <site name>"', () => {
     const { rerender } = render(<Page title="Design system" />)
-    expect(document.title).toBe('Design system · Your Name')
+    expect(document.title).toBe(pageTitle('Design system'))
     rerender(<Page title="How I built this" />)
-    expect(document.title).toBe('How I built this · Your Name')
+    expect(document.title).toBe(pageTitle('How I built this'))
   })
 
   it('has no axe violations', async () => {

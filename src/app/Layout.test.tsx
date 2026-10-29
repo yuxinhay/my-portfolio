@@ -1,6 +1,7 @@
 import { act, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { pageTitle } from '../content/site'
 import { expectNoAxeViolations } from '../test/axe'
 import { renderApp } from '../test/router'
 import { describeStoriesAxe } from '../test/stories'
@@ -24,7 +25,7 @@ describe('Layout and routes', () => {
     const headings = screen.getAllByRole('heading', { level: 1 })
     expect(headings).toHaveLength(1)
     expect(headings[0]).toHaveTextContent(title)
-    expect(document.title).toBe(`${title} · Your Name`)
+    expect(document.title).toBe(pageTitle(title))
     await expectNoAxeViolations(container)
   })
 
@@ -49,7 +50,7 @@ describe('Layout and routes', () => {
     const nav = screen.getByRole('navigation', { name: 'Primary' })
     await user.click(within(nav).getByRole('link', { name: 'Design system' }))
     expect(screen.getByRole('heading', { level: 1, name: 'Design system' })).toHaveFocus()
-    expect(document.title).toBe('Design system · Your Name')
+    expect(document.title).toBe(pageTitle('Design system'))
     expect(within(nav).getByRole('link', { name: 'Design system' })).toHaveAttribute(
       'aria-current',
       'page',

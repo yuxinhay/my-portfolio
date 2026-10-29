@@ -18,8 +18,30 @@ describe('Footer', () => {
     )
   })
 
-  it('renders no dead links while contact links are placeholders', () => {
+  it('renders the site contact links', () => {
     render(<Footer />)
+    const contact = screen.getByRole('region', { name: 'Contact' })
+    expect(within(contact).getByRole('link', { name: 'Email' })).toHaveAttribute(
+      'href',
+      'mailto:hay_yuxin@hotmail.com',
+    )
+    expect(within(contact).getByRole('link', { name: 'LinkedIn' })).toBeInTheDocument()
+    expect(within(contact).getByRole('link', { name: 'Telegram' })).toBeInTheDocument()
+    expect(within(contact).getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+      'href',
+      'https://github.com/yuxinhay',
+    )
+  })
+
+  it('renders no dead links while contact links are placeholders', () => {
+    render(
+      <Footer
+        contact={[
+          { label: 'Email', href: null },
+          { label: 'GitHub', href: null },
+        ]}
+      />,
+    )
     expect(screen.getByText('Contact links coming soon.')).toBeInTheDocument()
     expect(screen.getAllByRole('link')).toHaveLength(1)
   })

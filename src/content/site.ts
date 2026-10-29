@@ -18,7 +18,7 @@ export interface Site {
 }
 
 export const site: Site = {
-  name: 'Your Name', // PLACEHOLDER: user to provide
+  name: 'Yuxin HAY',
   nav: [
     { label: 'Work', to: '/' },
     { label: 'Design system', to: '/design-system' },
@@ -27,9 +27,10 @@ export const site: Site = {
   // Links without an href are not rendered (an `href="#"` link would lead nowhere), so the footer
   // reads "Contact links coming soon" until at least one is filled in.
   contact: [
-    { label: 'Email', href: null }, // PLACEHOLDER: user to provide, e.g. 'mailto:…'
-    { label: 'LinkedIn', href: null }, // PLACEHOLDER: user to provide
-    { label: 'GitHub', href: null }, // PLACEHOLDER: user to provide
+    { label: 'Email', href: 'mailto:hay_yuxin@hotmail.com' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/yuxin-hay' },
+    { label: 'Telegram', href: 'https://t.me/Yuuxin' },
+    { label: 'GitHub', href: 'https://github.com/yuxinhay' },
   ],
 }
 

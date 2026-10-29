@@ -10,16 +10,15 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** Contact links are placeholders until provided, so none are rendered. */
+/** The site's contact links from `src/content/site.ts`. */
 export const Default: Story = {}
 
-/** Example data only, to show the layout once contact links exist. */
-export const WithContactLinks: Story = {
+/** Before any contact link is provided: no dead links, just a note. */
+export const LinksComingSoon: Story = {
   args: {
     contact: [
-      { label: 'Email', href: 'mailto:hello@example.com' },
-      { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-      { label: 'GitHub', href: 'https://github.com/' },
+      { label: 'Email', href: null },
+      { label: 'GitHub', href: null },
     ],
   },
 }
