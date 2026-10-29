@@ -73,9 +73,10 @@ test('client-side navigation focuses the new h1; the first load does not', async
 test('a case study loads directly from a deep link', async ({ page }) => {
   const project = projects.at(-1)
   if (!project) throw new Error('No projects')
-  // Served as 404.html with status 404, as on GitHub Pages (ADR 0005); the app renders the page.
+  // `vite preview` falls back to index.html; GitHub Pages serves the same file as 404.html (see
+  // build.spec.ts). Either way the app boots and the router renders the case study.
   const response = await page.goto(`./projects/${project.slug}`)
-  expect([200, 404]).toContain(response?.status())
+  expect(response?.ok()).toBe(true)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(project.title)
   expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true)
 })

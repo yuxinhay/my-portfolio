@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const PORT = 4173
+// Not Vite's default preview port, so a preview left running elsewhere is never mistaken for this build.
+const PORT = 4317
 
 /**
  * End-to-end tests against the production build (`dist/`, built by `npm run test:e2e`), served by
@@ -20,7 +21,8 @@ export default defineConfig({
   webServer: {
     command: `npm run preview -- --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}/my-portfolio/`,
-    reuseExistingServer: !process.env['CI'],
+    // Always start a fresh server on the current dist/; fail rather than test another one on the port.
+    reuseExistingServer: false,
   },
   projects: [
     {

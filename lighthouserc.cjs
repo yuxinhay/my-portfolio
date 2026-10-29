@@ -4,7 +4,7 @@
 // Score thresholds sit a few points under the scores measured when they were set (ADR 0007);
 // accessibility must be 100 on every page.
 const formFactor = process.env.LIGHTHOUSE_FORM_FACTOR === 'desktop' ? 'desktop' : 'mobile'
-const PORT = 4174
+const PORT = 4318
 const BASE = `http://localhost:${PORT}/my-portfolio/`
 const KB = 1024
 
