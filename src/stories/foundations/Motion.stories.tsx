@@ -1,26 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useState, useSyncExternalStore } from 'react'
+import { useState } from 'react'
 import { FoundationPage, FoundationSection, TokenName } from './FoundationPage'
+import { StatValue } from '../../components/motion/StatValue'
+import { useReducedMotion } from '../../components/motion/useReducedMotion'
+import { Button } from '../../components/ui/Button'
+import { TEXT_RECIPES, cx } from '../../components/ui/styles'
 import { formatValue, leaf, tokensIn } from '../../design-system/tokens'
 
-const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
-
-function usePrefersReducedMotion(): boolean {
-  return useSyncExternalStore(
-    (onChange) => {
-      const query = window.matchMedia(REDUCED_MOTION)
-      query.addEventListener('change', onChange)
-      return () => query.removeEventListener('change', onChange)
-    },
-    () => window.matchMedia(REDUCED_MOTION).matches,
-  )
-}
-
 const easing = tokensIn('easing')[0]
+const scrim = tokensIn('color', 'scrim')[0]
 
 function MotionDemo() {
   const [moved, setMoved] = useState(false)
-  const reduced = usePrefersReducedMotion()
+  const reduced = useReducedMotion()
 
   return (
     <div className="grid gap-6">
@@ -60,6 +52,38 @@ function MotionDemo() {
   )
 }
 
+/** Replays a count-up (`duration.count`) on demand; reduced motion shows the final value. */
+function CountDemo() {
+  const [run, setRun] = useState(0)
+  return (
+    <div className="grid justify-items-start gap-4">
+      <p className="scene-cobalt rounded-card px-6 py-4">
+        <StatValue
+          key={run}
+          value="$7,000+"
+          active
+          className={cx(TEXT_RECIPES.display, 'text-scene-accent')}
+        />
+      </p>
+      <Button variant="secondary" onClick={() => setRun((value) => value + 1)}>
+        Count again
+      </Button>
+    </div>
+  )
+}
+
+/** The blur and scrim behind a modal dialog, over a sample of the page. */
+function BackdropDemo() {
+  return (
+    <div className="relative grid overflow-hidden rounded-card">
+      <p aria-hidden="true" className="scene-pink p-6 text-display leading-tight font-black">
+        Page behind
+      </p>
+      <div className="absolute inset-0 bg-scrim backdrop-blur-overlay" />
+    </div>
+  )
+}
+
 const meta = {
   title: 'Foundations/Motion',
   parameters: { layout: 'fullscreen' },
@@ -74,7 +98,11 @@ export const Motion: StoryObj<typeof meta> = {
       intro={
         <p>
           Motion is optional: under <TokenName>prefers-reduced-motion: reduce</TokenName> the base
-          styles cut every transition and animation to an instant change, and nothing auto-plays.
+          styles cut every transition and animation to an instant change, and nothing auto-plays. On
+          the site, sections fade up as they scroll in (each sibling{' '}
+          <TokenName>--duration-stagger</TokenName> later), numbers count up over{' '}
+          <TokenName>--duration-count</TokenName>, buttons and cards lift on hover and focus, and
+          pages crossfade over <TokenName>--duration-base</TokenName> (ADR 0008).
         </p>
       }
     >
@@ -89,6 +117,31 @@ export const Motion: StoryObj<typeof meta> = {
       </FoundationSection>
       <FoundationSection title="Duration">
         <MotionDemo />
+      </FoundationSection>
+      <FoundationSection title="Count-up">
+        <CountDemo />
+      </FoundationSection>
+      <FoundationSection title="Lift">
+        <p className="max-w-prose text-body">
+          Hover or Tab to the button: it rises with a hard shadow in the scene’s text colour, and
+          presses down when clicked. Under reduced motion the shadow appears without the movement.
+        </p>
+        <Button className="w-fit">Lift me</Button>
+      </FoundationSection>
+      <FoundationSection title="Backdrop">
+        <ul className="grid gap-1 text-small">
+          {tokensIn('blur').map((token) => (
+            <li key={token.name}>
+              <TokenName>--blur-{leaf(token)}</TokenName> · {formatValue(token)}
+            </li>
+          ))}
+          {scrim && (
+            <li>
+              <TokenName>--color-scrim</TokenName> · {formatValue(scrim)}
+            </li>
+          )}
+        </ul>
+        <BackdropDemo />
       </FoundationSection>
     </FoundationPage>
   ),
