@@ -51,3 +51,10 @@ rejected and why).
   and terms that must never be published. Headless Chrome confirmed axe 0 violations and no
   overflow at 1280px, 320px and 200% zoom. Visual choices (scene per section, featured numbers,
   headline skills) are listed in the PR for my review.
+- 2026-10-29: AI built the five case studies, `/design-system` and `/how-i-built-this` (step 8)
+  from content I approved. An orchestrating agent supervised one worker agent for the step. The
+  worker converted my vetted screenshots and recordings to WebP and MP4 with metadata stripped
+  (ADR 0006) and wrote alt text, captions and video descriptions. Headless Chrome confirmed axe 0
+  violations, no 404s under `/my-portfolio/`, no autoplay and no overflow at 1280px and 320px. The
+  process page reads `docs/plan.md` and the ADRs directly. Layout and wording choices are listed
+  in the PR for my review.
