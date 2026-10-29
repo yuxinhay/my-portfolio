@@ -4,3 +4,7 @@ package-lock.json
 storybook-static
 coverage
 src/styles/tokens.css
+playwright-report
+test-results
+.lighthouseci
+CHANGELOG.md
