@@ -46,3 +46,8 @@ rejected and why).
   `#hash` navigations share a router key) and a header that shrink-wrapped instead of spanning the
   page. Personal details are placeholders until I provide them; visual choices are listed in the PR
   for my review.
+- 2026-10-29: AI built the typed content model and the five Wrapped home sections (step 7) from
+  content I approved, with no invented facts or numbers. A content test guards the order, slugs
+  and terms that must never be published. Headless Chrome confirmed axe 0 violations and no
+  overflow at 1280px, 320px and 200% zoom. Visual choices (scene per section, featured numbers,
+  headline skills) are listed in the PR for my review.

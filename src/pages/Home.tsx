@@ -1,14 +1,23 @@
-import { Page } from '../components/layout/Page'
-import { Text } from '../components/ui/Text'
+import { useDocumentTitle } from '../components/layout/useDocumentTitle'
+import { Achievements } from '../components/sections/Achievements'
+import { CareerPath } from '../components/sections/CareerPath'
+import { Intro } from '../components/sections/Intro'
+import { Projects } from '../components/sections/Projects'
+import { TopSkills } from '../components/sections/TopSkills'
 
-/** PLACEHOLDER: the Wrapped sections (intro, skills, career path, projects) arrive in plan step 7. */
+/**
+ * The Career Wrapped story: full-bleed scenes in a fixed order. The intro holds the page's only
+ * h1; every other section is named by its h2. The document title matches the "Work" nav item.
+ */
 export function Home() {
+  useDocumentTitle('Work')
   return (
-    <Page title="Work">
-      <Text className="max-w-prose">
-        Placeholder: the Career Wrapped story (skills, career path, projects and achievements)
-        arrives in plan step 7.
-      </Text>
-    </Page>
+    <>
+      <Intro />
+      <TopSkills />
+      <CareerPath />
+      <Projects />
+      <Achievements />
+    </>
   )
 }
