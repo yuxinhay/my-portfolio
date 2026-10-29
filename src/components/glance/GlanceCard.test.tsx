@@ -38,9 +38,10 @@ describe('GlanceCard', () => {
       '2023–24UX Designer',
       '2025–nowProduct Manager',
     ])
-    expect(screen.getByText(/Designer/, { selector: 'p' })).toHaveTextContent(
-      'Designer → to Product Manager',
-    )
+    const path = screen.getByText('Designer', { selector: 'p > span' }).closest('p')
+    expect(path).toHaveTextContent('Designer → to Product Manager')
+    // "Product Manager" is one block, so "Manager" can only wrap under "Product".
+    expect(within(path as HTMLElement).getByText('Product Manager')).toBeInTheDocument()
   })
 
   it('lists a funnel of numbers in order, each with its label', () => {

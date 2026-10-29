@@ -103,10 +103,14 @@ function CareerCard({ card, active }: { card: GlanceCareerCard; active: boolean 
         />{' '}
         <span className={cx(TEXT_RECIPES.h1, 'text-balance')}>{card.stat.label}</span>
       </h2>
-      <p className={TEXT_RECIPES.h2}>
-        {card.path[0]}
-        <Arrow />
-        {card.path[1]}
+      {/* The destination is one block beside the start, so when it wraps its second word sits
+          under its first ("Product / Manager"), never back under "Designer". */}
+      <p className={cx(TEXT_RECIPES.h2, 'flex items-baseline')}>
+        <span className="shrink-0 whitespace-pre">
+          {card.path[0]}
+          <Arrow />
+        </span>
+        <span>{card.path[1]}</span>
       </p>
       <ol className="mt-auto grid grid-cols-2 gap-4">
         {card.timeline.map(({ role, years }) => (
