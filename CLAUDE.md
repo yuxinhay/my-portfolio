@@ -27,8 +27,8 @@ All of lint, tokens:check, typecheck and build must pass before a change is cons
 - Colour theme "Bubblegum Bold" (blush, hot pink, cobalt, ink). Typography: Inter only.
 - Sections are **scenes**: wrap them in `scene-blush | scene-pink | scene-cobalt | scene-ink` and
   style children with role utilities: `bg-scene`, `text-scene-fg`, `text-scene-accent`,
-  `bg-scene-shape` (decorative only), `outline-scene-focus`. Never use primitive colours
-  (`text-pink-300`) directly in components.
+  `bg-scene-shape` (decorative only), `bg-scene-surface` (panel fill), `outline-scene-focus`.
+  Never use primitive colours (`text-pink-300`) directly in components.
 - Type utilities: `text-stat | text-display | text-h1 | text-h2 | text-h3 | text-body | text-small |
 text-eyebrow`, with `tracking-display | tracking-heading | tracking-eyebrow`, `font-black` for display.
 - See `docs/adr/0002-tailwind-design-tokens.md` for the reasoning.

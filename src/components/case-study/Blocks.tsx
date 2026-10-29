@@ -10,8 +10,9 @@ export interface BlocksProps {
 
 /**
  * Long-form text, as wide as the media: paragraphs, bulleted lists and description lists of terms,
- * one card per term. A featured term fills its card with the pink scene; its tag says why in text,
- * so the emphasis does not rely on colour. Renders nothing if empty.
+ * one card per term, filled with the scene's surface. A featured term fills its card with the pink
+ * scene instead; its tag says why in text, so the emphasis does not rely on colour. Renders nothing
+ * if empty.
  */
 export function Blocks({ blocks, className }: BlocksProps) {
   if (blocks.length === 0) return null
@@ -39,8 +40,8 @@ export function Blocks({ blocks, className }: BlocksProps) {
               <div
                 key={term}
                 className={cx(
-                  'grid content-start gap-3 rounded-card border-(length:--border-rule) border-scene-fg p-6',
-                  featured && 'scene-pink',
+                  'grid content-start gap-3 rounded-card p-6',
+                  featured ? 'scene-pink' : 'bg-scene-surface',
                 )}
               >
                 <dt className={TEXT_RECIPES.h3}>{term}</dt>

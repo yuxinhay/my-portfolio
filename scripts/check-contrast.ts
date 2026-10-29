@@ -1,4 +1,5 @@
-// Fails if any scene's text or focus colour falls below WCAG AA contrast against its background.
+// Fails if any scene's text or focus colour falls below WCAG AA contrast against its background,
+// or against its `surface` (the fill for panels inside the scene, which carry the same text).
 //   fg, accent → 4.5:1 (WCAG 1.4.3, normal-size text)
 //   focus      → 3:1   (focus indicator must stand out from its surface)
 // `shape` is decorative and never carries text, so it is not checked.
@@ -15,16 +16,23 @@ for (const [scene, tokens] of scenes) {
   const role = (name: string) => tokens.find((t) => t.path[2] === name)
   const bg = role('bg')
   if (!bg) throw new Error(`Scene "${scene}" has no bg token`)
+  const surface = role('surface')
+  if (!surface) throw new Error(`Scene "${scene}" has no surface token`)
 
   for (const [name, min] of Object.entries(MINIMUMS)) {
     const fg = role(name)
     if (!fg) throw new Error(`Scene "${scene}" has no ${name} token`)
-    const ratio = contrast(valueOf(fg), valueOf(bg))
-    const ok = ratio >= min
-    if (!ok) failures++
-    console.log(
-      `${ok ? 'PASS' : 'FAIL'}  ${`${scene}.${name}`.padEnd(14)} ${valueOf(fg)} on ${valueOf(bg)}  ${ratio.toFixed(2)}:1 (min ${min}:1)`,
-    )
+    for (const [label, against] of [
+      ['', bg],
+      [' on surface', surface],
+    ] as const) {
+      const ratio = contrast(valueOf(fg), valueOf(against))
+      const ok = ratio >= min
+      if (!ok) failures++
+      console.log(
+        `${ok ? 'PASS' : 'FAIL'}  ${`${scene}.${name}${label}`.padEnd(25)} ${valueOf(fg)} on ${valueOf(against)}  ${ratio.toFixed(2)}:1 (min ${min}:1)`,
+      )
+    }
   }
 }
 

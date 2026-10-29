@@ -4,7 +4,7 @@ import { contrast, MINIMUMS } from '../../scripts/contrast.ts'
 import { formatValue, leaf, referenceOf, tokensIn } from './tokens'
 
 export interface SceneRole {
-  /** Role name: `fg`, `accent`, `focus` or `shape`. */
+  /** Role name: `fg`, `accent`, `focus`, `shape` or `surface`. */
   role: string
   /** The primitive the role points at, e.g. `color.pink.700`. */
   reference: string | undefined
@@ -12,7 +12,10 @@ export interface SceneRole {
   value: string
   /** Contrast against the scene background, e.g. 4.74 for 4.74:1. */
   ratio: number
-  /** The WCAG minimum for the role, or `undefined` for decorative roles that are not checked. */
+  /**
+   * The WCAG minimum for the role against the background, or `undefined` for roles that carry no
+   * text: `shape` (decorative) and `surface` (a panel fill; CI checks the text roles on it).
+   */
   minimum: number | undefined
 }
 
@@ -48,8 +51,9 @@ function summarise(name: string): SceneSummary {
 
 export const scenes: SceneSummary[] = sceneNames.map(summarise)
 
-/** "Pass (min 4.5:1)", "Fail (min 3:1)" or "Decorative, not checked". */
-export function contrastResult({ ratio, minimum }: SceneRole): string {
+/** "Pass (min 4.5:1)", "Fail (min 3:1)", "Decorative, not checked" or the surface note. */
+export function contrastResult({ role, ratio, minimum }: SceneRole): string {
+  if (role === 'surface') return 'Panel fill: text on it is checked'
   if (minimum === undefined) return 'Decorative, not checked'
   return `${ratio >= minimum ? 'Pass' : 'Fail'} (min ${minimum}:1)`
 }

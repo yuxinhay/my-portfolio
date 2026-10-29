@@ -64,6 +64,7 @@
   --color-scene-accent: var(--scene-accent);
   --color-scene-focus: var(--scene-focus);
   --color-scene-shape: var(--scene-shape);
+  --color-scene-surface: var(--scene-surface);
 }
 
 .scene-blush {
@@ -72,6 +73,7 @@
   --scene-accent: var(--color-pink-700);
   --scene-focus: var(--color-ink-900);
   --scene-shape: var(--color-pink-300);
+  --scene-surface: var(--color-white);
   background-color: var(--scene-bg);
   color: var(--scene-fg);
 }
@@ -82,6 +84,7 @@
   --scene-accent: var(--color-blush);
   --scene-focus: var(--color-white);
   --scene-shape: var(--color-pink-500);
+  --scene-surface: var(--color-pink-700);
   background-color: var(--scene-bg);
   color: var(--scene-fg);
 }
@@ -92,6 +95,7 @@
   --scene-accent: var(--color-blush);
   --scene-focus: var(--color-white);
   --scene-shape: var(--color-cobalt-400);
+  --scene-surface: var(--color-ink-900);
   background-color: var(--scene-bg);
   color: var(--scene-fg);
 }
@@ -102,6 +106,7 @@
   --scene-accent: var(--color-blush);
   --scene-focus: var(--color-pink-300);
   --scene-shape: var(--color-ink-800);
+  --scene-surface: var(--color-ink-800);
   background-color: var(--scene-bg);
   color: var(--scene-fg);
 }

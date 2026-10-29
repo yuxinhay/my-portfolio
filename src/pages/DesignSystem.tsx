@@ -144,9 +144,10 @@ export function DesignSystem() {
       <WrappedSection id="scenes" scene="blush" title="Scenes">
         <Text>
           Each full-bleed section is a scene: a background with the text, accent, focus and
-          decorative shape colours allowed on it. Components use role utilities such as{' '}
-          <Code>text-scene-accent</Code>, never raw colours, so one component works in all four
-          scenes. Ratios are each role’s contrast against the scene background.
+          decorative shape colours allowed on it, and a surface fill for panels inside it.
+          Components use role utilities such as <Code>text-scene-accent</Code>, never raw colours,
+          so one component works in all four scenes. Ratios are each role’s contrast against the
+          scene background; CI also checks every text role on the surface.
         </Text>
         <div className="grid gap-6 md:grid-cols-2">
           {SCENES.map((scene) => (

@@ -36,6 +36,7 @@ describe('Blocks', () => {
     const [featured, plain] = container.querySelectorAll('dl > div')
     expect(featured).toHaveClass('scene-pink')
     expect(featured).toHaveTextContent('Sole designer')
+    expect(plain).toHaveClass('bg-scene-surface')
     expect(plain).not.toHaveClass('scene-pink')
     expect(plain).toHaveTextContent('Co-designer')
   })

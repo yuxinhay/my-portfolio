@@ -14,7 +14,13 @@ describe('scenes', () => {
   it('resolves each role to its primitive and computes its contrast', () => {
     const blush = scenes.find((scene) => scene.name === 'blush')
     expect(blush?.bg).toEqual({ reference: 'color.blush', value: valueOf('color', 'blush') })
-    expect(blush?.roles.map((role) => role.role)).toEqual(['fg', 'accent', 'focus', 'shape'])
+    expect(blush?.roles.map((role) => role.role)).toEqual([
+      'fg',
+      'accent',
+      'focus',
+      'shape',
+      'surface',
+    ])
     const accent = blush?.roles.find((role) => role.role === 'accent')
     expect(accent).toMatchObject({
       reference: 'color.pink.700',
@@ -24,10 +30,10 @@ describe('scenes', () => {
     expect(accent?.ratio).toBeCloseTo(5.58, 2)
   })
 
-  it('checks text and focus roles, and marks shape as decorative', () => {
+  it('checks text and focus roles, and leaves shape and surface unchecked against bg', () => {
     for (const { roles } of scenes) {
       for (const role of roles) {
-        if (role.role === 'shape') expect(role.minimum).toBeUndefined()
+        if (role.role === 'shape' || role.role === 'surface') expect(role.minimum).toBeUndefined()
         else expect(role.ratio).toBeGreaterThanOrEqual(role.minimum ?? Infinity)
       }
     }
@@ -40,6 +46,9 @@ describe('scenes', () => {
     expect(contrastResult({ ...role, ratio: 2, minimum: 3 })).toBe('Fail (min 3:1)')
     expect(contrastResult({ ...role, ratio: 1.2, minimum: undefined })).toBe(
       'Decorative, not checked',
+    )
+    expect(contrastResult({ ...role, role: 'surface', ratio: 1.1, minimum: undefined })).toBe(
+      'Panel fill: text on it is checked',
     )
   })
 })
