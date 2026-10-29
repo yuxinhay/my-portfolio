@@ -85,10 +85,14 @@ export interface DeviceFrame {
 
 export type Media = ImageMedia | VideoMedia
 
-/** A term and what it means, rendered in a description list. */
+/** A term and what it means, rendered as a card in a description list. */
 export interface Definition {
   term: string
   detail: string
+  /** A short label shown with the term, e.g. Yuxin's role on a feature. */
+  tag?: string
+  /** Fills the card so it stands out from the others, e.g. the feature Yuxin designed alone. */
+  featured?: boolean
 }
 
 /** A paragraph, a bulleted list, or a description list of terms. */
@@ -162,20 +166,25 @@ export const caseStudies: readonly CaseStudy[] = [
           definitions: [
             {
               term: 'Bank account',
+              tag: 'Sole designer',
+              featured: true,
               detail:
                 'The bank account set here is used for CPF payments (withdrawals and deposits).',
             },
             {
               term: 'Daily withdrawal limit',
+              tag: 'Co-designer',
               detail:
                 'The maximum amount a member can withdraw online per day for immediate retirement needs.',
             },
             {
               term: 'Contact details',
+              tag: 'Co-designer',
               detail: 'Used for transaction notifications and general communications.',
             },
             {
               term: 'Singpass Face Verification',
+              tag: 'Co-designer',
               detail:
                 'Verifies the member’s identity, and is triggered for higher-risk logins and transactions.',
             },

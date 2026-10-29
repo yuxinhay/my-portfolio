@@ -1,4 +1,5 @@
 import type { Block } from '../../content/caseStudies'
+import { Tag } from '../ui/Tag'
 import { Text } from '../ui/Text'
 import { TEXT_RECIPES, cx } from '../ui/styles'
 
@@ -8,8 +9,9 @@ export interface BlocksProps {
 }
 
 /**
- * Long-form text, as wide as the media: paragraphs, bulleted lists and description lists of terms.
- * Renders nothing if empty.
+ * Long-form text, as wide as the media: paragraphs, bulleted lists and description lists of terms,
+ * one card per term. A featured term fills its card with the pink scene; its tag says why in text,
+ * so the emphasis does not rely on colour. Renders nothing if empty.
  */
 export function Blocks({ blocks, className }: BlocksProps) {
   if (blocks.length === 0) return null
@@ -33,12 +35,20 @@ export function Blocks({ blocks, className }: BlocksProps) {
             key={block.definitions.map((d) => d.term).join()}
             className="grid gap-4 md:grid-cols-2"
           >
-            {block.definitions.map(({ term, detail }) => (
+            {block.definitions.map(({ term, detail, tag, featured }) => (
               <div
                 key={term}
-                className="grid content-start gap-1 border-t-(length:--border-rule) border-scene-fg pt-3"
+                className={cx(
+                  'grid content-start gap-3 rounded-card border-(length:--border-rule) border-scene-fg p-6',
+                  featured && 'scene-pink',
+                )}
               >
                 <dt className={TEXT_RECIPES.h3}>{term}</dt>
+                {tag && (
+                  <dd>
+                    <Tag variant={featured ? 'solid' : 'outline'}>{tag}</Tag>
+                  </dd>
+                )}
                 <dd>
                   <Text as="span">{detail}</Text>
                 </dd>
