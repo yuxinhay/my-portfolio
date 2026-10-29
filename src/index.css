@@ -59,3 +59,19 @@
 @utility shadow-lift {
   box-shadow: 0 calc(var(--spacing) * 1.5) 0 0 var(--scene-fg);
 }
+
+/* Page transitions: the View Transitions API crossfades the whole page (src/app/viewTransitions.ts
+   only starts one when motion is allowed; this also stops one replayed on Back). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
