@@ -63,8 +63,10 @@ versioned releases. The site is static on GitHub Pages; `main` is protected and 
 - **release-please** (`googleapis/release-please-action`, manifest config, `release-type: node`,
   `bump-minor-pre-major`, starting from `0.0.0`) runs on every push to `main`. It keeps a release PR
   open that bumps `package.json` and writes `CHANGELOG.md` from Conventional Commits; merging it tags
-  the release. While the version is below 1.0.0, a `feat` bumps the minor version, so the first
-  release is `0.1.0`. `CHANGELOG.md` is generated, so Prettier ignores it.
+  the release. While the version is below 1.0.0, a `feat` bumps the minor version. With no earlier
+  release, release-please ignores the manifest version and uses `initial-version` (1.0.0 by
+  default), so the config sets `initial-version: 0.1.0` for the first release. `CHANGELOG.md` is
+  generated, so Prettier ignores it.
 
 ### Measured scores (local, 2026-10-29, Chromium 156)
 
@@ -106,5 +108,6 @@ back to the default token. The owner chooses one of:
   measured here.
 - Performance thresholds are a floor against regressions, not a target; they are revisited when the
   motion work in step 10 changes the pages.
-- release-please cannot be tested until it runs on `main`; the config was checked against its JSON
-  schema.
+- release-please only runs on `main`. Before merging, the config was checked against its JSON
+  schema and with `release-please release-pr --dry-run` against this branch, which found the
+  1.0.0 default above.
