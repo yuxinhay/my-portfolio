@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import type { ReactNode } from 'react'
 import { intro as defaultIntro } from '../../content/intro'
 import type { Intro as IntroContent } from '../../content/intro'
 import { site } from '../../content/site'
@@ -9,10 +10,12 @@ import { WrappedSection } from './WrappedSection'
 export interface IntroProps {
   name?: string
   intro?: IntroContent
+  /** Controls shown after the profile, e.g. the button that replays the At a glance intro. */
+  actions?: ReactNode
 }
 
 /** The opening scene: the page's h1 (the owner's name), headline, tagline and profile. */
-export function Intro({ name = site.name, intro = defaultIntro }: IntroProps) {
+export function Intro({ name = site.name, intro = defaultIntro, actions }: IntroProps) {
   return (
     <WrappedSection id="intro" scene="blush" level={1} title={name} className="md:py-32">
       <div className="grid gap-6">
@@ -34,6 +37,7 @@ export function Intro({ name = site.name, intro = defaultIntro }: IntroProps) {
         ))}
         <Text variant="eyebrow">Based in {intro.location}</Text>
       </div>
+      {actions}
     </WrappedSection>
   )
 }

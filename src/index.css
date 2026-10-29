@@ -75,3 +75,44 @@
     animation: none !important;
   }
 }
+
+/* Modal dialogs dim and blur the page behind them; browsers without backdrop-filter get a solid
+   scrim instead. The page behind does not scroll while one is open. */
+dialog::backdrop {
+  background-color: var(--color-scrim);
+  backdrop-filter: blur(var(--blur-overlay));
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  dialog::backdrop {
+    background-color: var(--color-ink-900);
+  }
+}
+
+:root:has(dialog:modal) {
+  overflow: hidden;
+}
+
+/* At a glance carousel: cards sit in a row and the row slides to the current one. On wide screens
+   a card is 80% wide, so the next one peeks in at the edge. */
+.glance-track {
+  --glance-card: 100%;
+  --glance-gap: calc(var(--spacing) * 4);
+  display: flex;
+  gap: var(--glance-gap);
+  height: 100%;
+  translate: calc(var(--glance-index, 0) * -1 * (var(--glance-card) + var(--glance-gap))) 0;
+
+  & > * {
+    flex: 0 0 var(--glance-card);
+    min-width: 0;
+  }
+
+  @variant md {
+    --glance-card: 80%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: translate var(--duration-slow) var(--ease-out);
+  }
+}

@@ -39,7 +39,11 @@ export function watchForErrors(page: Page) {
   }
 }
 
-/** Scrolls to the bottom in viewport steps, so lazy images load, then back to the top. */
+/**
+ * Scrolls to the bottom in viewport steps, so lazy images load and every section is revealed, then
+ * back to the top, and waits for the reveal transitions to finish (a half-faded element would
+ * fail axe's contrast check).
+ */
 export async function scrollThrough(page: Page) {
   await page.evaluate(async () => {
     const step = Math.max(window.innerHeight / 2, 100)
@@ -48,6 +52,15 @@ export async function scrollThrough(page: Page) {
       await new Promise((resolve) => requestAnimationFrame(resolve))
     }
     window.scrollTo(0, 0)
+  })
+  await settleMotion(page)
+}
+
+/** Waits until no CSS transition or animation is running (reveals, lifts, the overlay slide). */
+export async function settleMotion(page: Page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => requestAnimationFrame(resolve))
+    await Promise.all(document.getAnimations().map((animation) => animation.finished))
   })
 }
 
