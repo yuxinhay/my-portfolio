@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState, useSyncExternalStore } from 'react'
 import { FoundationPage, FoundationSection, TokenName } from './FoundationPage'
-import { formatValue, leaf, tokensIn } from './tokens'
+import { formatValue, leaf, tokensIn } from '../../design-system/tokens'
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
 

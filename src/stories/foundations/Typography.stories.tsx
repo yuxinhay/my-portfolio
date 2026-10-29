@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TEXT_RECIPES } from '../../components/ui/styles'
 import type { TextStep } from '../../components/ui/styles'
 import { FoundationPage, FoundationSection, TokenName } from './FoundationPage'
-import { formatValue, leaf, tokensIn } from './tokens'
+import { formatValue, leaf, tokensIn } from '../../design-system/tokens'
 
 const SAMPLES: Record<TextStep, string> = {
   stat: '12',

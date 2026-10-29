@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FoundationPage, FoundationSection, TokenName } from './FoundationPage'
-import { formatValue, leaf, tokensIn } from './tokens'
+import { formatValue, leaf, tokensIn } from '../../design-system/tokens'
 
 const spacingBase = tokensIn('spacing', 'base')[0]
 if (!spacingBase) throw new Error('Missing spacing.base token')
