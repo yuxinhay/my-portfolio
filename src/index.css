@@ -150,11 +150,11 @@ dialog::backdrop {
 }
 
 /* On a phone the row is narrow: Back and Next take less padding and the small text step, so
-   "Explore my work" still fits beside Back and the dots (on two lines at 320px, with Back
-   stretched to the same height). */
+   "Explore my work" still fits beside Back and the dots, each of which keeps a 24px target (on
+   two lines at 320px, with Back stretched to the same height). */
 @container (width < 30rem) {
   .glance-control {
-    padding-inline: calc(var(--spacing) * 3);
+    padding-inline: calc(var(--spacing) * 2);
     font-size: var(--text-small);
     text-wrap: balance;
   }

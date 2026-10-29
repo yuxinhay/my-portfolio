@@ -116,6 +116,15 @@ test('every card: no axe violations, no overflow, neighbours beside it, controls
       ).toBeLessThanOrEqual(1)
       expect(box.back.height).toBeCloseTo(box.next.height, 0)
     }
+    // Every dot keeps a 24px target (Lighthouse's target-size audit; WCAG 2.2, beyond the 2.0
+    // tags axe runs with here).
+    const dots = await dialog(page)
+      .getByRole('button', { name: /^Go to card/ })
+      .evaluateAll((buttons) => buttons.map((b) => b.getBoundingClientRect()))
+    for (const dot of dots) {
+      expect(dot.width).toBeGreaterThanOrEqual(24)
+      expect(dot.height).toBeGreaterThanOrEqual(24)
+    }
     // Skip floats above the card's top right corner.
     expect(box.skip?.bottom ?? Infinity).toBeLessThanOrEqual(box.card.top)
     expect(Math.abs((box.skip?.right ?? 0) - box.card.right)).toBeLessThanOrEqual(1)

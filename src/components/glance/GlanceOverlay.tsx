@@ -266,7 +266,7 @@ export function GlanceOverlay({
                   aria-current={cardIndex === index ? 'true' : undefined}
                   onClick={() => go(cardIndex)}
                   className={cx(
-                    'grid cursor-pointer place-items-center rounded-pill px-1 py-2',
+                    'grid w-6 cursor-pointer place-items-center rounded-pill py-2',
                     FOCUS_RING,
                   )}
                 >
