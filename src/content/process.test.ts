@@ -88,7 +88,8 @@ describe('process', () => {
 
   it('reads the real plan and ADRs', () => {
     expect(planSteps.map((step) => step.number)).toEqual(planSteps.map((_, i) => i + 1))
-    expect(planSteps.filter((step) => step.status === 'Next')).toHaveLength(1)
+    // At most one step is next; none once every step is done.
+    expect(planSteps.filter((step) => step.status === 'Next').length).toBeLessThanOrEqual(1)
     for (const step of planSteps.filter((s) => s.status === 'Done')) {
       expect(step.pr?.href).toMatch(/^https:\/\/github\.com\/yuxinhay\/my-portfolio\/pull\/\d+$/)
     }

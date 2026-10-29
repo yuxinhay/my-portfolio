@@ -20,18 +20,18 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 
 ## Status
 
-| #   | Step                                                                                                                                                                              | Status   | PR                                                      |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------- |
-| 1   | Scaffold: Vite + React + TS, oxlint, Prettier, Husky, commitlint, `CLAUDE.md`, ADR 0001                                                                                           | Done     | [#1](https://github.com/yuxinhay/my-portfolio/pull/1)   |
-| 2   | CI + deploy to GitHub Pages; PR/issue templates; repo settings                                                                                                                    | Done     | [#2](https://github.com/yuxinhay/my-portfolio/pull/2)   |
-| 3   | Design tokens → Tailwind, scenes, contrast + token-usage gates, ADR 0002                                                                                                          | Done     | [#3](https://github.com/yuxinhay/my-portfolio/pull/3)   |
-| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook`                                                                                          | Done     | [#5](https://github.com/yuxinhay/my-portfolio/pull/5)   |
-| 5   | UI primitives with stories, unit tests and axe tests                                                                                                                              | Done     | [#6](https://github.com/yuxinhay/my-portfolio/pull/6)   |
-| 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management                                                                                              | Done     | [#7](https://github.com/yuxinhay/my-portfolio/pull/7)   |
-| 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements                                                                                          | Done     | [#9](https://github.com/yuxinhay/my-portfolio/pull/9)   |
-| 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                                                                                                          | Done     | [#10](https://github.com/yuxinhay/my-portfolio/pull/10) |
-| 9   | Playwright + axe e2e, Lighthouse CI budgets, release-please, README polish                                                                                                        | Done     | [#11](https://github.com/yuxinhay/my-portfolio/pull/11) |
-| 10  | Motion and visual polish: scroll reveals, count-up numbers, hover/press states, page transitions, motion tokens (all prefers-reduced-motion safe; owner reviews prototypes first) | **Next** |                                                         |
+| #   | Step                                                                                                                                                                              | Status | PR                                                      |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------- |
+| 1   | Scaffold: Vite + React + TS, oxlint, Prettier, Husky, commitlint, `CLAUDE.md`, ADR 0001                                                                                           | Done   | [#1](https://github.com/yuxinhay/my-portfolio/pull/1)   |
+| 2   | CI + deploy to GitHub Pages; PR/issue templates; repo settings                                                                                                                    | Done   | [#2](https://github.com/yuxinhay/my-portfolio/pull/2)   |
+| 3   | Design tokens → Tailwind, scenes, contrast + token-usage gates, ADR 0002                                                                                                          | Done   | [#3](https://github.com/yuxinhay/my-portfolio/pull/3)   |
+| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook`                                                                                          | Done   | [#5](https://github.com/yuxinhay/my-portfolio/pull/5)   |
+| 5   | UI primitives with stories, unit tests and axe tests                                                                                                                              | Done   | [#6](https://github.com/yuxinhay/my-portfolio/pull/6)   |
+| 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management                                                                                              | Done   | [#7](https://github.com/yuxinhay/my-portfolio/pull/7)   |
+| 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements                                                                                          | Done   | [#9](https://github.com/yuxinhay/my-portfolio/pull/9)   |
+| 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                                                                                                          | Done   | [#10](https://github.com/yuxinhay/my-portfolio/pull/10) |
+| 9   | Playwright + axe e2e, Lighthouse CI budgets, release-please, README polish                                                                                                        | Done   | [#11](https://github.com/yuxinhay/my-portfolio/pull/11) |
+| 10  | Motion and visual polish: scroll reveals, count-up numbers, hover/press states, page transitions, motion tokens (all prefers-reduced-motion safe; owner reviews prototypes first) | Done   | [#12](https://github.com/yuxinhay/my-portfolio/pull/12) |
 
 ## Decisions so far
 
@@ -65,6 +65,10 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | E2E           | Playwright + `@axe-core/playwright` on the production build under `/my-portfolio/`: every route at 1280px, 320px and emulated 200% zoom, plus keyboard, focus, deep-link and video behaviour; Chromium only in CI; no screenshot tests | [ADR 0007](adr/0007-e2e-lighthouse-and-releases.md)         |
 | Lighthouse    | LHCI on five pages, mobile and desktop: accessibility 100, performance ≥ 90, best practices and SEO ≥ 95 (set under measured scores), per-page size budgets; reports kept as CI artifacts                                              | [ADR 0007](adr/0007-e2e-lighthouse-and-releases.md)         |
 | Releases      | release-please (manifest, `release-type: node`, `bump-minor-pre-major`) keeps a release PR on `main`; first release `0.1.0`. Needs a `RELEASE_PLEASE_TOKEN` secret or the Actions PR setting (owner)                                   | [ADR 0007](adr/0007-e2e-lighthouse-and-releases.md)         |
+| Motion        | From the `prototype/motion` review: **Fade-up** reveals, **Count-up** numbers, **Lift** hover/press, **Crossfade** pages (View Transitions); CSS only; nothing hidden without JS; reduced motion: no movement                          | [ADR 0008](adr/0008-motion-and-at-a-glance-intro.md)        |
+| Intro         | **At a glance** overlay (owner's design): six Wrapped cards in a native modal `<dialog>` on a first home visit (localStorage), sliding, never auto-advancing; "Replay intro" on home                                                   | [ADR 0008](adr/0008-motion-and-at-a-glance-intro.md)        |
+| Content       | Home headline is **"UX Designer \| Product Manager"** (owner's choice, step 10), replacing "Product Manager \| UX/UI & Design Systems"                                                                                                 | This plan                                                   |
+| Tokens        | New `duration.count` (1000ms), `duration.stagger` (60ms), `blur.overlay` (0.5rem), `color.scrim` (ink.900 at 70%); the Lift shadow reuses `--spacing` and the scene text colour                                                        | [ADR 0008](adr/0008-motion-and-at-a-glance-intro.md)        |
 
 ## Repo layout (target)
 
@@ -83,13 +87,15 @@ my-portfolio/
 │  ├─ components/layout/    shell: Header, Nav (mobile menu), Footer, Page, RouteLink
 │  ├─ components/sections/  Wrapped sections: Intro, TopSkills, CareerPath, Projects, Achievements
 │  ├─ components/case-study/ case-study sections, media figures, process steps, project pager
+│  ├─ components/motion/    scroll reveals, count-up StatValue, reduced-motion helpers
+│  ├─ components/glance/    "At a glance" intro: dialog carousel, cards, first-visit logic
 │  ├─ design-system/   token reader and scene contrast, shared by Storybook and /design-system
-│  ├─ assets/          case-study images (WebP) and videos (MP4)
+│  ├─ assets/          case-study images (WebP) and videos (MP4), the intro portrait
 │  ├─ stories/         Storybook Foundations (scenes, colour, type, layout, motion)
-│  ├─ content/         typed data: site, intro, skills, career, projects, achievements, period
+│  ├─ content/         typed data: site, intro, skills, career, projects, achievements, period, glance
 │  ├─ pages/           Home, ProjectDetail (case study), DesignSystem, HowIBuiltThis
-│  └─ app/             routes, router, Layout (focus management)
-├─ e2e/                Playwright specs incl. axe scans per route (playwright.config.ts)
+│  └─ app/             routes, router (view transitions), Layout (focus management, reveals)
+├─ e2e/                Playwright specs incl. axe scans per route and per intro card (playwright.config.ts)
 ├─ lighthouserc.cjs    Lighthouse CI pages, presets, score and size budgets
 ├─ release-please-config.json, .release-please-manifest.json   release PRs, CHANGELOG.md
 └─ .storybook/         main.ts, preview.ts (loads index.css, a11y addon)
