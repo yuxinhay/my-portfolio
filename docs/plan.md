@@ -28,8 +28,8 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | Done     | [#5](https://github.com/yuxinhay/my-portfolio/pull/5) |
 | 5   | UI primitives with stories, unit tests and axe tests                                     | Done     | [#6](https://github.com/yuxinhay/my-portfolio/pull/6) |
 | 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management     | Done     | [#7](https://github.com/yuxinhay/my-portfolio/pull/7) |
-| 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements | **Next** |                                                       |
-| 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                 | To do    |                                                       |
+| 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements | Done     | [#9](https://github.com/yuxinhay/my-portfolio/pull/9) |
+| 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                 | **Next** |                                                       |
 | 9   | Playwright + axe e2e, Lighthouse CI budgets, release-please, README polish               | To do    |                                                       |
 
 ## Decisions so far
@@ -52,6 +52,8 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | Deep links    | `404.html` is a build-time copy of `index.html`, so GitHub Pages boots the app on any path (no hash routing)      | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
 | Route a11y    | Focus moves to the page h1 (or a focusable `#hash` target) after navigation, not on first load; no live region    | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
 | Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                           | This plan                                                   |
+| Content       | Typed, readonly data in `src/content/`; rules types cannot express (order, unique slugs, banned terms) are tests  | This plan                                                   |
+| Skills        | Skills are listed in groups **without proficiency levels** (owner's choice)                                       | This plan                                                   |
 
 ## Repo layout (target)
 
@@ -70,7 +72,7 @@ my-portfolio/
 │  ├─ components/layout/    shell: Header, Nav (mobile menu), Footer, Page, RouteLink
 │  ├─ components/sections/  Wrapped sections: Intro, TopSkills, CareerPath, Projects, Achievements
 │  ├─ stories/         Storybook Foundations (scenes, colour, type, layout, motion)
-│  ├─ content/         typed data: site.ts, projects.ts, achievements.ts, skills.ts, career.ts
+│  ├─ content/         typed data: site, intro, skills, career, projects, achievements, period
 │  ├─ pages/           Home, ProjectDetail (case study), DesignSystem, HowIBuiltThis
 │  └─ app/             routes, router, Layout (focus management)
 ├─ e2e/                Playwright specs incl. axe scans per route
@@ -99,7 +101,8 @@ my-portfolio/
 - Every scene's text and accent colours ≥ 4.5:1 against its background (checked in CI)
 - `prefers-reduced-motion` respected; Wrapped reveals are motion-optional; nothing auto-advances
 - Route changes move focus to the main heading and announce the page title
-- Images need `alt`; no colour-only meaning (skill levels always have a text label)
+- Images need `alt`; no colour-only meaning (skills are listed without proficiency levels; project
+  status is a text label)
 - Reflow at 320px and 200% zoom without loss of content
 - Manual keyboard-only and VoiceOver checks per PR (PR template), logged in `docs/accessibility.md`
 

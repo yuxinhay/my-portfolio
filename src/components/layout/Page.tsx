@@ -1,7 +1,6 @@
-import { useEffect } from 'react'
 import type { ReactNode } from 'react'
-import { pageTitle } from '../../content/site'
 import { Heading } from '../ui/Heading'
+import { useDocumentTitle } from './useDocumentTitle'
 
 export interface PageProps {
   /** The page's h1, and the first part of the document title. */
@@ -15,9 +14,7 @@ export interface PageProps {
  * so it shows no focus ring.
  */
 export function Page({ title, children }: PageProps) {
-  useEffect(() => {
-    document.title = pageTitle(title)
-  }, [title])
+  useDocumentTitle(title)
 
   return (
     <div className="mx-auto grid max-w-5xl gap-6 px-6 py-12">

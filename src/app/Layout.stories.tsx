@@ -20,6 +20,8 @@ export const DesignSystem: Story = { args: { path: '/design-system' } }
 
 export const HowIBuiltThis: Story = { args: { path: '/how-i-built-this' } }
 
-export const ProjectDetail: Story = { args: { path: '/projects/example-project' } }
+export const ProjectDetail: Story = { args: { path: '/projects/flowcentral' } }
+
+export const UnknownProject: Story = { args: { path: '/projects/no-such-project' } }
 
 export const NotFound: Story = { args: { path: '/no-such-page' } }
