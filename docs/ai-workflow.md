@@ -66,3 +66,11 @@ rejected and why).
   playing when scrolled into view (still
   paused under reduced motion), screenshots that repeated the videos removed, the PBA rollout and
   outcome sections removed, and the settings card shown beside its withdrawal-form miniature.
+- 2026-10-29: AI added the step 9 quality gates (ADR 0007): Playwright + axe on every route at
+  1280px, 320px and emulated 200% zoom, keyboard, focus and video behaviour tests, Lighthouse CI
+  with accessibility at 100 and score floors set from measured scores, and release-please. The
+  checks found no defects in the app, so no app code changed. The first e2e run had silently
+  tested a stale build from another worktree left on Vite's default preview port; the suite now
+  starts its own server on a dedicated port and fails if that port is taken. Release-please needs
+  a token or a repo setting I choose (ADR 0007), and manual accessibility checks are mine to log
+  in `docs/accessibility.md`.
