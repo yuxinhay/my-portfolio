@@ -17,7 +17,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
   primary:
     'lift-hollow border-scene-fg bg-scene-fg text-scene hover:border-scene-accent hover:bg-scene-accent',
   secondary: 'border-scene-fg text-scene-fg hover:border-scene-accent hover:text-scene-accent',
-  ghost: 'border-scene-fg/40 bg-scene-fg/10 text-scene-fg hover:border-scene-fg',
+  ghost: 'border-scene-fg/60 bg-scene-fg/10 text-scene-fg hover:border-scene-fg',
 }
 
 /**
