@@ -12,7 +12,7 @@ const RULES = [
 ]
 
 let violations = 0
-for await (const file of glob('src/**/*.{ts,tsx,css}')) {
+for await (const file of glob(['src/**/*.{ts,tsx,css}', '.storybook/**/*.{ts,tsx,css}'])) {
   if (file === GENERATED) continue
   const lines = (await readFile(file, 'utf8')).split('\n')
   lines.forEach((line, i) => {
@@ -29,4 +29,4 @@ if (violations > 0) {
   console.error(`\n${violations} off-system value(s). Add or reuse a token in tokens/*.json.`)
   process.exit(1)
 }
-console.log('Token usage check passed: no hex colours or arbitrary values in src/.')
+console.log('Token usage check passed: no hex colours or arbitrary values in src/ or .storybook/.')

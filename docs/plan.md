@@ -25,8 +25,8 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | 1   | Scaffold: Vite + React + TS, oxlint, Prettier, Husky, commitlint, `CLAUDE.md`, ADR 0001  | Done     | [#1](https://github.com/yuxinhay/my-portfolio/pull/1) |
 | 2   | CI + deploy to GitHub Pages; PR/issue templates; repo settings                           | Done     | [#2](https://github.com/yuxinhay/my-portfolio/pull/2) |
 | 3   | Design tokens → Tailwind, scenes, contrast + token-usage gates, ADR 0002                 | Done     | [#3](https://github.com/yuxinhay/my-portfolio/pull/3) |
-| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | **Next** |                                                       |
-| 5   | UI primitives with stories, unit tests and axe tests                                     | To do    |                                                       |
+| 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | Done     |                                                       |
+| 5   | UI primitives with stories, unit tests and axe tests                                     | **Next** |                                                       |
 | 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management     | To do    |                                                       |
 | 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements | To do    |                                                       |
 | 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                 | To do    |                                                       |
@@ -45,6 +45,7 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | Design source | Code only; **no Figma**. Theme and type chosen from prototypes on branch `prototype/wrapped-themes`             | [ADR 0002](adr/0002-tailwind-design-tokens.md) |
 | Hosting       | GitHub Pages via Actions at `https://yuxinhay.github.io/my-portfolio/`; repo is **public**                      | This plan                                      |
 | Git workflow  | `main` protected: PR + both CI checks required, linear history, **squash merge only**, branches auto-deleted    | This plan                                      |
+| Storybook     | Storybook 10 (React + Vite); Foundations stories read `tokens/*.json`; built in CI, published at `/storybook/`  | [ADR 0003](adr/0003-storybook-foundations.md)  |
 | Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                         | This plan                                      |
 
 ## Repo layout (target)
@@ -56,17 +57,18 @@ my-portfolio/
 ├─ CLAUDE.md           rules for AI assistants
 ├─ docs/               plan.md (this), adr/, ai-workflow.md, accessibility.md (planned)
 ├─ tokens/             DTCG JSON: color, scene, typography, layout        ← source of truth
-├─ scripts/            build-tokens.ts, check-contrast.ts, check-token-usage.ts
+├─ scripts/            build-tokens.ts, check-contrast.ts, contrast.ts, check-token-usage.ts
 ├─ prototypes/         only on branch prototype/wrapped-themes, never on main
 ├─ src/
 │  ├─ styles/          tokens.css (generated), via index.css
 │  ├─ components/ui/   primitives: Button, Link, Heading, Text, Card, Tag, SkipLink, VisuallyHidden
 │  ├─ components/sections/  Wrapped sections: Intro, TopSkills, CareerPath, Projects, Achievements
+│  ├─ stories/         Storybook Foundations (scenes, colour, type, layout, motion)
 │  ├─ content/         typed data: projects.ts, achievements.ts, skills.ts, career.ts
 │  ├─ pages/           Home, ProjectDetail (case study), DesignSystem, HowIBuiltThis
 │  └─ app/             router, layout
 ├─ e2e/                Playwright specs incl. axe scans per route
-└─ .storybook/
+└─ .storybook/         main.ts, preview.ts (loads index.css, a11y addon)
 ```
 
 ## Quality gates
@@ -80,7 +82,7 @@ my-portfolio/
 | Tokens up to date            | CI                        | Live   |
 | Scene contrast ≥ AA          | CI, AI hook               | Live   |
 | Token-only styling           | CI, AI hook               | Live   |
-| Storybook a11y addon         | Storybook                 | Step 4 |
+| Storybook a11y addon         | Storybook; built in CI    | Live   |
 | Unit tests + axe (Vitest)    | CI                        | Step 5 |
 | Playwright + axe, 320px/200% | CI                        | Step 9 |
 | Lighthouse CI (a11y = 100)   | CI                        | Step 9 |

@@ -7,11 +7,11 @@ WCAG 2.0 AA accessibility, CI quality gates and an AI-assisted workflow.
 [![CI](https://github.com/yuxinhay/my-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/yuxinhay/my-portfolio/actions/workflows/ci.yml)
 [![Deploy](https://github.com/yuxinhay/my-portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/yuxinhay/my-portfolio/actions/workflows/deploy.yml)
 
-Live site: https://yuxinhay.github.io/my-portfolio/
+Live site: https://yuxinhay.github.io/my-portfolio/ · Storybook: https://yuxinhay.github.io/my-portfolio/storybook/
 
 ## Stack
 
-React 19 · TypeScript (strict) · Vite · Tailwind CSS v4 driven by design tokens (Style Dictionary) · Inter · Storybook (planned)
+React 19 · TypeScript (strict) · Vite · Tailwind CSS v4 driven by design tokens (Style Dictionary) · Inter · Storybook with the a11y addon
 
 ## Getting started
 
@@ -20,16 +20,18 @@ npm install
 npm run dev
 ```
 
-| Script                 | What it does                                                   |
-| ---------------------- | -------------------------------------------------------------- |
-| `npm run dev`          | Start the dev server                                           |
-| `npm run build`        | Typecheck and build to `dist/`                                 |
-| `npm run preview`      | Preview the production build                                   |
-| `npm run lint`         | oxlint, including `jsx-a11y` rules (warnings fail)             |
-| `npm run typecheck`    | TypeScript project check                                       |
-| `npm run format`       | Prettier                                                       |
-| `npm run tokens:build` | Generate `src/styles/tokens.css` from `tokens/*.json`          |
-| `npm run tokens:check` | WCAG AA contrast check of every scene + token-only usage check |
+| Script                    | What it does                                                   |
+| ------------------------- | -------------------------------------------------------------- |
+| `npm run dev`             | Start the dev server                                           |
+| `npm run build`           | Typecheck and build to `dist/`                                 |
+| `npm run preview`         | Preview the production build                                   |
+| `npm run lint`            | oxlint, including `jsx-a11y` rules (warnings fail)             |
+| `npm run typecheck`       | TypeScript project check                                       |
+| `npm run format`          | Prettier                                                       |
+| `npm run tokens:build`    | Generate `src/styles/tokens.css` from `tokens/*.json`          |
+| `npm run tokens:check`    | WCAG AA contrast check of every scene + token-only usage check |
+| `npm run storybook`       | Storybook dev server (Foundations stories, a11y panel)         |
+| `npm run build-storybook` | Build Storybook to `storybook-static/`                         |
 
 ## Workflow
 
@@ -42,5 +44,6 @@ npm run dev
 
 - [Plan and status](docs/plan.md)
 - [Architecture decisions](docs/adr/), incl. [design tokens](docs/adr/0002-tailwind-design-tokens.md)
+  and [Storybook](docs/adr/0003-storybook-foundations.md)
 - [AI-assisted workflow](docs/ai-workflow.md)
 - [AI rules (CLAUDE.md)](CLAUDE.md)

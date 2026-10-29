@@ -30,3 +30,8 @@ rejected and why).
   pairings (branch `prototype/wrapped-themes`). I chose theme D (Bubblegum Bold) and Inter only.
 - 2026-10-28: The AI-written contrast gate failed its first run (blush accent on hot pink, 4.45:1).
   We darkened `pink.600` slightly instead of dropping the accent; recorded in ADR 0002.
+- 2026-10-29: AI set up Storybook and Foundations stories that read the token JSON directly, and
+  moved the contrast maths into one module shared with the CI gate. A headless axe run over the
+  built stories caught three issues before review (duplicate landmark names, a non-focusable scroll
+  area and 320px overflow on the colour table), fixed by restructuring rather than suppressing.
+  AI proposed the per-step type recipes from existing usage; they are flagged for my review.
