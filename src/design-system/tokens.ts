@@ -1,9 +1,10 @@
-// Reads the DTCG token files directly, so the Foundations stories document the source of truth
-// rather than a copy of it. Style Dictionary is Node-only; this resolves `{a.b}` references itself.
-import color from '../../../tokens/color.json'
-import layout from '../../../tokens/layout.json'
-import scene from '../../../tokens/scene.json'
-import typography from '../../../tokens/typography.json'
+// Reads the DTCG token files directly, so the Foundations stories and the design-system page
+// document the source of truth rather than a copy of it. Style Dictionary is Node-only; this
+// resolves `{a.b}` references itself.
+import color from '../../tokens/color.json'
+import layout from '../../tokens/layout.json'
+import scene from '../../tokens/scene.json'
+import typography from '../../tokens/typography.json'
 
 export type TokenValue = string | number | readonly (string | number)[]
 

@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { contrast, MINIMUMS } from '../../../scripts/contrast.ts'
+import { contrastResult, formatRatio, scenes } from '../../design-system/scenes'
+import { formatValue, leaf, referenceOf, tokensIn } from '../../design-system/tokens'
 import { FoundationPage, FoundationSection, TokenName } from './FoundationPage'
-import { formatValue, leaf, referenceOf, tokensIn } from './tokens'
 
 const sceneTokens = tokensIn('scene')
-const sceneNames = [...new Set(sceneTokens.map((token) => token.path[1] ?? ''))]
 
 /** Primitives that scenes only ever use as `shape`: decorative, never text. */
 const decorativeOnly = new Set(
@@ -45,7 +44,10 @@ function Primitives() {
   )
 }
 
-/** The role rendered inside its real scene: text for text roles, a ring for focus, a dot for shape. */
+/**
+ * The role rendered inside its real scene: text for text roles, a ring for focus, a dot for shape,
+ * and text on a filled panel for surface.
+ */
 function RoleSample({ scene, role }: { scene: string; role: string }) {
   return (
     <span className={`scene-${scene} inline-flex rounded-sm px-2 py-1 font-black`}>
@@ -56,6 +58,8 @@ function RoleSample({ scene, role }: { scene: string; role: string }) {
         />
       ) : role === 'shape' ? (
         <span aria-hidden="true" className="inline-block size-4 rounded-pill bg-scene-shape" />
+      ) : role === 'surface' ? (
+        <span className="rounded-sm bg-scene-surface px-1">Aa</span>
       ) : (
         <span style={{ color: `var(--scene-${role})` }}>Aa</span>
       )}
@@ -85,44 +89,28 @@ function RolePairs() {
           </th>
         </tr>
       </thead>
-      {sceneNames.map((scene) => {
-        const roles = tokensIn('scene', scene)
-        const bg = roles.find((token) => leaf(token) === 'bg')
-        if (!bg) throw new Error(`Scene "${scene}" has no bg token`)
-        return (
-          <tbody key={scene}>
-            <tr>
-              <th scope="rowgroup" colSpan={3} className="pt-6 pb-2 text-body">
-                scene-{scene} <span className="font-regular">(bg {referenceOf(bg)})</span>
+      {scenes.map(({ name, bg, roles }) => (
+        <tbody key={name}>
+          <tr>
+            <th scope="rowgroup" colSpan={3} className="pt-6 pb-2 text-body">
+              scene-{name} <span className="font-regular">(bg {bg.reference})</span>
+            </th>
+          </tr>
+          {roles.map((role) => (
+            <tr key={role.role} className="border-b-(length:--border-rule) border-scene-fg">
+              <th scope="row" className="py-2 pr-4 align-top font-regular">
+                <div className="flex flex-wrap items-center gap-2">
+                  <RoleSample scene={name} role={role.role} />
+                  <TokenName>{role.role}</TokenName>
+                </div>
+                <div className="mt-1 break-all">{role.reference}</div>
               </th>
+              <td className="py-2 pr-4 align-top">{formatRatio(role.ratio)}</td>
+              <td className="py-2 align-top font-bold">{contrastResult(role)}</td>
             </tr>
-            {roles
-              .filter((token) => token !== bg)
-              .map((token) => {
-                const role = leaf(token)
-                const min = MINIMUMS[role]
-                const ratio = contrast(formatValue(token), formatValue(bg))
-                const result =
-                  min === undefined
-                    ? 'Decorative, not checked'
-                    : `${ratio >= min ? 'Pass' : 'Fail'} (min ${min}:1)`
-                return (
-                  <tr key={token.name} className="border-b-(length:--border-rule) border-scene-fg">
-                    <th scope="row" className="py-2 pr-4 align-top font-regular">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <RoleSample scene={scene} role={role} />
-                        <TokenName>{role}</TokenName>
-                      </div>
-                      <div className="mt-1 break-all">{referenceOf(token)}</div>
-                    </th>
-                    <td className="py-2 pr-4 align-top">{ratio.toFixed(2)}:1</td>
-                    <td className="py-2 align-top font-bold">{result}</td>
-                  </tr>
-                )
-              })}
-          </tbody>
-        )
-      })}
+          ))}
+        </tbody>
+      ))}
     </table>
   )
 }

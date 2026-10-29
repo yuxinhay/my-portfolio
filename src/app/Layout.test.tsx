@@ -91,7 +91,7 @@ describe('Layout and routes', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'flowCentral: agentic AI workflow platform' }),
     ).toHaveFocus()
-    expect(screen.getByText('Full case study coming soon.')).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'How I managed it' })).toBeInTheDocument()
     await user.click(screen.getByRole('link', { name: 'Back to all projects' }))
     expect(screen.getByRole('region', { name: 'Projects' })).toHaveFocus()
   })

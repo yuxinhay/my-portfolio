@@ -46,6 +46,7 @@ npm run dev
 - [Plan and status](docs/plan.md)
 - [Architecture decisions](docs/adr/), incl. [design tokens](docs/adr/0002-tailwind-design-tokens.md),
   [Storybook](docs/adr/0003-storybook-foundations.md), [testing](docs/adr/0004-vitest-testing-library-axe.md)
-  and [routing on GitHub Pages](docs/adr/0005-routing-and-github-pages-deep-links.md)
+  [routing on GitHub Pages](docs/adr/0005-routing-and-github-pages-deep-links.md) and
+  [case-study media](docs/adr/0006-case-study-media.md)
 - [AI-assisted workflow](docs/ai-workflow.md)
 - [AI rules (CLAUDE.md)](CLAUDE.md)

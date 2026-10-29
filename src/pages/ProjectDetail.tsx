@@ -1,26 +1,22 @@
 import { useParams } from 'react-router'
-import { Page } from '../components/layout/Page'
-import { RouteLink } from '../components/layout/RouteLink'
-import { Text } from '../components/ui/Text'
+import { CaseStudy } from '../components/case-study/CaseStudy'
+import { useDocumentTitle } from '../components/layout/useDocumentTitle'
+import { findCaseStudy } from '../content/caseStudies'
+import type { CaseStudy as CaseStudyContent } from '../content/caseStudies'
 import { findProject } from '../content/projects'
+import type { Project } from '../content/projects'
 import { NotFound } from './NotFound'
 
-/** PLACEHOLDER: a project's title and summary; full case studies arrive in plan step 8. */
+function ProjectCaseStudy({ project, study }: { project: Project; study: CaseStudyContent }) {
+  useDocumentTitle(project.title)
+  return <CaseStudy project={project} study={study} />
+}
+
+/** `/projects/:slug`: the project's full case study, or the not-found page for an unknown slug. */
 export function ProjectDetail() {
   const { slug = '' } = useParams()
   const project = findProject(slug)
-  if (!project) return <NotFound />
-  return (
-    <Page title={project.title}>
-      <Text variant="eyebrow">
-        {project.role} · {project.when}
-        {project.status && <> · {project.status}</>}
-      </Text>
-      <Text className="max-w-prose">{project.summary}</Text>
-      <Text className="max-w-prose font-bold">Full case study coming soon.</Text>
-      <Text>
-        <RouteLink to="/#projects">Back to all projects</RouteLink>
-      </Text>
-    </Page>
-  )
+  const study = findCaseStudy(slug)
+  if (!project || !study) return <NotFound />
+  return <ProjectCaseStudy project={project} study={study} />
 }

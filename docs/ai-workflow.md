@@ -51,3 +51,18 @@ rejected and why).
   and terms that must never be published. Headless Chrome confirmed axe 0 violations and no
   overflow at 1280px, 320px and 200% zoom. Visual choices (scene per section, featured numbers,
   headline skills) are listed in the PR for my review.
+- 2026-10-29: AI built the five case studies, `/design-system` and `/how-i-built-this` (step 8)
+  from content I approved. An orchestrating agent supervised one worker agent for the step. The
+  worker converted my vetted screenshots and recordings to WebP and MP4 with metadata stripped
+  (ADR 0006) and wrote alt text, captions and video descriptions. Headless Chrome confirmed axe 0
+  violations, no 404s under `/my-portfolio/`, no autoplay and no overflow at 1280px and 320px. The
+  process page reads `docs/plan.md` and the ADRs directly. Layout and wording choices are listed
+  in the PR for my review.
+- 2026-10-29: I reviewed the step 8 pages and asked for changes in the same PR: case-study text
+  and on every page as wide as the media, ink-scene text in blush instead of pink, device frames
+  kept and cut along the device edge (videos play inside a transparent frame image), quotes from
+  member interviews and colleague feedback, user stories, layout reasoning and feature descriptions
+  added from my Figma pages, prototype videos labelled and
+  playing when scrolled into view (still
+  paused under reduced motion), screenshots that repeated the videos removed, the PBA rollout and
+  outcome sections removed, and the settings card shown beside its withdrawal-form miniature.

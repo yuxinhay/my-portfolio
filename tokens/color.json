@@ -5,7 +5,7 @@
     "pink": {
       "300": {
         "$value": "#FF8AC2",
-        "$description": "Soft pink, text on ink and decorative shapes"
+        "$description": "Soft pink: focus ring on ink and decorative shapes"
       },
       "500": { "$value": "#E84A7D", "$description": "Decorative only, never text" },
       "600": {

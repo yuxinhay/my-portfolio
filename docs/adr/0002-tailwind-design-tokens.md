@@ -16,7 +16,8 @@ and tight headlines, showing skills and career path at a glance. It must also me
   `@theme` variables. Tailwind's default palette, fonts, radii and breakpoints are reset, so the only
   utilities that exist are ones backed by tokens.
 - **Two token layers**: primitives (`color.pink.600`) and semantic **scenes**. A scene is one
-  Wrapped-style section, with `bg`, `fg`, `accent`, `focus` and `shape` roles. Components use
+  Wrapped-style section, with `bg`, `fg`, `accent`, `focus` and `shape` roles, plus `surface`
+  (a panel fill inside the scene, added in step 8; CI checks the text roles on it too). Components use
   role utilities (`bg-scene`, `text-scene-accent`) and a `.scene-*` class picks the colours, so one
   component works in every scene.
 - **Scenes replace light/dark mode.** The page alternates light and dark scenes by design, so there

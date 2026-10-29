@@ -34,7 +34,7 @@ export const projects: readonly Project[] = [
     slug: 'in-app-video-call',
     title: 'Bringing the service centre closer: in-app video call',
     role: 'UX',
-    when: '2023–2024',
+    when: '2023',
     status: 'Concept',
     summary:
       'Interviews at a service centre showed members cared most about convenience. The result: a high-fidelity prototype for in-app video calls and online appointments.',
@@ -60,4 +60,13 @@ export const projects: readonly Project[] = [
 /** The project with this slug, or `undefined` if there is none. */
 export function findProject(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug)
+}
+
+/** The projects before and after this one in the list order, for previous/next links. */
+export function adjacentProjects(slug: string): { previous?: Project; next?: Project } {
+  const index = projects.findIndex((project) => project.slug === slug)
+  if (index === -1) return {}
+  const previous = projects[index - 1]
+  const next = projects[index + 1]
+  return { ...(previous && { previous }), ...(next && { next }) }
 }

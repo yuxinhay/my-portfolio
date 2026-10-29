@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FoundationPage, TokenName } from './FoundationPage'
-import { formatValue, leaf, referenceOf, tokensIn } from './tokens'
+import { formatValue, leaf, referenceOf, tokensIn } from '../../design-system/tokens'
 
 const SCENES = [...new Set(tokensIn('scene').map((token) => token.path[1] ?? ''))]
 
