@@ -20,7 +20,7 @@ export function Button({ variant = 'primary', type = 'button', className, ...pro
     <button
       type={type}
       className={cx(
-        'inline-flex cursor-pointer items-center justify-center gap-2 rounded-pill border-(length:--border-rule) px-6 py-3 text-body leading-normal font-bold',
+        'proto-button inline-flex cursor-pointer items-center justify-center gap-2 rounded-pill border-(length:--border-rule) px-6 py-3 text-body leading-normal font-bold',
         VARIANTS[variant],
         COLOR_TRANSITION,
         FOCUS_RING,

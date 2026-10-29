@@ -22,7 +22,8 @@
     "build-storybook": "storybook build -o storybook-static",
     "test": "vitest run",
     "test:e2e": "npm run build && playwright test",
-    "lhci": "npm run build && lhci autorun --config=lighthouserc.cjs && LIGHTHOUSE_FORM_FACTOR=desktop lhci autorun --config=lighthouserc.cjs"
+    "lhci": "npm run build && lhci autorun --config=lighthouserc.cjs && LIGHTHOUSE_FORM_FACTOR=desktop lhci autorun --config=lighthouserc.cjs",
+    "prototype:motion": "vite"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

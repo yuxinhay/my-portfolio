@@ -11,7 +11,7 @@ export interface NavProps extends ComponentPropsWithoutRef<'nav'> {
 }
 
 const LINK = cx(
-  'inline-block rounded-sm py-2 font-bold text-scene-fg hover:text-scene-accent',
+  'proto-navlink inline-block rounded-sm py-2 font-bold text-scene-fg hover:text-scene-accent',
   COLOR_TRANSITION,
   FOCUS_RING,
 )

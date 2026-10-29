@@ -35,7 +35,11 @@ export function ProjectPager({ slug }: ProjectPagerProps) {
             <Text variant="eyebrow" aria-hidden="true">
               {label}
             </Text>
-            <RouteLink to={`/projects/${project.slug}`} className={TEXT_RECIPES.h3}>
+            <RouteLink
+              to={`/projects/${project.slug}`}
+              className={cx(TEXT_RECIPES.h3, 'proto-pagerlink')}
+              data-proto-dir={label === 'Next project' ? 'next' : 'prev'}
+            >
               <VisuallyHidden>{label}:</VisuallyHidden> {project.title}
             </RouteLink>
           </li>

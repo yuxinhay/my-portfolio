@@ -1,0 +1,283 @@
+/*
+  PROTOTYPE (branch prototype/motion only). Every option is keyed off data attributes that
+  MotionPanel sets on <html>; nothing here applies without JS. `data-proto-reduced` is set when
+  the OS asks for reduced motion or the panel simulates it, and every motion rule excludes it.
+
+  Proposed tokens (prototype-local variables, not in tokens/*.json):
+    --proto-stagger: 60ms                 delay between siblings in a reveal (duration.stagger)
+    --proto-ease-overshoot                odometer landing with a small overshoot (easing.overshoot)
+    duration.count 1000ms                 count-up length (in StatValue.tsx)
+*/
+:root {
+  --proto-stagger: 60ms;
+  --proto-ease-overshoot: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+/* Declared on the element, not :root, so each element's own --proto-i is used. */
+.proto-reveal {
+  --proto-delay: calc(var(--proto-i, 0) * var(--proto-stagger));
+}
+
+/* ---------- 1. Scroll reveals ---------- */
+
+html:not([data-proto-reduced]) .proto-reveal.is-instant,
+html:not([data-proto-reduced]) .proto-reveal.is-instant::before,
+html:not([data-proto-reduced]) .proto-reveal.is-instant::after {
+  transition: none !important;
+}
+
+/* Fade-up: opacity and a small rise, duration.slow, staggered. */
+html[data-proto-reveal='fade']:not([data-proto-reduced]) .proto-reveal {
+  transition:
+    opacity var(--duration-slow) var(--ease-out) var(--proto-delay),
+    translate var(--duration-slow) var(--ease-out) var(--proto-delay);
+}
+html[data-proto-reveal='fade']:not([data-proto-reduced]) .proto-reveal:not(.is-revealed) {
+  opacity: 0;
+  translate: 0 1.5rem;
+}
+
+/* Wipe: a block in the scene's own colour covers each element and shrinks upwards, so content is
+   uncovered from the bottom up. Headings are uncovered onto a solid accent block that then slides
+   off to the right, like a Wrapped title card. (A cover, not clip-path: IntersectionObserver
+   treats a clip-path'd target as off screen, so it would never reveal.) */
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) .proto-reveal {
+  position: relative;
+  transition: translate var(--duration-slow) var(--ease-out) var(--proto-delay);
+}
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) .proto-reveal:not(.is-revealed) {
+  translate: 0 1rem;
+}
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) .proto-reveal::before,
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) :is(h1, h2).proto-reveal::after {
+  content: '';
+  position: absolute;
+  inset: -0.125rem;
+  pointer-events: none;
+}
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) .proto-reveal::before {
+  z-index: 2;
+  background: var(--scene-bg);
+  transform-origin: top;
+  transition: scale var(--duration-slow) var(--ease-out) var(--proto-delay);
+}
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) :is(h1, h2).proto-reveal::before {
+  transition-duration: var(--duration-base);
+}
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) :is(h1, h2).proto-reveal::after {
+  z-index: 1;
+  background: var(--scene-accent);
+  transform-origin: right;
+  transition: scale var(--duration-slow) var(--ease-out)
+    calc(var(--proto-delay) + var(--duration-base));
+}
+html[data-proto-reveal='wipe']:not([data-proto-reduced]) .proto-reveal.is-revealed::before {
+  scale: 1 0;
+}
+html[data-proto-reveal='wipe']:not([data-proto-reduced])
+  :is(h1, h2).proto-reveal.is-revealed::after {
+  scale: 0 1;
+}
+
+/* ---------- 2. Count-up numbers ---------- */
+
+.proto-stat {
+  display: inline-grid;
+  justify-items: start;
+  font-variant-numeric: tabular-nums;
+}
+.proto-stat > * {
+  grid-area: 1 / 1;
+}
+.proto-stat-ghost {
+  visibility: hidden;
+}
+.proto-odo {
+  display: inline-flex;
+}
+.proto-odo-col,
+.proto-odo-char {
+  display: block;
+  height: 1lh;
+  overflow: hidden;
+}
+.proto-odo-strip {
+  display: flex;
+  flex-direction: column;
+  translate: 0 0;
+  /* Columns land one after another, at most ~1s in all. */
+  transition: translate calc(var(--duration-slow) + min(var(--i), 4) * 80ms)
+    var(--proto-ease-overshoot);
+}
+.proto-odo.is-rolled .proto-odo-strip {
+  /* Strip holds 20 digits; land on the second turn. */
+  translate: 0 calc((10 + var(--d)) * -5%);
+}
+
+/* ---------- 3. Hover and press (focus-visible gets the same affordance) ---------- */
+
+html[data-proto-hover='lift'] :is(.proto-card, .proto-button, .proto-navlink, .proto-pagerlink) {
+  transition:
+    translate var(--duration-fast) var(--ease-out),
+    scale var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+html[data-proto-hover='lift'] .proto-pagerlink {
+  display: inline-block;
+}
+/* Hard offset shadow in the scene's text colour: Wrapped-flat, no blur, works on every scene. */
+html[data-proto-hover='lift'] .proto-card:is(:hover, :has(:focus-visible)),
+html[data-proto-hover='lift'] .proto-button:is(:hover, :focus-visible) {
+  box-shadow: 0 0.375rem 0 0 var(--scene-fg);
+}
+html[data-proto-hover='lift']:not([data-proto-reduced])
+  .proto-card:is(:hover, :has(:focus-visible)),
+html[data-proto-hover='lift']:not([data-proto-reduced]) .proto-button:is(:hover, :focus-visible) {
+  translate: 0 -0.375rem;
+}
+html[data-proto-hover='lift']:not([data-proto-reduced])
+  :is(.proto-navlink, .proto-pagerlink):is(:hover, :focus-visible) {
+  translate: 0 -0.125rem;
+}
+html[data-proto-hover='lift']:not([data-proto-reduced]) .proto-card:has(a:active),
+html[data-proto-hover='lift']:not([data-proto-reduced]) .proto-button:active {
+  translate: 0 0;
+  scale: 0.98;
+  box-shadow: 0 0 0 0 var(--scene-fg);
+}
+html[data-proto-hover='lift']:not([data-proto-reduced])
+  :is(.proto-navlink, .proto-pagerlink):active {
+  translate: 0 0;
+  scale: 0.96;
+}
+
+/* Bold accent: an accent bar grows across the card top, arrows nudge, nav underlines grow. */
+html[data-proto-hover='accent'] .proto-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0.5rem;
+  border-radius: calc(var(--radius-card) - var(--border-rule))
+    calc(var(--radius-card) - var(--border-rule)) 0 0;
+  background: var(--scene-accent);
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale var(--duration-base) var(--ease-out);
+}
+html[data-proto-hover='accent'] .proto-card:is(:hover, :has(:focus-visible))::before {
+  scale: 1 1;
+}
+html[data-proto-hover='accent'] .proto-card h3::after,
+html[data-proto-hover='accent'] .proto-pagerlink[data-proto-dir='next']::after {
+  content: '→';
+  content: '→' / '';
+  display: inline-block;
+  margin-inline-start: 0.25em;
+  transition: translate var(--duration-fast) var(--ease-out);
+}
+html[data-proto-hover='accent'] .proto-pagerlink[data-proto-dir='prev']::before {
+  content: '←';
+  content: '←' / '';
+  display: inline-block;
+  margin-inline-end: 0.25em;
+  transition: translate var(--duration-fast) var(--ease-out);
+}
+html[data-proto-hover='accent']:not([data-proto-reduced])
+  .proto-card:is(:hover, :has(:focus-visible))
+  h3::after,
+html[data-proto-hover='accent']:not([data-proto-reduced])
+  .proto-pagerlink[data-proto-dir='next']:is(:hover, :focus-visible)::after {
+  translate: 0.375em 0;
+}
+html[data-proto-hover='accent']:not([data-proto-reduced])
+  .proto-pagerlink[data-proto-dir='prev']:is(:hover, :focus-visible)::before {
+  translate: -0.375em 0;
+}
+html[data-proto-hover='accent'] .proto-navlink {
+  background: linear-gradient(currentColor, currentColor) left bottom / 0% var(--border-focus)
+    no-repeat;
+  transition:
+    background-size var(--duration-base) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+html[data-proto-hover='accent'] .proto-navlink:is(:hover, :focus-visible) {
+  background-size: 100% var(--border-focus);
+}
+html[data-proto-hover='accent'] .proto-link {
+  text-underline-offset: 0.15em;
+  transition:
+    text-underline-offset var(--duration-fast) var(--ease-out),
+    text-decoration-thickness var(--duration-fast) var(--ease-out);
+}
+html[data-proto-hover='accent'] .proto-link:is(:hover, :focus-visible) {
+  text-decoration-thickness: var(--border-focus);
+  text-underline-offset: 0.3em;
+}
+html[data-proto-hover='accent'] .proto-button {
+  box-shadow: inset 0 0 0 0 currentColor;
+  transition:
+    box-shadow var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+html[data-proto-hover='accent'] .proto-button:is(:hover, :focus-visible) {
+  box-shadow: inset 0 calc(-1 * var(--border-focus)) 0 0 currentColor;
+}
+html[data-proto-hover='accent']:not([data-proto-reduced]) .proto-button:active,
+html[data-proto-hover='accent']:not([data-proto-reduced]) .proto-card:has(a:active) {
+  scale: 0.98;
+}
+
+/* Reduced motion: hover keeps its look (shadow, bar, underline) but jumps instead of moving. */
+html[data-proto-reduced]
+  :is(
+    .proto-card,
+    .proto-card::before,
+    .proto-card h3::after,
+    .proto-button,
+    .proto-navlink,
+    .proto-pagerlink,
+    .proto-pagerlink::before,
+    .proto-pagerlink::after,
+    .proto-link
+  ) {
+  transition: none !important;
+}
+
+/* ---------- 4. Page transitions (View Transitions API) ---------- */
+
+/* Crossfade: the root snapshot fades over duration.base. */
+html[data-proto-page='crossfade']::view-transition-old(root),
+html[data-proto-page='crossfade']::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-out);
+}
+
+/* Scene wipe: the header stays put; the new page, led by its first scene's colour, wipes up over
+   the old one. */
+html[data-proto-page='wipe'] header {
+  view-transition-name: proto-header;
+}
+html[data-proto-page='wipe']::view-transition-old(root) {
+  animation: none;
+}
+html[data-proto-page='wipe']::view-transition-new(root) {
+  animation: proto-scene-wipe var(--duration-slow) var(--ease-out) both;
+}
+@keyframes proto-scene-wipe {
+  from {
+    clip-path: inset(100% 0 0 0);
+    translate: 0 3rem;
+  }
+  to {
+    clip-path: inset(0);
+    translate: 0 0;
+  }
+}
+
+/* None or reduced: React Router can still replay a transition on Back; cancel it. */
+html:is([data-proto-page='none'], [data-proto-reduced])::view-transition-group(*),
+html:is([data-proto-page='none'], [data-proto-reduced])::view-transition-old(*),
+html:is([data-proto-page='none'], [data-proto-reduced])::view-transition-new(*) {
+  animation: none !important;
+}

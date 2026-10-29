@@ -4,6 +4,7 @@ import { Outlet, ScrollRestoration, useLocation } from 'react-router'
 import { Footer } from '../components/layout/Footer'
 import { Header } from '../components/layout/Header'
 import { SkipLink } from '../components/ui/SkipLink'
+import { MotionPanel } from '../prototype/motion/MotionPanel'
 
 /**
  * Moves focus after every navigation except the first page load: to the `#hash` target if there
@@ -41,6 +42,8 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      {/* PROTOTYPE: motion options panel (branch prototype/motion only). */}
+      <MotionPanel />
       <ScrollRestoration />
     </div>
   )

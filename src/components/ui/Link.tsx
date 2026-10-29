@@ -13,7 +13,7 @@ export function Link({ className, children, ...props }: LinkProps) {
   return (
     <a
       className={cx(
-        'rounded-sm font-semibold text-scene-accent underline hover:decoration-(length:--border-rule)',
+        'proto-link rounded-sm font-semibold text-scene-accent underline hover:decoration-(length:--border-rule)',
         FOCUS_RING,
         className,
       )}

@@ -21,7 +21,7 @@ export function Projects({ projects = defaultProjects }: ProjectsProps) {
       <ul className="grid gap-6 md:grid-cols-2">
         {projects.map(({ slug, title, role, when, status, summary }) => (
           <li key={slug} className="grid">
-            <Card as="article" aria-labelledby={`project-${slug}`} className="relative">
+            <Card as="article" aria-labelledby={`project-${slug}`} className="proto-card relative">
               <Text variant="eyebrow" className="text-scene-accent">
                 {role} · {when}
               </Text>

@@ -37,7 +37,11 @@ export function WrappedSection({
       tabIndex={-1}
       className={cx(`scene-${scene}`, 'focus:outline-hidden')}
     >
-      <div className={cx('mx-auto grid max-w-5xl gap-10 px-6 py-16 md:py-24', className)}>
+      {/* PROTOTYPE hook: data-proto-section marks scroll-reveal targets. */}
+      <div
+        data-proto-section
+        className={cx('mx-auto grid max-w-5xl gap-10 px-6 py-16 md:py-24', className)}
+      >
         <Heading
           level={level}
           size="display"
