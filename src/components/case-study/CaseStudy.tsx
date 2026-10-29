@@ -1,5 +1,6 @@
 import type { CaseStudy as CaseStudyContent } from '../../content/caseStudies'
 import type { Project } from '../../content/projects'
+import { StatValue } from '../motion/StatValue'
 import { WrappedSection } from '../sections/WrappedSection'
 import { Text } from '../ui/Text'
 import { TEXT_RECIPES, cx } from '../ui/styles'
@@ -64,7 +65,10 @@ export function CaseStudy({ project, study }: CaseStudyProps) {
                 <li key={label}>
                   {/* One paragraph, so a screen reader reads "40+ use-case submissions assessed". */}
                   <p className="grid gap-2">
-                    <span className={cx(TEXT_RECIPES.display, 'text-scene-accent')}>{value}</span>{' '}
+                    <StatValue
+                      value={value}
+                      className={cx(TEXT_RECIPES.display, 'text-scene-accent')}
+                    />{' '}
                     <span className={TEXT_RECIPES.h3}>{label}</span>
                   </p>
                 </li>
