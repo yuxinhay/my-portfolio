@@ -22,6 +22,10 @@
       "800": { "$value": "#2A2A2A", "$description": "Decorative only, never text" },
       "900": { "$value": "#111111", "$description": "Near-black surface and text" }
     },
-    "white": { "$value": "#FFFFFF" }
+    "white": { "$value": "#FFFFFF" },
+    "scrim": {
+      "$value": "#111111B3",
+      "$description": "Overlay scrim: ink.900 at 70%, dims the page behind a modal dialog. Never text"
+    }
   }
 }

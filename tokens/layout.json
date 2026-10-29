@@ -26,10 +26,19 @@
     "$type": "duration",
     "fast": { "$value": "150ms" },
     "base": { "$value": "300ms" },
-    "slow": { "$value": "600ms" }
+    "slow": { "$value": "600ms" },
+    "count": {
+      "$value": "1000ms",
+      "$description": "Count-up numbers: long enough to read as counting, short of the 1s ceiling"
+    },
+    "stagger": { "$value": "60ms", "$description": "Delay between siblings in a scroll reveal" }
   },
   "easing": {
     "$type": "cubicBezier",
     "out": { "$value": [0.2, 0.8, 0.2, 1] }
+  },
+  "blur": {
+    "$type": "dimension",
+    "overlay": { "$value": "0.5rem", "$description": "Backdrop blur behind a modal dialog" }
   }
 }
