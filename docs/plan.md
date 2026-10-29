@@ -27,28 +27,31 @@ career path at a glance. The page is a scrolling story; nothing auto-advances.
 | 3   | Design tokens → Tailwind, scenes, contrast + token-usage gates, ADR 0002                 | Done     | [#3](https://github.com/yuxinhay/my-portfolio/pull/3) |
 | 4   | Storybook: Foundations (scenes, colour, type, spacing, motion), a11y addon, `/storybook` | Done     | [#5](https://github.com/yuxinhay/my-portfolio/pull/5) |
 | 5   | UI primitives with stories, unit tests and axe tests                                     | Done     | [#6](https://github.com/yuxinhay/my-portfolio/pull/6) |
-| 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management     | **Next** |                                                       |
-| 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements | To do    |                                                       |
+| 6   | Layout shell: header/nav, mobile menu, footer, skip link, routing + focus management     | Done     | [#7](https://github.com/yuxinhay/my-portfolio/pull/7) |
+| 7   | Content model + Wrapped sections: Intro, Top skills, Career path, Projects, Achievements | **Next** |                                                       |
 | 8   | Project case-study pages, `/design-system` and `/how-i-built-this` pages                 | To do    |                                                       |
 | 9   | Playwright + axe e2e, Lighthouse CI budgets, release-please, README polish               | To do    |                                                       |
 
 ## Decisions so far
 
-| Area          | Decision                                                                                                        | Record                                             |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| Stack         | Vite + React 19 + TypeScript (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), npm, Node ≥ 24 | [ADR 0001](adr/0001-vite-react-typescript.md)      |
-| Linting       | **oxlint** instead of ESLint: Vite default, built-in `jsx-a11y` rules                                           | [ADR 0001](adr/0001-vite-react-typescript.md)      |
-| Styling       | Tailwind CSS v4 generated from DTCG tokens via Style Dictionary; Tailwind defaults reset                        | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
-| Colour        | Theme D **"Bubblegum Bold"**: blush, hot pink, cobalt, ink. `pink.600` darkened to `#CC0F4C` to pass AA         | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
-| Typography    | **Inter only**, self-hosted; weight 900 + tight tracking for display                                            | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
-| Theming       | Wrapped-style **scenes** (`scene-blush/pink/cobalt/ink`) replace a light/dark toggle                            | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
-| Design source | Code only; **no Figma**. Theme and type chosen from prototypes on branch `prototype/wrapped-themes`             | [ADR 0002](adr/0002-tailwind-design-tokens.md)     |
-| Hosting       | GitHub Pages via Actions at `https://yuxinhay.github.io/my-portfolio/`; repo is **public**                      | This plan                                          |
-| Git workflow  | `main` protected: PR + both CI checks required, linear history, **squash merge only**, branches auto-deleted    | This plan                                          |
-| Storybook     | Storybook 10 (React + Vite); Foundations stories read `tokens/*.json`; built in CI, published at `/storybook/`  | [ADR 0003](adr/0003-storybook-foundations.md)      |
-| Testing       | Vitest + Testing Library + axe-core in jsdom; every story is axe-tested; contrast stays a token gate            | [ADR 0004](adr/0004-vitest-testing-library-axe.md) |
-| Typography    | Shared text recipes in `src/components/ui/styles.ts`; small text is `font-medium` (reviewed in a prototype)     | This plan                                          |
-| Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                         | This plan                                          |
+| Area          | Decision                                                                                                          | Record                                                      |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Stack         | Vite + React 19 + TypeScript (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), npm, Node ≥ 24   | [ADR 0001](adr/0001-vite-react-typescript.md)               |
+| Linting       | **oxlint** instead of ESLint: Vite default, built-in `jsx-a11y` rules                                             | [ADR 0001](adr/0001-vite-react-typescript.md)               |
+| Styling       | Tailwind CSS v4 generated from DTCG tokens via Style Dictionary; Tailwind defaults reset                          | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Colour        | Theme D **"Bubblegum Bold"**: blush, hot pink, cobalt, ink. `pink.600` darkened to `#CC0F4C` to pass AA           | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Typography    | **Inter only**, self-hosted; weight 900 + tight tracking for display                                              | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Theming       | Wrapped-style **scenes** (`scene-blush/pink/cobalt/ink`) replace a light/dark toggle                              | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Design source | Code only; **no Figma**. Theme and type chosen from prototypes on branch `prototype/wrapped-themes`               | [ADR 0002](adr/0002-tailwind-design-tokens.md)              |
+| Hosting       | GitHub Pages via Actions at `https://yuxinhay.github.io/my-portfolio/`; repo is **public**                        | This plan                                                   |
+| Git workflow  | `main` protected: PR + both CI checks required, linear history, **squash merge only**, branches auto-deleted      | This plan                                                   |
+| Storybook     | Storybook 10 (React + Vite); Foundations stories read `tokens/*.json`; built in CI, published at `/storybook/`    | [ADR 0003](adr/0003-storybook-foundations.md)               |
+| Testing       | Vitest + Testing Library + axe-core in jsdom; every story is axe-tested; contrast stays a token gate              | [ADR 0004](adr/0004-vitest-testing-library-axe.md)          |
+| Typography    | Shared text recipes in `src/components/ui/styles.ts`; small text is `font-medium` (reviewed in a prototype)       | This plan                                                   |
+| Routing       | React Router 8 (data mode), real paths with `basename` from Vite `BASE_URL`; routes shared by app, tests, stories | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
+| Deep links    | `404.html` is a build-time copy of `index.html`, so GitHub Pages boots the app on any path (no hash routing)      | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
+| Route a11y    | Focus moves to the page h1 (or a focusable `#hash` target) after navigation, not on first load; no live region    | [ADR 0005](adr/0005-routing-and-github-pages-deep-links.md) |
+| Task tracking | **This file** is the tracker; GitHub Issues/Milestones not used for now                                           | This plan                                                   |
 
 ## Repo layout (target)
 
@@ -64,11 +67,12 @@ my-portfolio/
 ├─ src/
 │  ├─ styles/          tokens.css (generated), via index.css
 │  ├─ components/ui/   primitives: Button, Link, Heading, Text, Card, Tag, SkipLink, VisuallyHidden
+│  ├─ components/layout/    shell: Header, Nav (mobile menu), Footer, Page, RouteLink
 │  ├─ components/sections/  Wrapped sections: Intro, TopSkills, CareerPath, Projects, Achievements
 │  ├─ stories/         Storybook Foundations (scenes, colour, type, layout, motion)
-│  ├─ content/         typed data: projects.ts, achievements.ts, skills.ts, career.ts
+│  ├─ content/         typed data: site.ts, projects.ts, achievements.ts, skills.ts, career.ts
 │  ├─ pages/           Home, ProjectDetail (case study), DesignSystem, HowIBuiltThis
-│  └─ app/             router, layout
+│  └─ app/             routes, router, Layout (focus management)
 ├─ e2e/                Playwright specs incl. axe scans per route
 └─ .storybook/         main.ts, preview.ts (loads index.css, a11y addon)
 ```

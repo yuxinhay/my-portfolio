@@ -11,7 +11,7 @@ Live site: https://yuxinhay.github.io/my-portfolio/ · Storybook: https://yuxinh
 
 ## Stack
 
-React 19 · TypeScript (strict) · Vite · Tailwind CSS v4 driven by design tokens (Style Dictionary) · Inter · Storybook with the a11y addon · Vitest + Testing Library + axe-core
+React 19 · TypeScript (strict) · Vite · React Router · Tailwind CSS v4 driven by design tokens (Style Dictionary) · Inter · Storybook with the a11y addon · Vitest + Testing Library + axe-core
 
 ## Getting started
 
@@ -45,6 +45,7 @@ npm run dev
 
 - [Plan and status](docs/plan.md)
 - [Architecture decisions](docs/adr/), incl. [design tokens](docs/adr/0002-tailwind-design-tokens.md),
-  [Storybook](docs/adr/0003-storybook-foundations.md) and [testing](docs/adr/0004-vitest-testing-library-axe.md)
+  [Storybook](docs/adr/0003-storybook-foundations.md), [testing](docs/adr/0004-vitest-testing-library-axe.md)
+  and [routing on GitHub Pages](docs/adr/0005-routing-and-github-pages-deep-links.md)
 - [AI-assisted workflow](docs/ai-workflow.md)
 - [AI rules (CLAUDE.md)](CLAUDE.md)
