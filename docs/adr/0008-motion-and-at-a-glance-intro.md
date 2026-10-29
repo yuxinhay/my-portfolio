@@ -69,11 +69,26 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
   a glance". `::backdrop` dims the page with `color.scrim` and blurs it with `blur.overlay`; a
   browser without `backdrop-filter` gets a solid ink scrim. The page does not scroll while it is
   open (`:root:has(dialog:modal)`).
-  - Six cards in a row that slides (`translate`, `duration.slow`, `easing.out`); from `md` a card is
-    80% wide, so the next one peeks in. Only the current card is perceivable (`inert`,
-    `aria-hidden`); it is a group with `aria-roledescription="slide"` and the name "Card 2 of 6",
-    and a polite live region repeats that name when the card changes. The current card is a tab
-    stop, because it scrolls when its content is taller than a small or zoomed screen.
+  - Six **narrow portrait story cards**, shaped like Wrapped stories (owner review): about 9:16,
+    the same width on every screen (24rem, or the screen less 1rem margins on a phone) and 16/9 of
+    that tall, or as tall as the screen allows below that (down to 15rem, where the card
+    scrolls). The controls bar below has the card's width. Each card is laid out for that format:
+    eyebrow, giant tight type, a short closing line at the bottom; card 1 puts the portrait upper
+    right with the name overlapping its lower left corner, as in the owner's mockup.
+  - The previous and next cards sit beside the current one, scaled to 0.85 and at half opacity
+    (from `lg`, a mask also fades them towards the screen edges); on a phone they peek out from
+    behind it. The first card has no previous one, the last no next. Changing cards moves, scales
+    and fades them together (`translate`, `scale`, `opacity`; `duration.slow`, `easing.out`).
+    Neighbours show their final numbers; only the current card counts up.
+  - **Entrance**: the backdrop fades and blurs in (`duration.base`), then the current card pops out
+    from 60% with a slight overshoot (`duration.slow`, new token `easing.overshoot`), then its
+    neighbours fade in. It plays on every opening, first visit and Replay, and stops at the first
+    move. Closing is instant: animating it out would mean delaying `close()` and the focus move
+    that follows.
+  - Only the current card is perceivable (neighbours are `inert` and `aria-hidden`, so not
+    focusable or clickable); it is a group with `aria-roledescription="slide"` and the name
+    "Card 2 of 6", and a polite live region repeats that name when the card changes. The current
+    card is a tab stop, because it scrolls when its content is taller than a zoomed screen.
   - Controls: Skip; dots as buttons ("Go to card 3 of 6", the current one `aria-current` and wider,
     so it does not rely on colour); Back except on card 1; Next, which reads "Explore my work" on
     the last card and closes the intro. Left and Right arrows move between cards, Escape skips, and
@@ -84,8 +99,9 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
     (`my-portfolio:glance-seen`, no cookies). Storage that cannot be read counts as seen. "Replay
     intro" in the home intro section reopens it. Closing moves focus to the page h1, except a replay
     closed with Skip or Escape, which returns focus to the Replay button.
-  - Under reduced motion the cards swap at once, numbers show their final values and nothing
-    animates; the blur is never animated.
+  - Under reduced motion there is no pop, no backdrop fade and no slide: the overlay appears and
+    the cards swap at once, the neighbours still shown smaller and faded, and numbers show their
+    final values.
 - **Card content is typed data** (`src/content/glance.ts`) that looks up numbers, skills, years,
   certifications and the flowCentral title in the existing content, so the cards cannot drift from
   the rest of the site. The portrait is a WebP under ADR 0006 (800×900, cropped from the original,
@@ -93,12 +109,14 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
 - **Tests.** Unit tests cover count-up parsing and formatting, `StatValue` (screen readers get the
   final value, reduced motion, controlled runs), reveals (no observer, reduced motion, stagger cap,
   focus, cleanup), view transitions, and the overlay (keyboard, dots, swipe, last card, Escape, focus
-  return, first-visit logic, no auto-advance with fake timers, axe on every card and under reduced
-  motion). E2E specs seed the "seen" flag for every existing spec through a fixture
+  return, first-visit logic, no auto-advance with fake timers, neighbours hidden and not
+  focusable, the entrance until the first move, axe on every card and under reduced motion). E2E specs seed the "seen" flag for every existing spec through a fixture
   (`e2e/fixtures.ts`); `glance.spec.ts` tests a first visit: axe and overflow on every card at
-  1280px, 320px and 200% zoom, the keyboard flow, Escape, replay, reduced motion and the other
-  routes. `motion.spec.ts` checks reveals with and without IntersectionObserver, crossfades with
-  focus on the h1, and count-up values in the accessibility tree.
+  1280px, 320px and 200% zoom, a portrait card whose content fits without scrolling (except at
+  200% zoom), the neighbours' size, opacity and inertness, the entrance animation, the keyboard
+  flow, Escape, replay, reduced motion and the other routes. `motion.spec.ts` checks reveals with
+  and without IntersectionObserver, crossfades with focus on the h1, and count-up values in the
+  accessibility tree.
 - **Lighthouse audits the first visit**, with the intro open over the home page: it is what a new
   visitor (and a fresh Lighthouse profile) sees, so its accessibility and its cost on performance
   are measured rather than hidden. The other four pages are unaffected by the intro.
@@ -120,9 +138,10 @@ Every ADR 0007 threshold and size budget holds, so none changed. CLS was 0.033 a
 
 - No new runtime dependency. The app's JavaScript transfer grows from 129 KB to 137 KB (motion
   code, the overlay and its cards); the portrait adds 47 KB, loaded only when the intro opens.
-- New tokens: `duration.count` (1000ms), `duration.stagger` (60ms), `blur.overlay` (0.5rem) and
-  `color.scrim` (ink.900 at 70%). `--blur-*` joins the Tailwind namespaces reset in
-  `scripts/build-tokens.ts`.
+- New tokens: `duration.count` (1000ms), `duration.stagger` (60ms), `blur.overlay` (0.5rem),
+  `color.scrim` (ink.900 at 70%) and, after the owner's review of the cards, `easing.overshoot`
+  (`cubic-bezier(0.34, 1.4, 0.64, 1)`, from the prototype). `--blur-*` joins the Tailwind
+  namespaces reset in `scripts/build-tokens.ts`.
 - Content below the fold is hidden until it scrolls in, so anything that reads the page without
   scrolling (Lighthouse, a screenshot) sees those sections at opacity 0; axe skips them, and the
   e2e suite scrolls through every page and waits for transitions before scanning.
