@@ -1,6 +1,7 @@
 import { expect, test } from './fixtures.ts'
 import type { Page } from '@playwright/test'
 import { projects } from '../src/content/projects.ts'
+import { site } from '../src/content/site.ts'
 import { PROJECT_PATHS } from './support.ts'
 
 /** Presses Tab until `target` has focus, failing after `limit` presses. */
@@ -24,6 +25,25 @@ test('the skip link is the first Tab stop and moves focus to main', async ({ pag
 
 test.describe('mobile menu at 320px', () => {
   test.use({ viewport: { width: 320, height: 640 } })
+
+  test('the logo home link and the Menu toggle share one row', async ({ page }) => {
+    await page.goto('./')
+    const home = page.getByRole('link', { name: site.name })
+    const logo = home.getByRole('img', { name: site.name })
+    // Loaded from under the base path, so it shows on GitHub Pages too.
+    await expect
+      .poll(() => logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0))
+      .toBe(true)
+    const [homeBox, toggleBox] = await Promise.all([
+      home.boundingBox(),
+      page.getByRole('button', { name: 'Menu' }).boundingBox(),
+    ])
+    expect(homeBox && toggleBox, 'both visible').toBeTruthy()
+    if (!homeBox || !toggleBox) return
+    expect(homeBox.y + homeBox.height).toBeGreaterThan(toggleBox.y)
+    expect(homeBox.y).toBeLessThan(toggleBox.y + toggleBox.height)
+    expect(homeBox.x + homeBox.width).toBeLessThan(toggleBox.x)
+  })
 
   test('opens and closes by keyboard, and Escape returns focus to the toggle', async ({ page }) => {
     await page.goto('./')

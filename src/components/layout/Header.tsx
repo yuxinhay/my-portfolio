@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router'
+import { logo } from '../../content/brand'
 import { site } from '../../content/site'
 import { Button } from '../ui/Button'
 import { FOCUS_RING, TEXT_RECIPES, cx } from '../ui/styles'
@@ -39,8 +40,15 @@ export function Header() {
       ref={headerRef}
       className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-4"
     >
+      {/* The logo is one line of the h3 step tall (`h-lh`), the height the name had as text. */}
       <RouterLink to="/" className={cx('rounded-sm', TEXT_RECIPES.h3, FOCUS_RING)}>
-        {site.name}
+        <img
+          src={logo.src}
+          alt={site.name}
+          width={logo.width}
+          height={logo.height}
+          className="block h-lh w-auto"
+        />
       </RouterLink>
       <Button
         ref={toggleRef}
