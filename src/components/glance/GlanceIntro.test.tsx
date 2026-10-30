@@ -7,15 +7,15 @@ import { describeStoriesAxe } from '../../test/stories'
 import { GLANCE_SEEN_KEY } from './glanceStorage'
 import * as stories from './GlanceIntro.stories'
 
-// The shared setup marks the intro as seen; these tests start as first-time visitors.
-beforeEach(() => localStorage.removeItem(GLANCE_SEEN_KEY))
+// The shared setup marks the intro as seen; these tests start a new browser session.
+beforeEach(() => sessionStorage.removeItem(GLANCE_SEEN_KEY))
 afterEach(() => vi.restoreAllMocks())
 
 const intro = () => screen.queryByRole('dialog', { name: 'Yuxin Hay at a glance' })
 const h1 = () => screen.getByRole('heading', { level: 1, name: site.name })
 
 describe('GlanceIntro', () => {
-  it('opens on a first visit to the home page, and stays closed once closed', async () => {
+  it('opens on a first visit to the home page, and stays closed for the session once closed', async () => {
     const user = userEvent.setup()
     const first = renderApp('/')
     expect(intro()).toBeInTheDocument()
@@ -23,12 +23,26 @@ describe('GlanceIntro', () => {
     expect(intro()).toHaveAttribute('data-celebrate')
     await user.click(screen.getByRole('button', { name: 'Skip' }))
     expect(intro()).toBeNull()
-    expect(localStorage.getItem(GLANCE_SEEN_KEY)).not.toBeNull()
+    expect(sessionStorage.getItem(GLANCE_SEEN_KEY)).not.toBeNull()
     expect(h1()).toHaveFocus()
     first.unmount()
 
-    renderApp('/')
+    // A reload in the same tab keeps it closed.
+    const reload = renderApp('/')
     expect(intro()).toBeNull()
+    reload.unmount()
+
+    // A new tab starts a new session: it opens again, with confetti.
+    sessionStorage.clear()
+    renderApp('/')
+    expect(intro()).toHaveAttribute('data-celebrate')
+  })
+
+  it('does not use localStorage, so it is not remembered beyond the session', async () => {
+    const user = userEvent.setup()
+    renderApp('/')
+    await user.click(screen.getByRole('button', { name: 'Skip' }))
+    expect(localStorage.getItem(GLANCE_SEEN_KEY)).toBeNull()
   })
 
   it('moves focus to the h1 after "Explore my work"', async () => {
@@ -49,7 +63,7 @@ describe('GlanceIntro', () => {
   })
 
   it('replays from the home page and returns focus to the Replay button', async () => {
-    localStorage.setItem(GLANCE_SEEN_KEY, '1')
+    sessionStorage.setItem(GLANCE_SEEN_KEY, '1')
     const user = userEvent.setup()
     renderApp('/')
     expect(intro()).toBeNull()

@@ -4,8 +4,8 @@ import { GLANCE_SEEN_KEY } from './glanceStorage'
 import { GlanceIntro } from './GlanceIntro'
 
 /**
- * The Replay button and the intro it opens, as on the home page. The intro opens by itself only on
- * a visitor's first visit; "First visit" forgets that this browser has seen it.
+ * The Replay button and the intro it opens, as on the home page. The intro opens by itself once per
+ * browser session; "First visit" forgets (in sessionStorage) that this tab has closed it.
  */
 const meta = {
   title: 'Glance/GlanceIntro',
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof meta>
 export const ReturningVisitor: Story = {
   decorators: [
     (Story) => {
-      localStorage.setItem(GLANCE_SEEN_KEY, '1')
+      sessionStorage.setItem(GLANCE_SEEN_KEY, '1')
       return <Story />
     },
   ],
@@ -36,7 +36,7 @@ export const ReturningVisitor: Story = {
 export const FirstVisit: Story = {
   decorators: [
     (Story) => {
-      localStorage.removeItem(GLANCE_SEEN_KEY)
+      sessionStorage.removeItem(GLANCE_SEEN_KEY)
       return <Story />
     },
   ],

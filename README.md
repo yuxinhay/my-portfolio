@@ -72,7 +72,7 @@ E2E_WEBKIT=1 npx playwright test           # add WebKit (needs `npx playwright i
 ```
 
 Every spec starts as a returning visitor, so the "At a glance" intro does not cover the home page:
-`e2e/fixtures.ts` marks it as seen in localStorage before the page loads. `e2e/glance.spec.ts`
+`e2e/fixtures.ts` marks it as seen in sessionStorage before the page loads. `e2e/glance.spec.ts`
 opts out with `test.use({ glanceSeen: false })` to test a first visit.
 
 Lighthouse CI needs Chrome. If it is not installed, point it at Playwright's Chromium:

@@ -5,17 +5,17 @@ export { expect } from '@playwright/test'
 
 export interface GlanceOptions {
   /**
-   * Whether the visitor has closed the At a glance intro before. Defaults to `true`, so specs that
-   * test the pages themselves are not covered by the intro on the home page; `glance.spec.ts`
-   * sets it to `false` to test a first visit.
+   * Whether the At a glance intro was closed earlier in this browser session. Defaults to `true`,
+   * so specs that test the pages themselves are not covered by the intro on the home page;
+   * `glance.spec.ts` sets it to `false` to test a first visit.
    */
   glanceSeen: boolean
 }
 
 /**
  * Playwright's `test`, plus the `glanceSeen` option: before any page script runs, it records in
- * localStorage that the intro was closed (or makes sure it was not). Every spec imports `test`
- * from here.
+ * sessionStorage that the intro was closed (or makes sure it was not). Every spec imports `test`
+ * from here. Only `page` is seeded: another page of the same context is a new tab, a new session.
  */
 export const test = base.extend<GlanceOptions>({
   glanceSeen: [true, { option: true }],
@@ -26,8 +26,8 @@ export const test = base.extend<GlanceOptions>({
         // Only on the first document of the test, so a reload keeps what the page itself stored.
         if (sessionStorage.getItem('e2e-seeded')) return
         sessionStorage.setItem('e2e-seeded', '1')
-        if (seen) localStorage.setItem(key, '1')
-        else localStorage.removeItem(key)
+        if (seen) sessionStorage.setItem(key, '1')
+        else sessionStorage.removeItem(key)
       },
       [GLANCE_SEEN_KEY, glanceSeen] as const,
     )

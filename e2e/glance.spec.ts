@@ -260,6 +260,37 @@ test.describe('behaviour', () => {
     await expect(dialog(page)).toHaveCount(0)
   })
 
+  test('opens once per browser session: not after a reload, again in a new tab', async ({
+    page,
+    context,
+  }) => {
+    await page.goto('./')
+    await expect(dialog(page)).toHaveAttribute('data-celebrate')
+    await page.getByRole('button', { name: 'Skip' }).click()
+    await expect(dialog(page)).toBeHidden()
+    expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([])
+
+    await page.reload()
+    await expect(h1(page)).toBeVisible()
+    await expect(dialog(page)).toHaveCount(0)
+
+    // A new tab in the same browser starts a new session: the intro and its confetti again.
+    const tab = await context.newPage()
+    // The burst is over in about two seconds, so note the canvas as it appears rather than race it.
+    await tab.addInitScript(() => {
+      new MutationObserver((_, observer) => {
+        if (!document.querySelector('canvas[data-confetti]')) return
+        document.documentElement.dataset.sawConfetti = ''
+        observer.disconnect()
+      }).observe(document, { childList: true, subtree: true })
+    })
+    await tab.goto(page.url())
+    await expect(dialog(tab)).toBeVisible()
+    await expect(dialog(tab)).toHaveAttribute('data-celebrate')
+    await expect(tab.locator('html[data-saw-confetti]')).toHaveCount(1)
+    await tab.close()
+  })
+
   test('Escape skips it; Replay reopens it and returns focus to the Replay button', async ({
     page,
   }) => {

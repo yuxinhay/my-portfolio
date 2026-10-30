@@ -131,8 +131,11 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
     a horizontal touch or pen swipe of 48px or more moves one card. Nothing advances by itself.
     Focus starts on Next; if Back disappears while focused, focus moves to Next.
   - It opens by itself only when a visit starts on the home page (React Router's first location,
-    key `default`) and the visitor has never closed it, remembered in localStorage
-    (`my-portfolio:glance-seen`, no cookies). Storage that cannot be read counts as seen. "Replay
+    key `default`) and it has not been closed in this tab, remembered in sessionStorage
+    (`my-portfolio:glance-seen`, no cookies): **once per browser session** (third owner review,
+    replacing localStorage, which showed it only once ever). A reload in the same tab keeps it
+    closed; a new tab, or opening the link again after closing the tab, shows it again with its
+    confetti. Storage that cannot be read counts as seen. "Replay
     intro" in the home intro section reopens it. Closing moves focus to the page h1, except a replay
     closed with Skip or Escape, which returns focus to the Replay button.
   - Under reduced motion there is no pop, no backdrop fade and no slide: the overlay appears and
@@ -150,7 +153,8 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
   (`e2e/fixtures.ts`); `glance.spec.ts` tests a first visit: axe and overflow on every card at
   1280px, 320px and 200% zoom, a portrait card whose content fits without scrolling (except at
   200% zoom), the neighbours' size, opacity and inertness, the entrance animation, the keyboard
-  flow, Escape, replay, reduced motion and the other routes; after the second review also, on
+  flow, Escape, replay, reduced motion and the other routes, closed after a reload but open again
+  (with confetti) in a new page of the same browser, which is a new session; after the second review also, on
   every card and viewport, Back and Next at the card's edges (±1px) with the same height and no
   bar behind them, Skip above the card's top right, no text drawn over card 1's portrait, card 2's
   "Manager" under "Product", the 650ms first-visit pop delay, and confetti present then removed on

@@ -27,7 +27,8 @@ if (typeof HTMLDialogElement.prototype.showModal !== 'function') {
 // first-visit confetti draws nothing and removes itself, as it would in such a browser.
 HTMLCanvasElement.prototype.getContext = () => null
 
-// The At a glance intro opens on a first visit to the home page. Like the e2e tests, every test
-// starts as a returning visitor, so the intro does not cover the page; its own tests clear this.
-beforeEach(() => localStorage.setItem(GLANCE_SEEN_KEY, '1'))
-afterEach(() => localStorage.clear())
+// The At a glance intro opens once per browser session on the home page. Like the e2e tests, every
+// test starts as if it was closed earlier in the session, so the intro does not cover the page; its
+// own tests clear this.
+beforeEach(() => sessionStorage.setItem(GLANCE_SEEN_KEY, '1'))
+afterEach(() => sessionStorage.clear())
