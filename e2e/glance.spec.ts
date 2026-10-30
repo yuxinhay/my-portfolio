@@ -518,3 +518,47 @@ test.describe('behaviour', () => {
     })
   })
 })
+
+test.describe('card fit', () => {
+  test.skip(({ viewport }) => viewport?.width !== 1280, 'Sets its own window sizes')
+  // Sizes are what is measured here, so the cards swap without movement.
+  test.use({ reducedMotion: 'reduce' })
+
+  // Portrait browser windows (the owner's report: about 440×740) and common desktop screens. The
+  // full grid (widths 340–520 by 20, heights 600–960 by 40) passed when this was written; this is
+  // a sample of it, corners included.
+  const SIZES = [
+    ...[340, 400, 440, 480, 520].flatMap((width) =>
+      [600, 720, 760, 840, 960].map((height) => ({ width, height })),
+    ),
+    { width: 1280, height: 720 },
+    { width: 1366, height: 768 },
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 },
+  ]
+
+  test('every card fits without scrolling on a portrait card, at every size', async ({ page }) => {
+    await page.goto('./')
+    await expect(dialog(page)).toBeVisible()
+    for (const size of SIZES) {
+      await page.setViewportSize(size)
+      // Layout follows the resize a frame or two later, so poll until it holds.
+      await expect
+        .poll(
+          () =>
+            dialog(page)
+              .locator('[role="group"]')
+              .evaluateAll((cards) =>
+                cards.flatMap((card, index) => {
+                  const { scrollHeight, clientHeight, clientWidth } = card
+                  if (clientHeight <= clientWidth) return [`card ${index + 1} is not portrait`]
+                  const over = scrollHeight - clientHeight
+                  return over > 0 ? [`card ${index + 1} scrolls by ${over}px`] : []
+                }),
+              ),
+          { message: `${size.width}×${size.height}` },
+        )
+        .toEqual([])
+    }
+  })
+})

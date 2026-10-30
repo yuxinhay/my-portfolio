@@ -82,12 +82,21 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
     the same width on every screen (24rem, or the screen less 1rem margins on a phone) and 16/9 of
     that tall, or as tall as the screen allows below that (down to 15rem, where the card
     scrolls). Each card is laid out for that format: eyebrow, giant tight type, a short closing
-    line at the bottom.
+    line at the bottom. **The content fits without scrolling at every portrait size** (fourth
+    owner review: card 2 showed a scrollbar in a portrait window about 440px wide): the card is a
+    size container, and on a card shorter than 9:16 each type step from `h3` to `stat` scales
+    down with the card's height, from its share of a full-height card (`stat` 22.7cqh, `display`
+    11.4cqh, `h1` 7.6cqh, `h2` 5.1cqh, `h3` 3.2cqh), never below the card's step under it and
+    never above the token; card 1's margins, portrait floor and name scale the same way. No new
+    type sizes; at full height nothing changes. Internal scroll stays only as a safety net for
+    200% zoom and landscape cards.
   - **Card 1 follows the owner's mockup** (second review), in proportions of the card's width
     (container units): the portrait bleeds off the right edge from about a third across, from 24%
     down; the two-line roles sit just left of it; the giant name (`27.5cqw`, `font-black`, tight
-    tracking), flush with the card's left edge, starts on the portrait's bottom edge; the summary
-    closes the card. The name and roles use a new scene role, `display` (blush: `pink.600`,
+    tracking; on a card shorter than 9:16 at most `15.5cqh`), flush with the card's left edge,
+    starts right under the portrait's bottom edge (fourth review: no longer pulled 0.02em up,
+    which let the dot of the i touch the photo's last pixel row at some sizes); the summary closes
+    the card. The name and roles use a new scene role, `display` (blush: `pink.600`,
     4.74:1, the mockup's hot pink); no chip sits behind any text. The mockup lets the name and
     roles run over the photo; measured in headless screenshots (glyph pixels against the photo
     pixels under them), the accent fell to 1.0:1 over the portrait's dark hair and dress and to
@@ -174,8 +183,10 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
   "Manager" under "Product", the 650ms first-visit pop delay, and confetti present then removed on
   a first visit but absent on a replay and under reduced motion; after the fourth review also no
   ring, lift or shadow on Next on opening and after mouse clicks, the ring after an arrow key and
-  after Shift+Tab and the ring at once after a keyboard Replay. Unit tests cover `focusQuietly`
-  and `showKeyboardFocus`. `motion.spec.ts` checks reveals with
+  after Shift+Tab, the ring at once after a keyboard Replay, and every card fitting without
+  scrolling at 29 window sizes (portrait windows 340–520px wide, 600–960px tall, and 1280×720,
+  1366×768, 1440×900, 1920×1080; the full 20/40px grid passed when written). Unit tests cover
+  `focusQuietly` and `showKeyboardFocus`. `motion.spec.ts` checks reveals with
   and without IntersectionObserver, crossfades with focus on the h1, and count-up values in the
   accessibility tree.
 - **Lighthouse audits the first visit**, with the intro open over the home page: it is what a new

@@ -123,6 +123,11 @@ dialog::backdrop {
   /* Room above and below the cards for the entrance overshoot and the focus ring, which the
      edge fade's mask would otherwise cut off; the negative margin keeps it out of the layout. */
   --glance-bleed: calc(var(--spacing) * 4);
+  --glance-text-stat: var(--text-stat);
+  --glance-text-display: var(--text-display);
+  --glance-text-h1: var(--text-h1);
+  --glance-text-h2: var(--text-h2);
+  --glance-text-h3: var(--text-h3);
   display: grid;
   grid-template: minmax(0, 1fr) / var(--glance-width);
   justify-content: center;
@@ -166,6 +171,15 @@ dialog::backdrop {
   --glance-step: min(92.5% + calc(var(--spacing) * 4), 50cqw - 42.5% - var(--spacing));
   grid-area: 1 / 1;
   translate: calc(var(--glance-offset, 0) * var(--glance-step)) 0;
+  /* The content fits the card at every portrait size: on a card shorter than 9:16 each type step
+     scales down with the card's height (cqh), from its share of a full-height card, never above
+     the page's step (read on the stage, `--glance-text-*`) nor below the card's step under it. */
+  container-type: size;
+  --text-stat: max(var(--text-display), min(var(--glance-text-stat), 22.7cqh));
+  --text-display: max(var(--text-h1), min(var(--glance-text-display), 11.4cqh));
+  --text-h1: max(var(--text-h2), min(var(--glance-text-h1), 7.6cqh));
+  --text-h2: max(var(--text-h3), min(var(--glance-text-h2), 5.1cqh));
+  --text-h3: max(var(--text-body), min(var(--glance-text-h3), 3.2cqh));
 
   &[data-position='current'] {
     z-index: 1;
@@ -198,8 +212,8 @@ dialog::backdrop {
 
 /* Card 1, after the owner's mockup (proportions of the card's width, cqw): the portrait bleeds
    off the right edge from about a third across, the roles end just before it, and the giant name
-   starts on the portrait's bottom edge, its cap line touching it (no text crosses the photo, so
-   it keeps its contrast). On a card shorter than 9:16 the portrait gives up height first; on a
+   starts right under the portrait's bottom edge (no text crosses the photo, so it keeps its
+   contrast). On a card shorter than 9:16 the portrait gives up height first; on a
    narrow card the roles take the room they need and the portrait narrows. */
 .glance-hello {
   container-type: inline-size;
@@ -214,8 +228,8 @@ dialog::backdrop {
   flex: 0 1 72cqw;
   align-items: flex-end;
   gap: 2cqw;
-  min-height: 36cqw;
-  margin-top: 24cqw;
+  min-height: min(36cqw, 20cqh);
+  margin-top: min(24cqw, 13.5cqh);
 }
 
 .glance-hello-roles {
@@ -234,15 +248,15 @@ dialog::backdrop {
 }
 
 .glance-hello-name {
-  font-size: 27.5cqw;
-  /* The name starts at the card's very edge; its tallest glyph (the dot of the i) just touches
-     the portrait's bottom edge. */
-  margin-top: -0.02em;
+  font-size: min(27.5cqw, 15.5cqh);
+  /* The name starts at the card's very edge, its tallest glyph (the dot of the i) right under
+     the portrait's bottom edge: pulled any closer, it touches the photo's last row of pixels at
+     some sizes. On a card shorter than 9:16 it scales with the card's height too. */
   margin-left: -0.04em;
 }
 
 .glance-hello-summary {
-  margin: auto 10cqw 14cqw 11cqw;
+  margin: auto 10cqw min(14cqw, 7.9cqh) 11cqw;
   padding-top: calc(var(--spacing) * 3);
 }
 
