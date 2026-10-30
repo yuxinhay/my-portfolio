@@ -93,3 +93,8 @@ rejected and why).
   protected time), the skills criteria were removed to lower the barrier to entry, and why and how
   I vibe-coded openMIC, with an overview image I cleared for publishing. AI rewrote the content as
   feedback → action cards and converted the image to WebP (ADR 0006).
+- 2026-10-30: I supplied my logo (an SVG with lots of empty space around the artwork) and a mock of
+  At a glance card 1 with the logo top left. AI cropped the SVG's viewBox to the rendered
+  artwork's pixel bounds without touching the artwork, put the logo in the header home link at
+  the height the name text had, and placed it on card 1 in the room above the portrait, so the
+  card's layout (ADR 0008) is unchanged. The footer keeps my name as text.
