@@ -18,9 +18,13 @@ export const career: readonly CareerEntry[] = [
   {
     id: 'cpf-pm',
     kind: 'work',
-    role: 'Product Manager (flowCentral) and Programme Manager (Made-in-CPF)',
+    role: 'Product Manager',
     organisation: 'CPF Board',
     period: { start: '2025-01', end: null },
+    highlights: [
+      'Main Product Manager of flowCentral, an internal agentic AI workflow platform: 24 use cases across 14 departments, 10+ completed and handed over.',
+      'Programme Manager for Made-in-CPF Season 5, an intrapreneurship programme, redesigned from 7 months to 10 weeks based on Season 4 feedback.',
+    ],
   },
   {
     id: 'cpf-ux',
