@@ -24,6 +24,7 @@ const NAMESPACES: Record<string, string> = {
   border: '--border',
   duration: '--duration',
   easing: '--ease',
+  blur: '--blur',
 }
 
 // Tailwind defaults to clear so off-system values can't sneak in via utilities.
@@ -37,9 +38,10 @@ const RESETS = [
   '--radius-*',
   '--breakpoint-*',
   '--ease-*',
+  '--blur-*',
 ]
 
-const SCENE_ROLES = ['bg', 'fg', 'accent', 'focus', 'shape', 'surface'] as const
+const SCENE_ROLES = ['bg', 'fg', 'accent', 'display', 'focus', 'shape', 'surface'] as const
 
 function themeVar(token: TransformedToken): string | undefined {
   if (token.path.join('.') === 'spacing.base') return '--spacing'

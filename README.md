@@ -71,6 +71,10 @@ npx playwright test --project=mobile-320   # one viewport; projects: desktop, mo
 E2E_WEBKIT=1 npx playwright test           # add WebKit (needs `npx playwright install webkit`)
 ```
 
+Every spec starts as a returning visitor, so the "At a glance" intro does not cover the home page:
+`e2e/fixtures.ts` marks it as seen in sessionStorage before the page loads. `e2e/glance.spec.ts`
+opts out with `test.use({ glanceSeen: false })` to test a first visit.
+
 Lighthouse CI needs Chrome. If it is not installed, point it at Playwright's Chromium:
 
 ```sh
@@ -90,7 +94,7 @@ docs/           plan and status, ADRs, accessibility, AI workflow
 tokens/         design tokens (DTCG JSON), the source of truth for colour, type and layout
 scripts/        token build, contrast and token-usage checks
 src/
-  components/   ui primitives, layout shell, home sections, case-study blocks
+  components/   ui primitives, layout shell, home sections, case-study blocks, motion, intro
   content/      typed content: site, projects, case studies, skills, career, achievements
   pages/        Home, ProjectDetail, DesignSystem, HowIBuiltThis, NotFound
   app/          routes, router, Layout (focus management)

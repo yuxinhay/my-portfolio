@@ -17,6 +17,7 @@ describe('scenes', () => {
     expect(blush?.roles.map((role) => role.role)).toEqual([
       'fg',
       'accent',
+      'display',
       'focus',
       'shape',
       'surface',

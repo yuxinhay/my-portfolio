@@ -2,7 +2,7 @@
 // Pure functions only (no Node APIs), so it also runs in the browser.
 
 /** Minimum contrast per scene role against the scene background. `shape` is decorative and unchecked. */
-export const MINIMUMS: Record<string, number> = { fg: 4.5, accent: 4.5, focus: 3 }
+export const MINIMUMS: Record<string, number> = { fg: 4.5, accent: 4.5, display: 4.5, focus: 3 }
 
 export function luminance(hex: string): number {
   const channels = hex

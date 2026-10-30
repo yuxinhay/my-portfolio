@@ -4,6 +4,7 @@ import {
   moreStats as defaultMore,
 } from '../../content/achievements'
 import type { Certification, Stat } from '../../content/achievements'
+import { StatValue } from '../motion/StatValue'
 import { Heading } from '../ui/Heading'
 import { Text } from '../ui/Text'
 import { TEXT_RECIPES, cx } from '../ui/styles'
@@ -18,6 +19,7 @@ export interface AchievementsProps {
 /**
  * Wrapped numbers, then certifications. Each number and its label are one paragraph with a space
  * between them, so a screen reader reads "40+ AI use-case submissions assessed" as one phrase.
+ * Numbers count up as they scroll into view; screen readers only get the final value.
  */
 export function Achievements({
   featured = defaultFeatured,
@@ -30,7 +32,7 @@ export function Achievements({
         {featured.map(({ value, label }) => (
           <li key={label}>
             <p className="grid gap-2">
-              <span className={cx(TEXT_RECIPES.stat, 'text-scene-accent')}>{value}</span>{' '}
+              <StatValue value={value} className={cx(TEXT_RECIPES.stat, 'text-scene-accent')} />{' '}
               <span className={TEXT_RECIPES.h3}>{label}</span>
             </p>
           </li>
@@ -40,7 +42,7 @@ export function Achievements({
         {more.map(({ value, label }) => (
           <li key={label} className="border-t-(length:--border-rule) border-scene-fg pt-4">
             <p className="grid gap-1">
-              <span className={cx(TEXT_RECIPES.h1, 'text-scene-accent')}>{value}</span>{' '}
+              <StatValue value={value} className={cx(TEXT_RECIPES.h1, 'text-scene-accent')} />{' '}
               <Text as="span">{label}</Text>
             </p>
           </li>

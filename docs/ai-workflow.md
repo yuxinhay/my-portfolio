@@ -74,3 +74,12 @@ rejected and why).
   starts its own server on a dedicated port and fails if that port is taken. Release-please needs
   a token or a repo setting I choose (ADR 0007), and manual accessibility checks are mine to log
   in `docs/accessibility.md`.
+- 2026-10-29: AI built a throwaway motion prototype with three options per area (branch
+  `prototype/motion`); I chose Fade-up reveals, Count-up numbers, Lift hover and press and a
+  Crossfade between pages, and designed the "At a glance" intro overlay and its six cards. AI then
+  built step 10 in production code (ADR 0008): CSS-only motion as progressive enhancement, a
+  native `<dialog>` carousel, four new tokens, and unit, axe and e2e tests for every card at
+  1280px, 320px and 200% zoom, with and without reduced motion. Screenshots in headless Chrome
+  caught card layouts that overflowed at 1280px and 320px before review. I changed the home
+  headline to "UX Designer | Product Manager" and provided the portrait, which AI converted to
+  WebP with metadata stripped (ADR 0006). Small visual choices are listed in the PR for my review.

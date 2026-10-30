@@ -2,7 +2,7 @@ import type { ComponentPropsWithoutRef } from 'react'
 import { NavLink } from 'react-router'
 import { site } from '../../content/site'
 import type { NavItem } from '../../content/site'
-import { COLOR_TRANSITION, FOCUS_RING, cx } from '../ui/styles'
+import { FOCUS_RING, LINK_LIFT, cx } from '../ui/styles'
 
 export interface NavProps extends ComponentPropsWithoutRef<'nav'> {
   items?: readonly NavItem[]
@@ -10,9 +10,10 @@ export interface NavProps extends ComponentPropsWithoutRef<'nav'> {
   onNavigate?: () => void
 }
 
+// LINK_LIFT also transitions the colour change and makes the link an inline block.
 const LINK = cx(
-  'inline-block rounded-sm py-2 font-bold text-scene-fg hover:text-scene-accent',
-  COLOR_TRANSITION,
+  'rounded-sm py-2 font-bold text-scene-fg hover:text-scene-accent',
+  LINK_LIFT,
   FOCUS_RING,
 )
 

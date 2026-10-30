@@ -16,8 +16,8 @@ describe('Intro', () => {
 
   it('reads the headline without the decorative bar', () => {
     render(<Intro />)
-    const headline = screen.getByText('Product Manager').closest('p')
-    expect(headline).toHaveTextContent('Product Manager | , UX/UI & Design Systems')
+    const headline = screen.getByText('UX Designer').closest('p')
+    expect(headline).toHaveTextContent('UX Designer | , Product Manager')
     expect(screen.getByText('|')).toHaveAttribute('aria-hidden', 'true')
   })
 

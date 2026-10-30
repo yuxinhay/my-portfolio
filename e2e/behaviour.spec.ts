@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './fixtures.ts'
 import type { Page } from '@playwright/test'
 import { projects } from '../src/content/projects.ts'
 import { PROJECT_PATHS } from './support.ts'

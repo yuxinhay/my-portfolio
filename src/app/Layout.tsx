@@ -3,6 +3,7 @@ import type { RefObject } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router'
 import { Footer } from '../components/layout/Footer'
 import { Header } from '../components/layout/Header'
+import { useReveals } from '../components/motion/useReveals'
 import { SkipLink } from '../components/ui/SkipLink'
 
 /**
@@ -28,10 +29,15 @@ function useRouteFocus(main: RefObject<HTMLElement | null>) {
   }, [location, main])
 }
 
-/** The page shell for every route: skip link, header, main content and footer. */
+/**
+ * The page shell for every route: skip link, header, main content and footer. Each page's
+ * sections fade up as they scroll in (ADR 0008).
+ */
 export function Layout() {
   const main = useRef<HTMLElement>(null)
+  const { pathname } = useLocation()
   useRouteFocus(main)
+  useReveals(main, pathname)
 
   return (
     <div className="scene-blush flex min-h-dvh flex-col">

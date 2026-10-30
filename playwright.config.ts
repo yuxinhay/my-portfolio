@@ -31,14 +31,14 @@ export default defineConfig({
     },
     {
       name: 'mobile-320',
-      testMatch: 'routes.spec.ts',
+      testMatch: ['routes.spec.ts', 'glance.spec.ts'],
       use: { ...devices['Desktop Chrome'], viewport: { width: 320, height: 640 }, hasTouch: true },
     },
     {
       // 200% browser zoom of a 1280×800 window: the CSS viewport halves to 640×400 and each CSS
       // pixel covers two device pixels, which is what zooming does to layout and media queries.
       name: 'zoom-200',
-      testMatch: 'routes.spec.ts',
+      testMatch: ['routes.spec.ts', 'glance.spec.ts'],
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 640, height: 400 },

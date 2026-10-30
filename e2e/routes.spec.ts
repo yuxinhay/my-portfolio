@@ -1,5 +1,5 @@
 import { AxeBuilder } from '@axe-core/playwright'
-import { expect, test } from '@playwright/test'
+import { expect, test } from './fixtures.ts'
 import { ROUTES, mediaUrls, scrollThrough, watchForErrors } from './support.ts'
 
 // Runs in every project: desktop (1280px), mobile (320px) and 200% zoom (see playwright.config.ts).

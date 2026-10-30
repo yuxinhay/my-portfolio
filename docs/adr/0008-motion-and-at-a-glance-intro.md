@@ -1,0 +1,230 @@
+# ADR 0008: Motion as progressive enhancement, View Transitions, and a native `<dialog>` intro
+
+- Status: Accepted
+- Date: 2026-10-29
+
+## Context
+
+Plan step 10 adds motion to the "Career Wrapped" site: scroll reveals, count-up numbers, hover and
+press states and page transitions. The owner chose one option per area from a throwaway prototype
+(branch `prototype/motion`): **Fade-up** reveals, **Count-up** numbers, **Lift** hover and press,
+**Crossfade** page transitions. The owner also designed an "At a glance" intro: six Wrapped-style
+cards in a modal carousel over the home page on a first visit.
+
+Constraints: WCAG 2.0 AA (ADR 0002 contrast gate, keyboard, focus, reduced motion, nothing
+auto-advances), the focus management after navigation from ADR 0005, token-only styling, a
+client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
+
+## Options
+
+- **Motion library** (Framer Motion, GSAP) or **CSS transitions plus a little DOM code**. The
+  chosen effects are one-shot transitions of `opacity`, `translate`, `scale` and `box-shadow`, which
+  CSS does natively, from the duration and easing tokens; a library adds 30–60 KB of JavaScript.
+- **Reveals**: hide content in CSS for everyone and show it from script, or hide it only after
+  script has run. The first hides the page whenever the script fails or the browser lacks
+  IntersectionObserver.
+- **Page transitions**: a React transition wrapper around the routes, or the browser's View
+  Transitions API, which React Router 8 supports per navigation (`viewTransition: true`).
+- **Overlay**: a custom modal (`role="dialog"`, own focus trap, `inert` on the page), or the native
+  `<dialog>` element with `showModal()`.
+
+## Decision
+
+- **No motion library.** CSS transitions in `src/index.css` and Tailwind utilities, driven by the
+  tokens; small modules in `src/components/motion/` for the parts that need script.
+- **Every movement is opt-in.** Movement only runs under `prefers-reduced-motion: no-preference`
+  (`motion-safe:` utilities, a media query, or a `matchMedia` check in script), and the existing
+  base rule still cuts any stray transition to an instant change under `reduce`.
+- **Reveals are progressive enhancement** (`startReveals`, run per page from `Layout` in a layout
+  effect). Script marks the children of every `[data-reveal-group]` (sections after the first;
+  lists item by item, each sibling `duration.stagger` later, at most six steps) and
+  `<html data-motion>`, but only when IntersectionObserver exists and motion is allowed. The CSS
+  hides only marked targets under that mark, so without script, without the observer or with
+  reduced motion everything is simply shown. Each target fades in and rises once (`duration.slow`,
+  `easing.out`). The page's first section, with the h1, never hides, so it is the first paint and
+  the LCP. Targets that get keyboard focus, or that are already above the viewport after a `#hash`
+  jump or Back, are shown at once.
+- **Count-up numbers** (`StatValue`). A value that is exactly one number (`40+`, `$7,000+`,
+  `10 weeks`) counts from 0 over `duration.count`, eased, when half on screen, or each time an
+  overlay card becomes current. Prefix, suffix and thousands separators are kept; anything else
+  (`1–2 weeks`) is shown as it is. Screen readers only get the final value: it sits in a visually
+  hidden span, the animated copy is `aria-hidden`, and an invisible copy of the final value holds
+  the width so nothing shifts. Under reduced motion, or without the observer, the plain value is
+  rendered.
+- **Lift** (`LIFT`, `CARD_LIFT`, `LINK_LIFT` in `src/components/ui/styles.ts`). Buttons and project
+  cards rise `0.375rem` with a hard offset shadow in the scene's text colour (`shadow-lift`, built
+  from `--spacing` and `--scene-fg`, so it shows on every scene and needs no new colour); nav and
+  pager links rise slightly without a shadow. After the owner's second review (primary hover read
+  as the button growing, because the shadow was the colour of its fill), an element filled in the
+  text colour adds `lift-hollow`: its slab is the scene background inside a rule-width edge in the
+  text colour, so the fill always meets the scene's text contrast against the slab and the edge
+  meets it against the page. Outlined elements keep the solid slab. Pairs (fill · slab, slab edge ·
+  page): primary on blush ink · blush 15.9:1, on pink white · pink.600 5.6:1, on cobalt white ·
+  cobalt.500 6.7:1, on ink blush · ink 15.9:1 (hover fills use the accent, ≥ 4.5:1 against the
+  same slab); secondary buttons and project cards: transparent fill · solid fg slab, the same
+  ratios; ghost: 10% fg fill · solid fg slab; the overlay's Next on the scrim: blush · ink 15.9:1,
+  edge 6.6:1 against the lightest scrimmed page. Press scales to 0.98. `:focus-visible` (for cards:
+  the card's link) gets the same state as hover, and the focus ring stays. Under reduced motion the
+  shadow and colour still change, without movement. Inline text links do not lift.
+- **Crossfade with the View Transitions API.** `withViewTransitions` wraps `router.navigate`, so
+  every in-app navigation passes `viewTransition: canCrossfade()`: true only when
+  `document.startViewTransition` exists and motion is allowed, decided per navigation. Browsers
+  without the API change pages instantly. The CSS sets the root crossfade to `duration.base` and
+  stops any transition under reduced motion. ADR 0005's focus management and
+  `<ScrollRestoration>` are unchanged; reveals hide targets in a layout effect, before the new page
+  is captured.
+- **The intro is a native modal `<dialog>`** (`GlanceOverlay`), opened with `showModal()`: the
+  browser contains focus, makes the page inert and handles the top layer. Its name is "Yuxin Hay at
+  a glance". `::backdrop` dims the page with `color.scrim` and blurs it with `blur.overlay`; a
+  browser without `backdrop-filter` gets a solid ink scrim. The page does not scroll while it is
+  open (`:root:has(dialog:modal)`).
+  - Six **narrow portrait story cards**, shaped like Wrapped stories (owner review): about 9:16,
+    the same width on every screen (24rem, or the screen less 1rem margins on a phone) and 16/9 of
+    that tall, or as tall as the screen allows below that (down to 15rem, where the card
+    scrolls). Each card is laid out for that format: eyebrow, giant tight type, a short closing
+    line at the bottom. **The content fits without scrolling at every portrait size** (fourth
+    owner review: card 2 showed a scrollbar in a portrait window about 440px wide): the card is a
+    size container, and on a card shorter than 9:16 each type step from `h3` to `stat` scales
+    down with the card's height, from its share of a full-height card (`stat` 22.7cqh, `display`
+    11.4cqh, `h1` 7.6cqh, `h2` 5.1cqh, `h3` 3.2cqh), never below the card's step under it and
+    never above the token; card 1's margins, portrait floor and name scale the same way. No new
+    type sizes; at full height nothing changes. Internal scroll stays only as a safety net for
+    200% zoom and landscape cards.
+  - **Card 1 follows the owner's mockup** (second review), in proportions of the card's width
+    (container units): the portrait bleeds off the right edge from about a third across, from 24%
+    down; the two-line roles sit just left of it; the giant name (`27.5cqw`, `font-black`, tight
+    tracking; on a card shorter than 9:16 at most `15.5cqh`), flush with the card's left edge,
+    starts right under the portrait's bottom edge (fourth review: no longer pulled 0.02em up,
+    which let the dot of the i touch the photo's last pixel row at some sizes); the summary closes
+    the card. The name and roles use a new scene role, `display` (blush: `pink.600`,
+    4.74:1, the mockup's hot pink); no chip sits behind any text. The mockup lets the name and
+    roles run over the photo; measured in headless screenshots (glyph pixels against the photo
+    pixels under them), the accent fell to 1.0:1 over the portrait's dark hair and dress and to
+    about 2.9:1 over the grey wall, and no crop of the 800×900 portrait moves that corner onto a
+    light background. The owner chose to keep the geometry without the overlap; an e2e check
+    asserts that hiding the text leaves the portrait's pixels unchanged.
+  - The previous and next cards sit beside the current one, scaled to 0.85 and at half opacity
+    (from `lg`, a mask also fades them towards the screen edges); on a phone they peek out from
+    behind it. The first card has no previous one, the last no next. Changing cards moves, scales
+    and fades them together (`translate`, `scale`, `opacity`; `duration.slow`, `easing.out`).
+    Neighbours show their final numbers; only the current card counts up.
+  - **Entrance**: the backdrop fades and blurs in (`duration.base`), then the current card pops out
+    from 60% with a slight overshoot (`duration.slow`, new token `easing.overshoot`), then its
+    neighbours fade in. It plays on every opening, first visit and Replay, and stops at the first
+    move. The automatic first-visit opening only (second review) waits `duration.celebrate`
+    (500ms) longer before the pop, and one burst of confetti plays as the card appears: 56 small
+    pieces in pink, cobalt, blush and white, from behind the card's edges, falling and fading out
+    over `duration.confetti` (1800ms), no loop, each piece flipping under 1.5 times a second. It is
+    a self-written canvas module (about 0.8 KB gzipped, loaded on demand, so a replay or a repeat
+    visit never fetches it) rather than a library; the canvas is `aria-hidden`, ignores the
+    pointer, sits behind the controls and is removed when the burst ends. The controls work from
+    the start. A replay gets neither the pause nor the confetti; reduced motion gets neither. Closing is instant: animating it out would mean delaying `close()` and the focus move
+    that follows.
+  - Only the current card is perceivable (neighbours are `inert` and `aria-hidden`, so not
+    focusable or clickable); it is a group with `aria-roledescription="slide"` and the name
+    "Card 2 of 6", and a polite live region repeats that name when the card changes. The current
+    card is a tab stop, because it scrolls when its content is taller than a zoomed screen.
+  - Controls (second review: no ink bar). Skip floats above the card's top right, right-aligned
+    with its edge, as a quiet `ghost` button: a 10% fill and 60% border in the light text colour,
+    text at full strength (5.2:1 against what is behind it, border 3.8:1 against the scrim). Below
+    the card one row as wide as it, straight on the scrim in the ink scene's light roles: Back at
+    the left edge, dots as buttons in the middle ("Go to card 3 of 6", the current one
+    `aria-current` and wider, so it does not rely on colour), Next at the right edge, which reads
+    "Explore my work" on the last card and closes the intro. Back and Next have the same padding
+    and height; on card 1 Back keeps its place but is invisible, disabled and `aria-hidden`, so
+    the row stays symmetric. Text, dots and button edges are blush on the scrim, 6.6:1 against
+    the lightest page behind it; the focus ring (`pink.300`) 3.6:1. On a phone the buttons take
+    the small text step and less padding, so "Explore my work" fits beside Back (on two lines at
+    320px, with Back stretched to the same height). Tab order: Skip, the card, Back, the dots,
+    Next. Left and Right arrows move between cards, Escape skips, and
+    a horizontal touch or pen swipe of 48px or more moves one card. Nothing advances by itself.
+    Focus starts on Next; if Back disappears while focused, focus moves to Next. **No ring until
+    the keyboard is used** (fourth owner review): focusing Next from script on opening matched
+    `:focus-visible` in Chromium (a programmatic focus before any input does), so the ring and
+    the focus lift showed for mouse users and stayed while they clicked Next, since clicking the
+    focused control does not re-evaluate it. Now `focusQuietly` focuses with
+    `focus({ focusVisible: false })` unless the focused element already showed a ring before the
+    dialog opened (a keyboard Replay); browsers that ignore the option get a `data-quiet-focus`
+    mark, under which CSS hides the ring and the focus lift (hover still lifts). The first key press other than Tab and the
+    modifiers (`showKeyboardFocus`) drops the mark and, where the browser kept the control
+    without a ring (Chromium does after a key press), focuses it again with
+    `focusVisible: true`, so the ring appears as soon as the visitor uses the keyboard
+    (WCAG 2.4.7). Tab moves focus, which browsers already show. Chromium and WebKit (checked
+    here) and Firefox (104+) honour `focusVisible`; elsewhere the CSS fallback applies. The route
+    focus on the h1 (ADR 0005) draws no ring by design (`focus:outline-hidden`), so it needed no
+    change.
+  - It opens by itself only when a visit starts on the home page (React Router's first location,
+    key `default`) and it has not been closed in this tab, remembered in sessionStorage
+    (`my-portfolio:glance-seen`, no cookies): **once per browser session** (third owner review,
+    replacing localStorage, which showed it only once ever). A reload in the same tab keeps it
+    closed; a new tab, or opening the link again after closing the tab, shows it again with its
+    confetti. Storage that cannot be read counts as seen. "Replay
+    intro" in the home intro section reopens it. Closing moves focus to the page h1, except a replay
+    closed with Skip or Escape, which returns focus to the Replay button.
+  - Under reduced motion there is no pop, no backdrop fade and no slide: the overlay appears and
+    the cards swap at once, the neighbours still shown smaller and faded, and numbers show their
+    final values.
+- **Card content is typed data** (`src/content/glance.ts`) that looks up numbers, skills, years,
+  certifications and the flowCentral title in the existing content, so the cards cannot drift from
+  the rest of the site. The portrait is a WebP under ADR 0006 (800×900, cropped from the original,
+  quality 80, no EXIF, XMP, ICC or IPTC data; 47 KB).
+- **Tests.** Unit tests cover count-up parsing and formatting, `StatValue` (screen readers get the
+  final value, reduced motion, controlled runs), reveals (no observer, reduced motion, stagger cap,
+  focus, cleanup), view transitions, and the overlay (keyboard, dots, swipe, last card, Escape, focus
+  return, first-visit logic, no auto-advance with fake timers, neighbours hidden and not
+  focusable, the entrance until the first move, axe on every card and under reduced motion). E2E specs seed the "seen" flag for every existing spec through a fixture
+  (`e2e/fixtures.ts`); `glance.spec.ts` tests a first visit: axe and overflow on every card at
+  1280px, 320px and 200% zoom, a portrait card whose content fits without scrolling (except at
+  200% zoom), the neighbours' size, opacity and inertness, the entrance animation, the keyboard
+  flow, Escape, replay, reduced motion and the other routes, closed after a reload but open again
+  (with confetti) in a new page of the same browser, which is a new session; after the second review also, on
+  every card and viewport, Back and Next at the card's edges (±1px) with the same height and no
+  bar behind them, Skip above the card's top right, no text drawn over card 1's portrait, card 2's
+  "Manager" under "Product", the 650ms first-visit pop delay, and confetti present then removed on
+  a first visit but absent on a replay and under reduced motion; after the fourth review also no
+  ring, lift or shadow on Next on opening and after mouse clicks, the ring after an arrow key and
+  after Shift+Tab, the ring at once after a keyboard Replay, and every card fitting without
+  scrolling at 29 window sizes (portrait windows 340–520px wide, 600–960px tall, and 1280×720,
+  1366×768, 1440×900, 1920×1080; the full 20/40px grid passed when written). Unit tests cover
+  `focusQuietly` and `showKeyboardFocus`. `motion.spec.ts` checks reveals with
+  and without IntersectionObserver, crossfades with focus on the h1, and count-up values in the
+  accessibility tree.
+- **Lighthouse audits the first visit**, with the intro open over the home page: it is what a new
+  visitor (and a fresh Lighthouse profile) sees, so its accessibility and its cost on performance
+  are measured rather than hidden. The other four pages are unaffected by the intro.
+
+### Measured scores (local LHCI, 2026-10-29, home audited with the intro open)
+
+| Page                        | Mobile perf / a11y / BP / SEO | Desktop perf / a11y / BP / SEO |
+| --------------------------- | ----------------------------- | ------------------------------ |
+| Home                        | 96 / 100 / 100 / 100          | 100 / 100 / 100 / 100          |
+| Case study: adaptive tables | 95 / 100 / 100 / 100          | 100 / 100 / 100 / 100          |
+| Case study: flowCentral     | 98 / 100 / 100 / 100          | 100 / 100 / 100 / 100          |
+| Design system               | 97 / 100 / 100 / 100          | 100 / 100 / 100 / 100          |
+| How I built this            | 97 / 100 / 100 / 100          | 100 / 100 / 100 / 100          |
+
+Every ADR 0007 threshold and size budget holds, so none changed. CLS was 0.033 at most
+(ADR 0007 measured 0.155 on desktop home); the cause was not investigated. The machine was heavily loaded during the run; CI's numbers are the reference.
+
+## Consequences
+
+- No new runtime dependency. The app's JavaScript transfer grows from 129 KB to 137 KB (motion
+  code, the overlay and its cards); the portrait adds 47 KB, loaded only when the intro opens. The
+  second review adds 1.5 KB gzipped to the main bundle and a separate 0.8 KB confetti chunk,
+  fetched only on a first visit with motion allowed.
+- New tokens: `duration.count` (1000ms), `duration.stagger` (60ms), `blur.overlay` (0.5rem),
+  `color.scrim` (ink.900 at 70%) and, after the owner's review of the cards, `easing.overshoot`
+  (`cubic-bezier(0.34, 1.4, 0.64, 1)`, from the prototype). After the second review:
+  `duration.celebrate` (500ms), `duration.confetti` (1800ms) and the scene role `display`
+  (blush: `pink.600`; the other scenes repeat their accent), checked by the contrast gate like
+  every text role. `--blur-*` joins the Tailwind
+  namespaces reset in `scripts/build-tokens.ts`.
+- Content below the fold is hidden until it scrolls in, so anything that reads the page without
+  scrolling (Lighthouse, a screenshot) sees those sections at opacity 0; axe skips them, and the
+  e2e suite scrolls through every page and waits for transitions before scanning.
+- Browsers without the View Transitions API change pages instantly, with focus handled the same
+  way.
+- jsdom has no `<dialog>` methods, so the unit-test setup adds minimal `showModal` and `close`;
+  focus containment and inertness are covered by the e2e tests in Chromium.
+- A visitor who closes the intro in one browser sees it again in another, or after clearing site
+  data; this is intended.

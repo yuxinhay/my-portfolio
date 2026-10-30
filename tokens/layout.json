@@ -26,10 +26,31 @@
     "$type": "duration",
     "fast": { "$value": "150ms" },
     "base": { "$value": "300ms" },
-    "slow": { "$value": "600ms" }
+    "slow": { "$value": "600ms" },
+    "count": {
+      "$value": "1000ms",
+      "$description": "Count-up numbers: long enough to read as counting, short of the 1s ceiling"
+    },
+    "stagger": { "$value": "60ms", "$description": "Delay between siblings in a scroll reveal" },
+    "celebrate": {
+      "$value": "500ms",
+      "$description": "First-visit intro only: the extra pause after the backdrop before the card pops, with confetti"
+    },
+    "confetti": {
+      "$value": "1800ms",
+      "$description": "First-visit confetti: one burst that falls and fades out, then is removed"
+    }
   },
   "easing": {
     "$type": "cubicBezier",
-    "out": { "$value": [0.2, 0.8, 0.2, 1] }
+    "out": { "$value": [0.2, 0.8, 0.2, 1] },
+    "overshoot": {
+      "$value": [0.34, 1.4, 0.64, 1],
+      "$description": "Pop-out entrances: grows slightly past full size, then settles"
+    }
+  },
+  "blur": {
+    "$type": "dimension",
+    "overlay": { "$value": "0.5rem", "$description": "Backdrop blur behind a modal dialog" }
   }
 }

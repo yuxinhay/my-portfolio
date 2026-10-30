@@ -21,7 +21,8 @@ describe('DesignSystem', () => {
     for (const scene of SCENES) {
       const card = within(section).getByRole('region', { name: `scene-${scene}` })
       expect(card).toHaveClass(`scene-${scene}`)
-      expect(within(card).getAllByText(/Pass \(min/).length).toBe(3)
+      // fg, accent, display and focus.
+      expect(within(card).getAllByText(/Pass \(min/).length).toBe(4)
       expect(within(card).getByText(/Decorative, not checked/)).toBeInTheDocument()
     }
   })

@@ -31,3 +31,298 @@
     }
   }
 }
+
+/*
+  Motion (ADR 0008). Every movement is opt-in for visitors who have not asked for reduced motion;
+  the reduced-motion rule above also cuts any transition that slips through to an instant change.
+*/
+
+/* Scroll reveals: fade-up. Only targets the script marked, only after it marked <html data-motion>
+   (so without JS or IntersectionObserver nothing is hidden), and only while motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion] [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    translate: 0 calc(var(--spacing) * 6);
+  }
+
+  /* Hiding is instant; revealing fades and rises, later siblings a step later. */
+  html[data-motion] [data-reveal][data-revealed] {
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      translate var(--duration-slow) var(--ease-out);
+    transition-delay: calc(var(--reveal-step, 0) * var(--duration-stagger));
+  }
+}
+
+/* Lift: the hard offset shadow for hover, focus-visible and press states. It is a slab in the
+   scene's text colour, so its edge shows on every scene. Under an element filled in that same
+   colour (a primary button) a solid slab would read as the element growing, so `lift-hollow`
+   fills the slab with the scene background instead, inside a rule-width edge in the text colour:
+   the fill meets the scene's text contrast against the slab, and the edge against the page.
+   Movement is added separately with motion-safe: utilities. */
+@utility shadow-lift {
+  box-shadow:
+    0 calc(var(--spacing) * 1.5) 0 calc(-1 * var(--border-rule)) var(--lift-core, var(--scene-fg)),
+    0 calc(var(--spacing) * 1.5) 0 0 var(--scene-fg);
+}
+
+@utility lift-hollow {
+  --lift-core: var(--scene-bg);
+}
+
+/* Page transitions: the View Transitions API crossfades the whole page (src/app/viewTransitions.ts
+   only starts one when motion is allowed; this also stops one replayed on Back). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Modal dialogs dim and blur the page behind them; browsers without backdrop-filter get a solid
+   scrim instead. The page behind does not scroll while one is open. */
+dialog::backdrop {
+  background-color: var(--color-scrim);
+  backdrop-filter: blur(var(--blur-overlay));
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  dialog::backdrop {
+    background-color: var(--color-ink-900);
+  }
+}
+
+:root:has(dialog:modal) {
+  overflow: hidden;
+}
+
+/* At a glance (ADR 0008): narrow portrait story cards, about 9:16. The current card is centred
+   at a fixed narrow width (a phone: the screen less small margins) and is as tall as 9:16 asks,
+   or as tall as the screen allows. The previous and next cards sit beside it, smaller and faded;
+   on a narrow screen they peek out from behind it. Cards further away wait out of sight. */
+.glance-frame {
+  --glance-width: min(calc(var(--spacing) * 96), 100cqw - calc(var(--spacing) * 8));
+  container-type: inline-size;
+  /* The frame lends its controls the ink scene's roles, but they sit straight on the scrim. */
+  background-color: transparent;
+
+  /* Above the confetti canvas, which is drawn behind the card. */
+  & > * {
+    position: relative;
+  }
+}
+
+.glance-stage {
+  /* Room above and below the cards for the entrance overshoot and the focus ring, which the
+     edge fade's mask would otherwise cut off; the negative margin keeps it out of the layout. */
+  --glance-bleed: calc(var(--spacing) * 4);
+  --glance-text-stat: var(--text-stat);
+  --glance-text-display: var(--text-display);
+  --glance-text-h1: var(--text-h1);
+  --glance-text-h2: var(--text-h2);
+  --glance-text-h3: var(--text-h3);
+  display: grid;
+  grid-template: minmax(0, 1fr) / var(--glance-width);
+  justify-content: center;
+  /* 9:16 when the screen is tall enough; otherwise it shrinks, down to a floor (then the card
+     scrolls). */
+  flex: 0 1 auto;
+  height: calc(var(--glance-width) * 16 / 9 + 2 * var(--glance-bleed));
+  min-height: calc(var(--spacing) * 60 + 2 * var(--glance-bleed));
+  margin-block: calc(-1 * var(--glance-bleed));
+  padding-block: var(--glance-bleed);
+  overflow-x: clip;
+
+  /* Wide screens: neighbours fade out towards the edges of the screen. */
+  @variant lg {
+    mask-image: linear-gradient(to right, transparent, black 25%, black 75%, transparent);
+  }
+}
+
+/* Skip above the card's top right, and the row of Back, dots and Next below it: both exactly
+   as wide as the card, so Skip, Back and Next line up with its edges. */
+.glance-bar,
+.glance-controls {
+  width: var(--glance-width);
+  margin-inline: auto;
+}
+
+/* On a phone the row is narrow: Back and Next take less padding and the small text step, so
+   "Explore my work" still fits beside Back and the dots, each of which keeps a 24px target (on
+   two lines at 320px, with Back stretched to the same height). */
+@container (width < 30rem) {
+  .glance-control {
+    padding-inline: calc(var(--spacing) * 2);
+    font-size: var(--text-small);
+    text-wrap: balance;
+  }
+}
+
+.glance-card {
+  /* Beside the current card with a gap, or, where the screen is too narrow for that, as far out
+     as fits with its edge just inside the screen. */
+  --glance-step: min(92.5% + calc(var(--spacing) * 4), 50cqw - 42.5% - var(--spacing));
+  grid-area: 1 / 1;
+  translate: calc(var(--glance-offset, 0) * var(--glance-step)) 0;
+  /* The content fits the card at every portrait size: on a card shorter than 9:16 each type step
+     scales down with the card's height (cqh), from its share of a full-height card, never above
+     the page's step (read on the stage, `--glance-text-*`) nor below the card's step under it. */
+  container-type: size;
+  --text-stat: max(var(--text-display), min(var(--glance-text-stat), 22.7cqh));
+  --text-display: max(var(--text-h1), min(var(--glance-text-display), 11.4cqh));
+  --text-h1: max(var(--text-h2), min(var(--glance-text-h1), 7.6cqh));
+  --text-h2: max(var(--text-h3), min(var(--glance-text-h2), 5.1cqh));
+  --text-h3: max(var(--text-body), min(var(--glance-text-h3), 3.2cqh));
+
+  &[data-position='current'] {
+    z-index: 1;
+  }
+
+  &[data-position='near'] {
+    scale: 0.85;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &[data-position='far'] {
+    scale: 0.7;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* A control the overlay focused from script for a visitor who has not used the keyboard
+   (`focusQuietly`): no ring and no focus lift until they do, for browsers that ignore focus()'s
+   `focusVisible: false`. Hover still lifts it. */
+.glance-dialog [data-quiet-focus]:focus-visible {
+  outline-style: none;
+
+  &:not(:hover) {
+    box-shadow: none;
+    translate: none;
+  }
+}
+
+/* Card 1, after the owner's mockup (proportions of the card's width, cqw): the portrait bleeds
+   off the right edge from about a third across, the roles end just before it, and the giant name
+   starts right under the portrait's bottom edge (no text crosses the photo, so it keeps its
+   contrast). On a card shorter than 9:16 the portrait gives up height first; on a
+   narrow card the roles take the room they need and the portrait narrows. */
+.glance-hello {
+  container-type: inline-size;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.glance-hello-top {
+  display: flex;
+  flex: 0 1 72cqw;
+  align-items: flex-end;
+  gap: 2cqw;
+  min-height: min(36cqw, 20cqh);
+  margin-top: min(24cqw, 13.5cqh);
+}
+
+.glance-hello-roles {
+  flex: none;
+  margin-left: 4cqw;
+}
+
+.glance-hello-photo {
+  flex: 1;
+  align-self: stretch;
+  min-width: 0;
+  max-width: 67cqw;
+  height: 100%;
+  margin-left: auto;
+  object-position: 50% 15%;
+}
+
+.glance-hello-name {
+  font-size: min(27.5cqw, 15.5cqh);
+  /* The name starts at the card's very edge, its tallest glyph (the dot of the i) right under
+     the portrait's bottom edge: pulled any closer, it touches the photo's last row of pixels at
+     some sizes. On a card shorter than 9:16 it scales with the card's height too. */
+  margin-left: -0.04em;
+}
+
+.glance-hello-summary {
+  margin: auto 10cqw min(14cqw, 7.9cqh) 11cqw;
+  padding-top: calc(var(--spacing) * 3);
+}
+
+/* The entrance pop: the current card grows from 60% with a slight overshoot. */
+@theme {
+  --animate-glance-pop: glance-pop var(--duration-slow) var(--ease-overshoot) backwards;
+
+  @keyframes glance-pop {
+    from {
+      opacity: 0;
+      scale: 0.6;
+    }
+  }
+}
+
+@keyframes glance-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes glance-backdrop-in {
+  from {
+    background-color: transparent;
+    backdrop-filter: blur(0);
+  }
+}
+
+/* Sliding moves, scales and fades the cards together. Opening: the backdrop fades and blurs in,
+   then the current card pops out, then its neighbours fade in. `data-opening` is dropped at the
+   first move, so later cards slide in rather than pop. Under reduced motion none of this runs:
+   the overlay and its cards appear and swap at once. */
+@media (prefers-reduced-motion: no-preference) {
+  .glance-card {
+    transition:
+      translate var(--duration-slow) var(--ease-out),
+      scale var(--duration-slow) var(--ease-out),
+      opacity var(--duration-slow) var(--ease-out);
+  }
+
+  .glance-dialog::backdrop {
+    animation: glance-backdrop-in var(--duration-base) var(--ease-out);
+  }
+
+  .glance-dialog[data-opening] .glance-card {
+    &[data-position='current'] {
+      animation: var(--animate-glance-pop);
+      animation-delay: var(--duration-fast);
+    }
+
+    &[data-position='near'] {
+      animation: glance-fade-in var(--duration-base) var(--ease-out) backwards;
+      animation-delay: calc(var(--duration-fast) + var(--duration-base));
+    }
+  }
+
+  /* The automatic first-visit opening waits a beat longer, so the card pops with the confetti. */
+  .glance-dialog[data-opening][data-celebrate] .glance-card {
+    &[data-position='current'] {
+      animation-delay: calc(var(--duration-fast) + var(--duration-celebrate));
+    }
+
+    &[data-position='near'] {
+      animation-delay: calc(
+        var(--duration-fast) + var(--duration-celebrate) + var(--duration-base)
+      );
+    }
+  }
+}

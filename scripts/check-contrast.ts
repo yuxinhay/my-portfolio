@@ -1,6 +1,6 @@
 // Fails if any scene's text or focus colour falls below WCAG AA contrast against its background,
 // or against its `surface` (the fill for panels inside the scene, which carry the same text).
-//   fg, accent → 4.5:1 (WCAG 1.4.3, normal-size text)
+//   fg, accent, display → 4.5:1 (WCAG 1.4.3, normal-size text)
 //   focus      → 3:1   (focus indicator must stand out from its surface)
 // `shape` is decorative and never carries text, so it is not checked.
 import { contrast, MINIMUMS } from './contrast.ts'

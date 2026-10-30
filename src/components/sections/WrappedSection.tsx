@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { REVEAL_GROUP } from '../motion/reveals'
 import { Heading } from '../ui/Heading'
 import { cx } from '../ui/styles'
 import type { SceneName } from '../ui/styles'
@@ -20,6 +21,8 @@ export interface WrappedSectionProps {
 /**
  * One full-bleed Wrapped scene on the home page: a `<section>` named by its heading. It takes
  * programmatic focus, so a `/#id` link moves keyboard users to it, not just the viewport.
+ * Sections after the first fade up as they scroll in (a reveal group, see `startReveals`); the
+ * page's opening section, with the h1, is shown at once.
  */
 export function WrappedSection({
   id,
@@ -37,7 +40,10 @@ export function WrappedSection({
       tabIndex={-1}
       className={cx(`scene-${scene}`, 'focus:outline-hidden')}
     >
-      <div className={cx('mx-auto grid max-w-5xl gap-10 px-6 py-16 md:py-24', className)}>
+      <div
+        className={cx('mx-auto grid max-w-5xl gap-10 px-6 py-16 md:py-24', className)}
+        {...(level === 2 && { [REVEAL_GROUP]: '' })}
+      >
         <Heading
           level={level}
           size="display"
