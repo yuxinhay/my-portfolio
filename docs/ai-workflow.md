@@ -88,3 +88,8 @@ rejected and why).
   transition area) and decided the PM case studies are not numbered. AI updated the content,
   stats and At a glance card, added a typed `flow` block and an unnumbered process option, and
   built two layouts for the FAST flow diagram; I chose the stacked cards over a timeline rail.
+- 2026-10-30: I simplified my current career entry to "Product Manager" with two highlights, and
+  gave the Made-in-CPF updates: the Season 5 redesign came from Season 4 feedback (duration and
+  protected time), the skills criteria were removed to lower the barrier to entry, and why and how
+  I vibe-coded openMIC, with an overview image I cleared for publishing. AI rewrote the content as
+  feedback → action cards and converted the image to WebP (ADR 0006).
