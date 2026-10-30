@@ -1,6 +1,7 @@
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { logo } from '../../content/brand'
 import { site } from '../../content/site'
 import { expectNoAxeViolations } from '../../test/axe'
 import { renderWithRouter } from '../../test/router'
@@ -17,9 +18,15 @@ function setup(path = '/') {
 }
 
 describe('Header', () => {
-  it('links the site name to the home page', () => {
+  it('links the logo to the home page, named by its alt text', () => {
     renderWithRouter(<Header />, '/design-system')
-    expect(screen.getByRole('link', { name: site.name })).toHaveAttribute('href', '/')
+    const home = screen.getByRole('link', { name: site.name })
+    expect(home).toHaveAttribute('href', '/')
+    // Sized up front, so the header does not shift when the logo loads.
+    const image = within(home).getByRole('img', { name: site.name })
+    expect(image).toHaveAttribute('src', logo.src)
+    expect(image).toHaveAttribute('width', String(logo.width))
+    expect(image).toHaveAttribute('height', String(logo.height))
   })
 
   it('has a native menu toggle that controls the navigation, collapsed by default', () => {

@@ -83,3 +83,21 @@ rejected and why).
   caught card layouts that overflowed at 1280px and 320px before review. I changed the home
   headline to "UX Designer | Product Manager" and provided the portrait, which AI converted to
   WebP with metadata stripped (ADR 0006). Small visual choices are listed in the PR for my review.
+- 2026-10-30: I gave the flowCentral updates (the FAST operating model, enablement e-primer and
+  workshops, 3 senior-management presentations, 10+ use cases completed and handed over, no
+  transition area) and decided the PM case studies are not numbered. AI updated the content,
+  stats and At a glance card, added a typed `flow` block and an unnumbered process option, and
+  built two layouts for the FAST flow diagram; I chose the stacked cards over a timeline rail.
+- 2026-10-30: I simplified my current career entry to "Product Manager" with two highlights, and
+  gave the Made-in-CPF updates: the Season 5 redesign came from Season 4 feedback (duration and
+  protected time), the skills criteria were removed to lower the barrier to entry, and why and how
+  I vibe-coded openMIC, with an overview image I cleared for publishing. AI rewrote the content as
+  feedback → action cards and converted the image to WebP (ADR 0006).
+- 2026-10-30: I supplied my logo (an SVG with lots of empty space around the artwork) and a mock of
+  At a glance card 1 with the logo top left. AI cropped the SVG's viewBox to the rendered
+  artwork's pixel bounds without touching the artwork, put the logo in the header home link at
+  the height the name text had, and placed it on card 1 in the room above the portrait, so the
+  card's layout (ADR 0008) is unchanged. The footer keeps my name as text.
+- 2026-10-30: I found the header logo too small and asked for it two lines tall. AI added a
+  `height.logo-header` token (2lh, in Tailwind's height namespace) rather than an arbitrary value,
+  so the logo stays tied to the h3 type step; the At a glance card logo keeps its size.

@@ -140,9 +140,17 @@ test('every card: no axe violations, no overflow, neighbours beside it, controls
           card: element.getBoundingClientRect().right,
           photo: rect('.glance-hello-photo'),
           roles: rect('.glance-hello-roles'),
+          logo: rect('.glance-hello-logo'),
+          cardLeft: element.getBoundingClientRect().left,
+          cardTop: element.getBoundingClientRect().top,
         }
       })
       expect(Math.abs((layout.photo?.right ?? 0) - layout.card)).toBeLessThanOrEqual(1)
+      // The logo sits in the top left corner, inside the card and above the portrait.
+      expect(layout.logo?.left ?? 0).toBeGreaterThan(layout.cardLeft)
+      expect(layout.logo?.top ?? 0).toBeGreaterThan(layout.cardTop)
+      expect(layout.logo?.bottom ?? Infinity).toBeLessThanOrEqual(layout.photo?.top ?? 0)
+      expect(layout.logo?.right ?? Infinity).toBeLessThanOrEqual(layout.photo?.left ?? 0)
       expect(layout.roles?.right ?? Infinity).toBeLessThanOrEqual(layout.photo?.left ?? 0)
       const text = currentCard(page).locator('.glance-hello-name, .glance-hello-roles')
       const withText = await photo.screenshot()

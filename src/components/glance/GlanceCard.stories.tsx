@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { glance } from '../../content/glance'
 import type { GlanceCard as GlanceCardContent } from '../../content/glance'
+import { cx } from '../ui/styles'
 import { GlanceCard } from './GlanceCard'
 
 function card(id: string): GlanceCardContent {
@@ -21,7 +22,12 @@ const meta = {
   render: (args) => (
     <div className="glance-frame grid justify-center py-6">
       <div
-        className={`scene-${args.card.scene} flex aspect-9/16 w-(--glance-width) flex-col rounded-card bg-scene p-4 sm:p-6`}
+        className={cx(
+          `scene-${args.card.scene}`,
+          'flex aspect-9/16 w-(--glance-width) flex-col rounded-card bg-scene',
+          // As in the dialog: card 1's portrait bleeds to the card's edge, so it sets its own spacing.
+          args.card.kind !== 'hello' && 'p-4 sm:p-6',
+        )}
       >
         <GlanceCard {...args} />
       </div>
@@ -32,6 +38,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+/** Card 1: the logo (decorative) top left, the portrait bleeding off the right edge, the name. */
 export const Hello: Story = {}
 export const Career: Story = { args: { card: card('career') } }
 export const AiProduct: Story = { args: { card: card('ai-product') } }

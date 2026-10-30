@@ -15,7 +15,7 @@ function renderCard(index: number) {
 }
 
 describe('GlanceCard', () => {
-  it('opens with the name as a heading, the roles and the portrait', () => {
+  it('opens with the logo, the name as a heading, the roles and the portrait', () => {
     if (hello?.kind !== 'hello') throw new Error('Card 1 is not the hello card')
     renderCard(0)
     const name = screen.getByRole('heading', { level: 2 })
@@ -26,6 +26,12 @@ describe('GlanceCard', () => {
       'decoding',
       'async',
     )
+    // The logo is decorative: the card names the owner in text.
+    const logo = screen.getByRole('presentation')
+    expect(logo).toHaveAttribute('src', hello.logo.src)
+    expect(logo).toHaveAttribute('alt', '')
+    expect(logo).toHaveAttribute('width', String(hello.logo.width))
+    expect(logo).toHaveAttribute('height', String(hello.logo.height))
     // One role per line; the bar is hidden from screen readers, which hear a comma.
     expect(
       screen.getByText('UX Designer', { selector: 'p > span' }).closest('p'),

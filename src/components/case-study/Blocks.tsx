@@ -2,6 +2,7 @@ import type { Block } from '../../content/caseStudies'
 import { Tag } from '../ui/Tag'
 import { Text } from '../ui/Text'
 import { TEXT_RECIPES, cx } from '../ui/styles'
+import { FlowDiagram } from './FlowDiagram'
 
 export interface BlocksProps {
   blocks: readonly Block[]
@@ -9,8 +10,8 @@ export interface BlocksProps {
 }
 
 /**
- * Long-form text, as wide as the media: paragraphs, bulleted lists and description lists of terms,
- * one card per term, filled with the scene's surface. A featured term fills its card with the pink
+ * Long-form text, as wide as the media: paragraphs, bulleted lists, flow diagrams and description
+ * lists of terms, one card per term, filled with the scene's surface. A featured term fills its card with the pink
  * scene instead; its tag says why in text, so the emphasis does not rely on colour. Renders nothing
  * if empty.
  */
@@ -31,6 +32,7 @@ export function Blocks({ blocks, className }: BlocksProps) {
             </ul>
           )
         }
+        if ('flow' in block) return <FlowDiagram key={block.flow.label} flow={block.flow} />
         return (
           <dl
             key={block.definitions.map((d) => d.term).join()}
