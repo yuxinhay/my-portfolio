@@ -15,6 +15,13 @@
     "rule": { "$value": "2px", "$description": "Divider lines in lists and timelines" },
     "focus": { "$value": "3px", "$description": "Focus ring width" }
   },
+  "height": {
+    "$type": "dimension",
+    "logo-header": {
+      "$value": "2lh",
+      "$description": "Header logo: two lines of the h3 step it sits in, so it scales with that type"
+    }
+  },
   "breakpoint": {
     "$type": "dimension",
     "sm": { "$value": "40rem" },

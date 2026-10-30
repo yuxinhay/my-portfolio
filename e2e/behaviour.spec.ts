@@ -43,6 +43,12 @@ test.describe('mobile menu at 320px', () => {
     expect(homeBox.y + homeBox.height).toBeGreaterThan(toggleBox.y)
     expect(homeBox.y).toBeLessThan(toggleBox.y + toggleBox.height)
     expect(homeBox.x + homeBox.width).toBeLessThan(toggleBox.x)
+    // Two lines of the h3 step tall (2lh).
+    const sizes = await logo.evaluate((img) => ({
+      height: img.getBoundingClientRect().height,
+      lineHeight: parseFloat(getComputedStyle(img).lineHeight),
+    }))
+    expect(sizes.height).toBeCloseTo(sizes.lineHeight * 2, 0)
   })
 
   test('opens and closes by keyboard, and Escape returns focus to the toggle', async ({ page }) => {
