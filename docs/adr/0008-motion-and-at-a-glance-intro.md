@@ -129,7 +129,21 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
     320px, with Back stretched to the same height). Tab order: Skip, the card, Back, the dots,
     Next. Left and Right arrows move between cards, Escape skips, and
     a horizontal touch or pen swipe of 48px or more moves one card. Nothing advances by itself.
-    Focus starts on Next; if Back disappears while focused, focus moves to Next.
+    Focus starts on Next; if Back disappears while focused, focus moves to Next. **No ring until
+    the keyboard is used** (fourth owner review): focusing Next from script on opening matched
+    `:focus-visible` in Chromium (a programmatic focus before any input does), so the ring and
+    the focus lift showed for mouse users and stayed while they clicked Next, since clicking the
+    focused control does not re-evaluate it. Now `focusQuietly` focuses with
+    `focus({ focusVisible: false })` unless the focused element already showed a ring before the
+    dialog opened (a keyboard Replay); browsers that ignore the option get a `data-quiet-focus`
+    mark, under which CSS hides the ring and the focus lift (hover still lifts). The first key press other than Tab and the
+    modifiers (`showKeyboardFocus`) drops the mark and, where the browser kept the control
+    without a ring (Chromium does after a key press), focuses it again with
+    `focusVisible: true`, so the ring appears as soon as the visitor uses the keyboard
+    (WCAG 2.4.7). Tab moves focus, which browsers already show. Chromium and WebKit (checked
+    here) and Firefox (104+) honour `focusVisible`; elsewhere the CSS fallback applies. The route
+    focus on the h1 (ADR 0005) draws no ring by design (`focus:outline-hidden`), so it needed no
+    change.
   - It opens by itself only when a visit starts on the home page (React Router's first location,
     key `default`) and it has not been closed in this tab, remembered in sessionStorage
     (`my-portfolio:glance-seen`, no cookies): **once per browser session** (third owner review,
@@ -158,7 +172,10 @@ client-rendered app on GitHub Pages, and the Lighthouse budgets from ADR 0007.
   every card and viewport, Back and Next at the card's edges (±1px) with the same height and no
   bar behind them, Skip above the card's top right, no text drawn over card 1's portrait, card 2's
   "Manager" under "Product", the 650ms first-visit pop delay, and confetti present then removed on
-  a first visit but absent on a replay and under reduced motion. `motion.spec.ts` checks reveals with
+  a first visit but absent on a replay and under reduced motion; after the fourth review also no
+  ring, lift or shadow on Next on opening and after mouse clicks, the ring after an arrow key and
+  after Shift+Tab and the ring at once after a keyboard Replay. Unit tests cover `focusQuietly`
+  and `showKeyboardFocus`. `motion.spec.ts` checks reveals with
   and without IntersectionObserver, crossfades with focus on the h1, and count-up values in the
   accessibility tree.
 - **Lighthouse audits the first visit**, with the intro open over the home page: it is what a new

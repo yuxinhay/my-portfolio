@@ -43,8 +43,8 @@ the tools can detect, not that a page is accessible; the manual checks below cov
 - **The intro** is a native modal `<dialog>` named "Yuxin Hay at a glance", opened once per browser
   session on the home page (a reload keeps it closed, a new tab shows it again) and from "Replay
   intro". The page behind is inert, dimmed and blurred.
-  Focus starts on Next and stays in the dialog; Escape or Skip closes it. Each card is a group
-  announced as "Card N of 6", and a polite live region repeats that when the card changes. Dots are
+  Focus starts on Next (with no ring until the visitor uses the keyboard) and stays in the dialog;
+  Escape or Skip closes it. Each card is a group announced as "Card N of 6", and a polite live region repeats that when the card changes. Dots are
   buttons ("Go to card 3 of 6"), the current one marked with `aria-current` and a wider, filled
   shape, not colour alone. Left and Right arrows and a swipe change the card; nothing advances by
   itself. The current card scrolls and takes focus when its content is taller than the screen

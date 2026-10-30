@@ -42,6 +42,17 @@ describe('GlanceOverlay', () => {
     expect(screen.queryByRole('button', { name: 'Back' })).toBeNull()
   })
 
+  it('focuses Next without a ring until the visitor uses the keyboard', () => {
+    renderOverlay()
+    const next = screen.getByRole('button', { name: 'Next' })
+    expect(next).toHaveAttribute('data-quiet-focus')
+    fireEvent.keyDown(dialog(), { key: 'Shift' })
+    expect(next).toHaveAttribute('data-quiet-focus')
+    fireEvent.keyDown(dialog(), { key: 'Enter' })
+    expect(next).not.toHaveAttribute('data-quiet-focus')
+    expect(next).toHaveFocus()
+  })
+
   it("keeps Back's place on card 1, hidden from everyone, so the row stays symmetric", () => {
     const { container } = renderOverlay()
     const back = container.querySelector('.glance-controls button')

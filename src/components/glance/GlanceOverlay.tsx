@@ -6,6 +6,7 @@ import { CELEBRATE_DELAY, CONFETTI_DURATION, prefersReducedMotion } from '../mot
 import { Button } from '../ui/Button'
 import { FOCUS_RING, cx } from '../ui/styles'
 import { GlanceCard } from './GlanceCard'
+import { focusQuietly, hasKeyboardFocus, showKeyboardFocus } from './quietFocus'
 
 export type GlanceCloseReason = 'skip' | 'explore'
 
@@ -130,9 +131,12 @@ export function GlanceOverlay({
   useLayoutEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
+    // Read before showModal(), which moves focus to Skip: a keyboard user gets the ring at once.
+    const keyboard = hasKeyboardFocus()
     if (!dialog.open) dialog.showModal()
-    // Start on the main action rather than the first control (Skip).
-    nextRef.current?.focus()
+    // Start on the main action rather than the first control (Skip), with no ring until the
+    // visitor uses the keyboard.
+    focusQuietly(nextRef.current, keyboard)
     const handleClose = () => {
       // A close queued by an earlier mount (React StrictMode) arrives after the dialog reopened.
       if (dialog.open) return
@@ -154,13 +158,14 @@ export function GlanceOverlay({
     const target = Math.min(Math.max(to, 0), count - 1)
     if (target === index) return
     // Back disappears on the first card; keep focus on a control that stays.
-    if (target === 0 && document.activeElement === backRef.current) nextRef.current?.focus()
+    if (target === 0 && document.activeElement === backRef.current) focusQuietly(nextRef.current)
     setIndex(target)
     setMoved(true)
     setOpening(false)
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDialogElement>) {
+    showKeyboardFocus(event.key)
     if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       event.preventDefault()
       go(index + (event.key === 'ArrowRight' ? 1 : -1))

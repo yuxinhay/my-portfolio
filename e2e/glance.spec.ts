@@ -262,6 +262,59 @@ test.describe('behaviour', () => {
     await expect(dialog(page)).toHaveCount(0)
   })
 
+  test('no focus ring or lift for a mouse user; the ring as soon as the keyboard is used', async ({
+    page,
+  }) => {
+    await page.goto('./')
+    const next = page.getByRole('button', { name: 'Next' })
+    await expect(next).toBeFocused()
+    // Focused on opening, but nothing drawn until the visitor uses the keyboard (WCAG 2.4.7).
+    const quiet = async (context: string) => {
+      await page.mouse.move(0, 0)
+      await settleMotion(page)
+      await expect(next, context).toBeFocused()
+      await expect(next, context).toHaveCSS('outline-style', 'none')
+      await expect(next, context).toHaveCSS('translate', 'none')
+      await expect(next, context).toHaveCSS('box-shadow', 'none')
+    }
+    await quiet('on opening')
+    await next.click()
+    await expect(currentCard(page)).toHaveAttribute('aria-label', `Card 2 of ${COUNT}`)
+    await quiet('after a click')
+    await next.click()
+    await quiet('after a second click')
+
+    // Any key but Tab and the modifiers: the focused control shows its ring and lift.
+    await page.keyboard.press('ArrowRight')
+    await settleMotion(page)
+    await expect(next).toHaveCSS('outline-style', 'solid')
+    await expect(next).not.toHaveCSS('translate', 'none')
+
+    // Tab moves focus, which the browser shows as keyboard focus.
+    await page.keyboard.press('Shift+Tab')
+    const focused = page.locator(':focus')
+    await expect(focused).toHaveAccessibleName(`Go to card ${COUNT} of ${COUNT}`)
+    await expect(focused).toHaveCSS('outline-style', 'solid')
+  })
+
+  test('a keyboard Replay opens with the ring on Next', async ({ page }) => {
+    await page.goto('./')
+    await page.keyboard.press('Escape')
+    await expect(dialog(page)).toBeHidden()
+    // Closing moves focus to the h1 a task later; reach Replay by keyboard after that.
+    await expect(h1(page)).toBeFocused()
+    const replay = page.getByRole('button', { name: 'Replay intro' })
+    await replay.focus()
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Shift+Tab')
+    await expect(replay).toBeFocused()
+    expect(await replay.evaluate((button) => button.matches(':focus-visible'))).toBe(true)
+    await page.keyboard.press('Enter')
+    const next = page.getByRole('button', { name: 'Next' })
+    await expect(next).toBeFocused()
+    await expect(next).toHaveCSS('outline-style', 'solid')
+  })
+
   test('opens once per browser session: not after a reload, again in a new tab', async ({
     page,
     context,

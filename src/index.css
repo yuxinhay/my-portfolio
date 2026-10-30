@@ -184,6 +184,18 @@ dialog::backdrop {
   }
 }
 
+/* A control the overlay focused from script for a visitor who has not used the keyboard
+   (`focusQuietly`): no ring and no focus lift until they do, for browsers that ignore focus()'s
+   `focusVisible: false`. Hover still lifts it. */
+.glance-dialog [data-quiet-focus]:focus-visible {
+  outline-style: none;
+
+  &:not(:hover) {
+    box-shadow: none;
+    translate: none;
+  }
+}
+
 /* Card 1, after the owner's mockup (proportions of the card's width, cqw): the portrait bleeds
    off the right edge from about a third across, the roles end just before it, and the giant name
    starts on the portrait's bottom edge, its cap line touching it (no text crosses the photo, so
