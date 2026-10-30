@@ -40,14 +40,14 @@ export function Header() {
       ref={headerRef}
       className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-4"
     >
-      {/* The logo is one line of the h3 step tall (`h-lh`), the height the name had as text. */}
+      {/* The logo is two lines of the h3 step tall (`h-logo-header`, 2lh), so it scales with it. */}
       <RouterLink to="/" className={cx('rounded-sm', TEXT_RECIPES.h3, FOCUS_RING)}>
         <img
           src={logo.src}
           alt={site.name}
           width={logo.width}
           height={logo.height}
-          className="block h-lh w-auto"
+          className="block h-logo-header w-auto"
         />
       </RouterLink>
       <Button

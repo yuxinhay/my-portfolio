@@ -20,6 +20,7 @@ const NAMESPACES: Record<string, string> = {
   leading: '--leading',
   tracking: '--tracking',
   radius: '--radius',
+  height: '--height',
   breakpoint: '--breakpoint',
   border: '--border',
   duration: '--duration',

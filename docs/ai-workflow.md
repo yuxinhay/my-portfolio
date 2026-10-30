@@ -98,3 +98,6 @@ rejected and why).
   artwork's pixel bounds without touching the artwork, put the logo in the header home link at
   the height the name text had, and placed it on card 1 in the room above the portrait, so the
   card's layout (ADR 0008) is unchanged. The footer keeps my name as text.
+- 2026-10-30: I found the header logo too small and asked for it two lines tall. AI added a
+  `height.logo-header` token (2lh, in Tailwind's height namespace) rather than an arbitrary value,
+  so the logo stays tied to the h3 type step; the At a glance card logo keeps its size.
