@@ -99,13 +99,14 @@ test.describe('count-up numbers', () => {
   test('land on the final value; screen readers only ever get that value', async ({ page }) => {
     await page.goto('./')
     const achievements = page.getByRole('region', { name: 'Achievements' })
-    await achievements.scrollIntoViewIfNeeded()
-    const stat = achievements.locator('.sr-only', { hasText: '40+' }).first()
+    const stat = achievements.locator('.sr-only', { hasText: '10+' }).first()
     await expect(stat).toBeAttached()
-    await expect(stat.locator('xpath=following-sibling::*[2]')).toHaveText('40+')
+    // Scroll the number itself in: the section is taller than the viewport.
+    await stat.locator('..').scrollIntoViewIfNeeded()
+    await expect(stat.locator('xpath=following-sibling::*[2]')).toHaveText('10+')
     // The accessibility tree has the final value and its label, never an intermediate number.
     const tree = await achievements.getByRole('list').first().ariaSnapshot()
-    expect(tree).toContain('40+ AI use-case submissions assessed')
+    expect(tree).toContain('10+ AI use cases completed and handed over')
     expect(tree).not.toMatch(/\b0\+/)
   })
 })
