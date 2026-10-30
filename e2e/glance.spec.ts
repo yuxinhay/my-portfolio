@@ -198,6 +198,8 @@ test.describe('behaviour', () => {
   }) => {
     await page.goto('./')
     await expect(dialog(page)).toBeVisible()
+    // The backdrop fades in from transparent; read it once it has.
+    await settleMotion(page)
     const backdrop = await dialog(page).evaluate((element) => {
       const style = getComputedStyle(element, '::backdrop')
       return { filter: style.backdropFilter, background: style.backgroundColor }
@@ -268,6 +270,8 @@ test.describe('behaviour', () => {
     await expect(dialog(page)).toHaveAttribute('data-celebrate')
     await page.getByRole('button', { name: 'Skip' }).click()
     await expect(dialog(page)).toBeHidden()
+    // Focus moves to the h1 after the flag is stored (the dialog's close event comes a task later).
+    await expect(h1(page)).toBeFocused()
     expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([])
 
     await page.reload()
