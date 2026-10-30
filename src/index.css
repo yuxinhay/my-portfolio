@@ -217,10 +217,22 @@ dialog::backdrop {
    narrow card the roles take the room they need and the portrait narrows. */
 .glance-hello {
   container-type: inline-size;
+  position: relative;
   display: flex;
   flex: 1;
   flex-direction: column;
   min-height: 0;
+}
+
+/* The logo floats in the room above the portrait, as far from the card's top and left edges as
+   the other cards' padding, so the rest of the card keeps its layout. On a card shorter than 9:16
+   it shrinks with the card's height, as the room above the portrait does. */
+.glance-hello-logo {
+  position: absolute;
+  top: min(6cqw, 3.375cqh);
+  left: min(6cqw, 3.375cqh);
+  width: auto;
+  height: min(9cqw, 5.0625cqh);
 }
 
 .glance-hello-top {

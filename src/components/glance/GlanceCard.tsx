@@ -43,12 +43,21 @@ const CARD_NUMBER = cx(TEXT_RECIPES.display, 'text-scene-accent')
  * right edge; the giant name, flush with the card's left edge, starts right where the portrait
  * ends. The name and roles are in the scene's display colour. No text crosses the photo: the
  * portrait's dark hair and dress fill that corner, so text over it could not keep its contrast
- * (owner decision, ADR 0008). Sizes follow the card's width (index.css, `.glance-hello`).
+ * (owner decision, ADR 0008). The logo sits in the top left corner, in the room above the
+ * portrait. Sizes follow the card's width (index.css, `.glance-hello`).
  */
 function HelloCard({ card }: { card: GlanceHelloCard }) {
-  const { portrait, eyebrow } = card
+  const { logo, portrait, eyebrow } = card
   return (
     <div className="glance-hello">
+      <img
+        src={logo.src}
+        alt={logo.alt}
+        width={logo.width}
+        height={logo.height}
+        decoding="async"
+        className="glance-hello-logo"
+      />
       <div className="glance-hello-top">
         {/* One role per line; screen readers hear a comma instead of the bar. */}
         <p className="glance-hello-roles text-small leading-tight font-bold text-scene-display">

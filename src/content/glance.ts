@@ -5,6 +5,7 @@ import portrait from '../assets/glance/yuxin-portrait.webp'
 import type { SceneName } from '../components/ui/styles'
 import { certifications, featuredStats, moreStats } from './achievements'
 import type { Stat } from './achievements'
+import { logo } from './brand'
 import { career } from './career'
 import { intro } from './intro'
 import type { IsoDate, Period } from './period'
@@ -36,6 +37,8 @@ export interface GlanceHelloCard extends GlanceCardBase {
   eyebrow: readonly string[]
   name: string
   summary: string
+  /** The wordmark above the portrait; decorative (`alt: ''`), as the card names the owner. */
+  logo: GlanceImage
   portrait: GlanceImage
 }
 
@@ -120,6 +123,7 @@ export const glance: Glance = {
       name: 'Yuxin Hay',
       summary:
         'From accessible design systems to agentic AI, I design and manage products that work for everyone.',
+      logo: { ...logo, alt: '' },
       portrait: { src: portrait, alt: 'Portrait of Yuxin Hay, smiling', width: 800, height: 900 },
     },
     {
