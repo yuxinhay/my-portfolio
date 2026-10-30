@@ -19,7 +19,7 @@ export interface Certification {
 /** The giant numbers. Keep values short: they render at the `stat` size, even at 320px. */
 export const featuredStats: readonly Stat[] = [
   { value: '3+', label: 'years at CPF Board' },
-  { value: '40+', label: 'AI use-case submissions assessed' },
+  { value: '10+', label: 'AI use cases completed and handed over' },
   { value: '24', label: 'use cases across 14 departments' },
   { value: '38', label: 'officers in 7 cross-functional teams' },
 ]
@@ -28,9 +28,10 @@ export const moreStats: readonly Stat[] = [
   { value: '10 weeks', label: 'Made-in-CPF, redesigned from 7 months' },
   { value: '22+', label: 'challenge submissions, narrowed to 7 challenges' },
   { value: '1–2 weeks', label: 'to vibe-code the openMIC portal' },
-  { value: '3', label: 'flagship AI use cases' },
+  { value: '40+', label: 'AI use-case submissions assessed' },
   { value: '3', label: 'roadshows' },
-  { value: '2', label: 'senior-management presentations' },
+  { value: '3', label: 'senior-management presentations' },
+  { value: '2', label: 'hands-on flowCentral workshops, each oversubscribed (90 seats)' },
   { value: '$7,000+', label: 'saved on an accessibility audit at Cialfo' },
   { value: '3', label: 'UX case studies: 2 shipped, 1 concept' },
 ]

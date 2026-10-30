@@ -23,7 +23,6 @@ export const skillGroups: readonly SkillGroup[] = [
       { name: 'Lifecycle management' },
       { name: 'POC/POV' },
       { name: 'Governance' },
-      { name: 'Transition planning' },
       { name: 'Cross-functional delivery' },
     ],
   },

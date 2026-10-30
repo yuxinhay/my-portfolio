@@ -146,7 +146,10 @@ export const glance: Glance = {
           value: statValue('use cases across 14 departments'),
           label: 'pipelined across 14 departments',
         },
-        { value: statValue('flagship AI use cases'), label: 'flagship' },
+        {
+          value: statValue('AI use cases completed and handed over'),
+          label: 'completed and handed over',
+        },
       ],
       footnote: projectTitle('flowcentral'),
     },

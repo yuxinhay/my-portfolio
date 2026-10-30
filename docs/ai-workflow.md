@@ -83,3 +83,8 @@ rejected and why).
   caught card layouts that overflowed at 1280px and 320px before review. I changed the home
   headline to "UX Designer | Product Manager" and provided the portrait, which AI converted to
   WebP with metadata stripped (ADR 0006). Small visual choices are listed in the PR for my review.
+- 2026-10-30: I gave the flowCentral updates (the FAST operating model, enablement e-primer and
+  workshops, 3 senior-management presentations, 10+ use cases completed and handed over, no
+  transition area) and decided the PM case studies are not numbered. AI updated the content,
+  stats and At a glance card, added a typed `flow` block and an unnumbered process option, and
+  built two layouts for the FAST flow diagram; I chose the stacked cards over a timeline rail.

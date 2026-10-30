@@ -95,8 +95,34 @@ export interface Definition {
   featured?: boolean
 }
 
-/** A paragraph, a bulleted list, or a description list of terms. */
-export type Block = string | { list: readonly string[] } | { definitions: readonly Definition[] }
+/** One path out of a branching stage, e.g. the outcome for lower-priority use cases. */
+export interface FlowBranch {
+  /** The condition, in text, so a path never relies on colour or position, e.g. "Lower priority". */
+  label: string
+  /** What happens on this path, shown after the label, e.g. "co-build". */
+  title?: string
+  detail: string
+  /** The path the flow continues on, to the next stage; every other path ends here. */
+  continues?: boolean
+}
+
+/** One stage of a flow; a stage with branches splits into paths, and only one continues. */
+export interface FlowStage {
+  title: string
+  detail?: string
+  branches?: readonly FlowBranch[]
+}
+
+/** A process drawn as a flow diagram, e.g. an operating model. */
+export interface Flow {
+  /** Names the list of stages for screen readers, e.g. "The FAST operating model". */
+  label: string
+  stages: readonly FlowStage[]
+}
+
+/** A paragraph, a bulleted list, a description list of terms, or a flow diagram. */
+export type Block =
+  string | { list: readonly string[] } | { definitions: readonly Definition[] } | { flow: Flow }
 
 /**
  * How a group of media is laid out: `stack` one per row (default), `pair` two side by side from
@@ -142,7 +168,14 @@ export interface CaseStudy {
   }
   /** The problem, or for the PM case studies, what the product or programme is. */
   problem: CaseStudySection
-  process: CaseStudySection & { steps: readonly ProcessStep[] }
+  process: CaseStudySection & {
+    /**
+     * Whether the steps are a sequence, shown numbered (the UX case studies), or areas of work in
+     * no particular order, shown without numbers (the PM case studies).
+     */
+    numbered: boolean
+    steps: readonly ProcessStep[]
+  }
   solution?: CaseStudySection
   outcome?: CaseStudySection & { stats?: readonly Stat[] }
   lessons?: CaseStudySection
@@ -195,6 +228,7 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     process: {
       heading: 'Process',
+      numbered: true,
       body: [DUMMY_DATA],
       steps: [
         {
@@ -366,6 +400,7 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     process: {
       heading: 'Process',
+      numbered: true,
       body: [],
       steps: [
         {
@@ -551,6 +586,7 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     process: {
       heading: 'Process',
+      numbered: true,
       body: [],
       steps: [
         {
@@ -690,7 +726,7 @@ export const caseStudies: readonly CaseStudy[] = [
   {
     slug: 'flowcentral',
     overview: {
-      role: 'Main Product Manager: strategy, use-case management, adoption and transition',
+      role: 'Main Product Manager: strategy, use-case management and adoption',
     },
     problem: {
       heading: 'The product',
@@ -701,35 +737,67 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     process: {
       heading: 'How I managed it',
+      numbered: false,
       body: [],
       steps: [
         {
           title: 'Use-case intake',
           body: [
-            'I assessed 40+ use-case submissions, pipelined 24 use cases across 14 departments, and selected 3 flagship use cases.',
+            'I assessed 40+ use-case submissions and pipelined 24 use cases across 14 departments; 10+ are now completed and handed over to their IT PMs for maintenance.',
           ],
         },
         {
           title: 'Operating model',
           body: [
-            'I helped set up a six-stage operating model:',
+            'I helped set up FAST (flowCentral Accelerated Solutioning Track), the operating model every use case goes through:',
             {
-              list: [
-                'Submission',
-                'Discovery',
-                'Build',
-                'Testing',
-                'Operational readiness',
-                'Portfolio management',
-              ],
+              flow: {
+                label: 'The FAST operating model',
+                stages: [
+                  {
+                    title: 'Submit use case',
+                    detail: 'The use-case owner submits their use case with all its details.',
+                  },
+                  {
+                    title: 'Triage and prioritise',
+                    detail:
+                      'I triage and prioritise each use case on feasibility, and on effort versus impact: does it affect many staff, save a lot of time, or scale across departments?',
+                  },
+                  {
+                    title: 'Two paths, by priority',
+                    branches: [
+                      {
+                        label: 'Lower priority',
+                        detail:
+                          'The use case goes on the waiting list (backlog), or the team proposes alternatives that suit it better.',
+                      },
+                      {
+                        label: 'Higher priority',
+                        title: 'co-build',
+                        detail:
+                          'The use-case owner co-builds the workflow in flowCentral with Forward Deployed Engineers (FDEs) and IT PMs, and works out whether it needs API integration or system access.',
+                        continues: true,
+                      },
+                    ],
+                  },
+                  {
+                    title: 'Promotion',
+                    detail:
+                      'After a security review by FDEs and IT PMs and a business review by users, the workflow is promoted from UAT to Prod with the right approvals.',
+                  },
+                  {
+                    title: 'Operational readiness',
+                    detail:
+                      "A complete handover to the user's supporting IT department (their IT PMs), who then maintain the workflow.",
+                  },
+                ],
+              },
             },
           ],
         },
         {
           title: 'Senior management',
-          body: [
-            'I gave 2 presentations to senior management: one on the roadmap, onboarding, governance and reusable capabilities, and one on lessons for future AI products.',
-          ],
+          body: ['I gave 3 presentations to senior management on flowCentral.'],
         },
         {
           title: 'Adoption',
@@ -737,16 +805,18 @@ export const caseStudies: readonly CaseStudy[] = [
             {
               list: [
                 '3 roadshows, sharing sessions and an AI Day showcase',
-                'User guides, a FAST onboarding model, onboarding journey maps and role-based onboarding materials',
+                'User guides, onboarding journey maps and role-based onboarding materials',
                 'A weekly knowledge-sharing segment I started for Forward Deployed Engineers and developers',
               ],
             },
           ],
         },
         {
-          title: 'Transition',
+          title: 'Enablement',
           body: [
-            'I led the transition plan for existing use cases, assessing each one for migration, pause or retirement, with communications for each group of stakeholders. I chose a planned transition over sunk-cost investment.',
+            'An agentic AI e-primer launched Board-wide in April 2026. It builds a basic, foundational understanding of what agentic AI is across CPF Board, and helps us see whether staff’s problem statements could be solved with flowCentral.',
+            'Then came 2 rounds of hands-on flowCentral workshops, in April and June 2026, for officers to onboard and learn to build simple workflows in flowCentral. Staff had to complete the e-primer before signing up. Each round was oversubscribed, with 90 seats filled each time.',
+            'I didn’t run the workshops, but I helped curate them and had the final say on the workshop materials.',
           ],
         },
       ],
@@ -757,7 +827,7 @@ export const caseStudies: readonly CaseStudy[] = [
       stats: [
         { value: '40+', label: 'use-case submissions assessed' },
         { value: '24', label: 'use cases pipelined across 14 departments' },
-        { value: '3', label: 'flagship use cases' },
+        { value: '10+', label: 'use cases completed and handed over to IT for maintenance' },
         { value: '3', label: 'roadshows' },
       ],
     },
@@ -776,6 +846,7 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     process: {
       heading: 'How I managed it',
+      numbered: false,
       body: [],
       steps: [
         {
