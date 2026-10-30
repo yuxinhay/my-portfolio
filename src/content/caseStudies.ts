@@ -1,3 +1,4 @@
+import micOpenmicOverview from '../assets/case-studies/made-in-cpf/mic-openmic-overview.webp'
 import pbaFlowAccountSettings from '../assets/case-studies/preferred-bank-account/pba-flow-account-settings.webp'
 import pbaFlowUpdateBankAccount from '../assets/case-studies/preferred-bank-account/pba-flow-update-bank-account.webp'
 import pbaHifiBankAccountCard from '../assets/case-studies/preferred-bank-account/pba-hifi-bank-account-card.webp'
@@ -850,15 +851,44 @@ export const caseStudies: readonly CaseStudy[] = [
       body: [],
       steps: [
         {
-          title: 'Redesigning the programme',
+          title: 'Redesigning the programme from feedback',
           body: [
-            "I redesigned the programme from 7 months to 10 weeks, aligned to the organisation's AI direction, and co-presented the redesign to senior management, who supported it.",
+            "The Season 5 redesign came from analysing Season 4 participants' feedback. We take that feedback seriously, so we can plan a programme that's enjoyable for everyone. Here is what we heard and what I changed:",
+            {
+              definitions: [
+                {
+                  term: 'Programme duration',
+                  tag: 'From feedback',
+                  detail:
+                    "I redesigned the programme from 7 months to 10 weeks, aligned to the organisation's AI direction, and co-presented the redesign to senior management, who supported it.",
+                },
+                {
+                  term: 'Lack of protected time',
+                  tag: 'From feedback',
+                  detail:
+                    "I took a stricter approach: I emailed participants' supervisors and heads of department (HODs), and blocked participants' calendars for all the protected sessions. Supervisors and colleagues can't book meetings over them, so participants can stay away from their business-as-usual (BAU) work during protected time.",
+                },
+                {
+                  term: 'Skills criteria removed',
+                  tag: 'From our own analysis',
+                  detail:
+                    'Joining used to need certain skillsets, such as UX, PM or tech skills. We noticed that participants in Seasons 1–4 were mostly fresh graduates on the fresh-graduate programme, so we lowered the barrier to entry to give everyone an equal opportunity to join. With AI, most roles are blurred: anyone could join Season 5 with practically no skills, just a willingness to learn and a passion for solving workplace challenges.',
+                },
+              ],
+            },
           ],
         },
         {
           title: 'The openMIC portal',
           body: [
-            'I vibe-coded the openMIC portal in about 1–2 weeks. Staff can learn about MIC, submit workplace problems, and browse, comment on and upvote them. I then redesigned it for participant recruitment.',
+            'What MIC needed was bespoke, and no existing platform could serve it, so I decided to vibe-code openMIC: a workplace-challenge-sourcing and participant-recruitment platform, built in 1–2 weeks. Staff can also learn about MIC there. It has a 2-part journey:',
+            {
+              list: [
+                'Submit and browse: staff submit workplace challenges, and browse, comment on and upvote existing submissions. Votes help surface the challenges that matter most.',
+                'Register for a team: after shortlisting, the shortlisted challenges open for registration, and staff join the team they most want to contribute to.',
+              ],
+            },
+            'I first built it for challenge sourcing, then redesigned it for participant recruitment. UX details that guide staff through both parts:',
             {
               list: [
                 'Multiple entry points',
@@ -867,6 +897,18 @@ export const caseStudies: readonly CaseStudy[] = [
                 'Clear calls to action',
                 'Acknowledgement checkpoints',
               ],
+            },
+          ],
+          media: [
+            {
+              kind: 'image',
+              src: micOpenmicOverview,
+              width: 1600,
+              height: 900,
+              alt: 'An overview of openMIC. Part 1, the Workplace Challenges page: community submissions as cards with comment and upvote counts, and a button to submit a challenge. Part 2, the team registration page: shortlisted challenges as cards showing how many staff have joined each team. Key figures sit along the top, and the challenge, solution and impact along the bottom.',
+              caption:
+                "openMIC's 2-part journey: staff submit and upvote workplace challenges, then register to join a team for a shortlisted challenge.",
+              fullSize: true,
             },
           ],
         },
