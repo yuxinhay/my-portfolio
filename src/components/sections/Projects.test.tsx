@@ -24,6 +24,14 @@ describe('Projects', () => {
     }
   })
 
+  it('underlines each title only on hover and press', () => {
+    renderWithRouter(<Projects />)
+    for (const link of screen.getAllByRole('link')) {
+      expect(link).not.toHaveClass('underline')
+      expect(link).toHaveClass('hover:underline', 'active:underline')
+    }
+  })
+
   it('labels the status in text, including the concept', () => {
     renderWithRouter(<Projects />)
     const concept = screen.getByRole('article', {

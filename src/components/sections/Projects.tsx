@@ -34,6 +34,7 @@ export function Projects({ projects = defaultProjects }: ProjectsProps) {
               <Heading level={3} id={`project-${slug}`}>
                 <RouteLink
                   to={`/projects/${slug}`}
+                  underline="interactive"
                   className="after:absolute after:inset-0 after:rounded-card"
                 >
                   {title}

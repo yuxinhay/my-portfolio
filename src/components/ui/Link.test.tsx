@@ -17,6 +17,17 @@ describe('Link', () => {
     expect(screen.getByRole('link')).toHaveClass('underline', 'text-scene-accent')
   })
 
+  it('underlines an interactive link only on hover and press', () => {
+    render(
+      <Link href="#a" underline="interactive">
+        A
+      </Link>,
+    )
+    const link = screen.getByRole('link')
+    expect(link).not.toHaveClass('underline')
+    expect(link).toHaveClass('hover:underline', 'active:underline')
+  })
+
   it('is reachable with the keyboard and shows the scene focus ring', async () => {
     const user = userEvent.setup()
     render(<Link href="#a">A</Link>)

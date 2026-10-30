@@ -19,6 +19,11 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
+/** For links that stand apart from text, like a card title: underlined on hover and press. */
+export const Interactive: Story = {
+  args: { underline: 'interactive' },
+}
+
 export const InText: Story = {
   render: (args) => (
     <AllScenes>
