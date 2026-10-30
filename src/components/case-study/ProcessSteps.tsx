@@ -7,21 +7,26 @@ import { MediaGroup } from './MediaFigure'
 
 export interface ProcessStepsProps {
   steps: readonly ProcessStep[]
+  /** `false` for areas of work in no particular order: an unordered list without step numbers. */
+  numbered?: boolean
 }
 
 /**
- * The process as an ordered list: each step has an h3, its text, any insights, its media and any
- * text that explains the media.
+ * The process as a list: each step has an h3, its text, any insights, its media and any text that
+ * explains the media. Numbered steps are an ordered list with a "Step 1" label each.
  */
-export function ProcessSteps({ steps }: ProcessStepsProps) {
+export function ProcessSteps({ steps, numbered = true }: ProcessStepsProps) {
+  const List = numbered ? 'ol' : 'ul'
   return (
-    <ol className="grid gap-16">
+    <List className="grid gap-16">
       {steps.map(({ title, body, insights, media, mediaLayout, afterMedia }, index) => (
         <li key={title} className="grid gap-6 border-t-(length:--border-rule) border-scene-fg pt-6">
           <div className="grid gap-2">
-            <Text variant="eyebrow" className="text-scene-accent">
-              Step {index + 1}
-            </Text>
+            {numbered && (
+              <Text variant="eyebrow" className="text-scene-accent">
+                Step {index + 1}
+              </Text>
+            )}
             <Heading level={3} size="h2">
               {title}
             </Heading>
@@ -32,6 +37,6 @@ export function ProcessSteps({ steps }: ProcessStepsProps) {
           {afterMedia && <Blocks blocks={afterMedia} />}
         </li>
       ))}
-    </ol>
+    </List>
   )
 }

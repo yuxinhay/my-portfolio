@@ -46,7 +46,7 @@ export function CaseStudy({ project, study }: CaseStudyProps) {
       <WrappedSection id="process" scene="ink" title={process.heading}>
         <Blocks blocks={process.body} />
         <MediaGroup media={process.media} layout={process.mediaLayout} />
-        <ProcessSteps steps={process.steps} />
+        <ProcessSteps steps={process.steps} numbered={process.numbered} />
       </WrappedSection>
 
       {solution && (
